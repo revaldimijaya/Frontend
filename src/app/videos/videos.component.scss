@@ -1,0 +1,124 @@
+.container{
+    margin-top: 60px;
+    padding: 10px;
+    display: flex;
+
+    .video, .next-video{
+        padding: 20px;
+    }
+}
+
+.video{
+    width: 70%;
+
+    .video-detail{
+        display: flex;
+        justify-content: space-between;
+
+        .menu{
+            display: flex;
+
+            div{
+                cursor: pointer;
+                align-items: center;
+                display: flex;
+                padding: 0 5px 0 5px;
+            }
+        }
+    }
+
+    .info-detail{
+        display: flex;
+
+        .profile{
+            width: 8%;
+            height: 100%;
+
+            img{
+                border-radius: 50px;
+                width: 100%;
+            }
+        }
+
+        .info{
+            width: 92%;
+            display: block;
+            .first-info{
+                height: 50%;
+                display: flex;
+                justify-content: space-between;
+                div{
+                    padding: 0 5px 0 5px;
+                }
+                .subs-notif{
+                    display: flex;
+                    align-items: center;
+
+                    .subs{
+                        background-color: red;
+                        p{
+                            color: white;
+                        }
+                    }
+                }
+            }
+
+            .second-info{
+                height: 50%;
+                div{
+                    padding: 0 10px 0 10px;
+                }
+            }
+        }
+    }
+
+    .comment-detail{
+        .comment-header{
+            display: flex;
+            div{
+                padding: 0 5px 0 5px;
+            }
+            .sort{
+                display: flex;
+                align-items: center;
+            }
+        }
+
+        .my-comment{
+            display: flex;
+            align-items: center;
+            div{
+                padding: 0 5px 0 5px;
+            }
+            .comment-pic{
+                width: 5%;
+                img{
+                    border-radius: 50px;
+                    width: 100%;
+                }
+            }
+
+            .comment-input{
+                width: 95%;
+                input{
+                    width: 100%;
+                }
+            }
+        }
+        .submit{
+            display: flex;
+            flex-direction: row-reverse;
+            width: 100%;
+            div{
+                border-style: groove;
+                padding: 0 10px 0 10px;
+            }
+        }
+    } 
+}
+
+.next-video{
+    width: 30%;
+
+}  
+

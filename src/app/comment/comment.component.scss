@@ -1,0 +1,29 @@
+.comment-user{
+    display: flex;
+
+    .img-user{
+        width: 5%;
+        height: 100%;
+        padding: 10px 5px 0 5px;
+        img{
+            border-radius: 50px;
+            width: 100%;
+        }
+    }
+    
+    .user-detail{
+        width: 95%;
+        padding: 0 0 0 20px;
+        .comment-attribute{
+            display: flex;
+
+            .like,.dislike,.reply{
+                div{
+                    padding: 0 10px 0 10px;
+                }
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+}

@@ -1,0 +1,157 @@
+<div class="container">
+  <div class="title">
+    <h1>Channel Videos</h1>
+  </div>
+  <div class="upload" (click)="toggleUpload()">
+    <i class="fas fa-video"></i>
+    <p>CREATE</p>
+  </div>
+</div>
+
+<div class="container-modal">
+
+  <div class="modal" [style.display] = "toggle_upload ? 'block':'none'">
+
+    <div class="dropzone" *ngIf="!isUploaded" dropzone (hovered)="toggleHover($event)"(dropped)="onDrop($event)"[class.hovering]="isHovering">
+      
+      <h3>Drop Video Here</h3>
+      <p>Drag and Drop a File</p>
+      
+      <div class="container-file">
+        <div class="file">
+          <label class="file-label">
+            <input class="file-input" type="file" accept="video/*" (change)="onDrop($event.target.files)">
+          </label>
+        </div>
+
+        <div class="inner-button">
+          <div class="upload">
+            <button class="upload-button" (click)="startUpload()">
+              Upload
+            </button>
+          </div>
+          <div class="cancel">
+            <button (click)="toggleUpload()">
+              Cancel  
+            </button>
+          </div>
+        </div>   
+      </div>
+      <br>
+      <div *ngIf="snapshot | async as snap">
+        {{ snap.bytesTransferred }} of {{ snap.totalBytes }} 
+      </div>
+    </div>
+    
+    <div class="upload-setting" *ngIf="isUploaded">
+      <div class="left">
+        <div>
+          <h3>Detail</h3>
+        </div>
+        <div class="input-title">
+          <input type="text" name="title" id="title" placeholder="Title">
+        </div>
+        <div class="input-description">
+          <textarea name="description" id="description" cols="30" rows="10" placeholder="Description">
+
+          </textarea>
+        </div>
+        <div class="input-thumbnail">
+          <h4>Thumbnail</h4>
+          <input type="file" accept="image/*" (change)="thumbnailPath($event.target.files)" (change)="startUploadThumbnail($event.target.files)">
+        </div>
+        <div class="input-category">
+          <h4>Category</h4>
+          <select name="category" id="category">
+            <option value="Music">Music</option>
+            <option value="Sport">Sport</option>
+            <option value="Gaming">Gaming</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="News">News</option>
+            <option value="Travel">Travel</option>
+          </select>
+        </div>
+        <div class="input-audience">
+          <h4>Audience</h4>
+          <div>
+            <input type="radio" name="restriction" id="restriction" value="adult">
+            <label for="adult">Adult</label>
+          </div>
+          <div>
+            <input type="radio" name="restriction" id="restriction" value="kids">
+            <label for="kids">Kids</label>
+          </div>
+        </div>
+
+        <div class="input-playlist">
+          <h4>Playlist</h4>
+          <select name="playlist" id="">
+            <option value="test">test</option>
+          </select>
+          <p>or</p>
+          <h4>Create New Playlist</h4>
+          <h4>Privacy</h4>
+          <div>
+            <input type="radio" name="privacy" id="privacy" value="public">
+            <label for="privacy">Public</label>
+          </div>
+          <div>
+            <input type="radio" name="privacy" id="privacy" value="private">
+            <label for="privacy">Private</label>
+          </div>
+          <div>
+            <button>New Playlist</button>
+          </div>
+        </div>
+
+        <div class="input-membership">
+          <h4>Membership</h4>
+          <div>
+            <input type="radio" name="membership" id="membership" value="premium">
+            <label for="membership">Premium</label>
+          </div>
+          <div>
+            <input type="radio" name="membership" id="membership" value="regular">
+            <label for="regular">Regular</label>
+          </div>
+        </div>
+
+        <div class="input-schedule">
+          <h4>Schedule Upload</h4>
+        </div>
+
+        <div class="button-upload">
+          <div>
+            <button (click)="uploadVideo()">Upload</button>
+          </div>
+          <div>
+            <button (click)="toggleUpload()">Cancel</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="right">
+        <h4>Preview</h4>
+        <div>
+          <mat-video src="{{downloadURL}}"></mat-video>
+        </div>
+        <div> 
+          <img src="{{thumbnail_path}}" alt="">
+        </div>
+      </div>
+    </div>
+    
+  </div>
+
+</div>
+
+    <!-- <div *ngIf="downloadURL as url">
+      <h3>Results!</h3>
+      <img [src]="url"><br>
+      <a [href]="url" target="_blank" rel="noopener">Download Me!</a>
+    </div> 
+  
+    <button (click)="task.pause()" [disabled]="!isActive(snap)">Pause</button>
+    <button (click)="task.cancel()" [disabled]="!isActive(snap)">Cancel</button>
+    <button (click)="task.resume()" [disabled]="!(snap?.state === 'paused')">Resume</button> -->

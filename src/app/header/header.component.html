@@ -1,0 +1,211 @@
+<div class="flex-container" >
+    <div class="">
+        <div class="sidebar">
+            <button class="accordion" (click)="dropdown()" >
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="logo">
+            <a routerLink="/">
+                <img src="../../assets/logo/logo.png" alt="not found">
+            </a>
+        </div>
+    </div>
+
+    <div class="">
+        <div class="search-bar">
+            <input type="text" name="search" id="search" placeholder="Search">
+        </div>
+        <div class="search">
+            <button class="search-button">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="">
+        <div class="studio" *ngIf="user">
+            <a routerLink="/upload">
+            <button class="studio-button">
+                <i class="fas fa-video"></i>
+            </button>
+            </a>
+        </div>
+        <div class="setting" (click)="toggleSetting()" *ngIf="!user">
+            <button class="setting-button">
+                <i class="fas fa-cog"></i>
+            </button>
+            
+        </div>
+        <div class="notification" *ngIf="user">
+            <button class="notification-button">
+                <i class="fas fa-bell"></i>
+            </button>
+        </div>
+        <div class="profile">
+            <button *ngIf="!user" (click)="signInWithGoogle()">
+                <img src="../../assets/images/profile.png" alt="">
+            </button>
+            <button *ngIf="user" (click)="toggleUser()">
+                <img style="border-radius: 50px;" src= "{{user.photoUrl}}" alt="">
+            </button>
+        </div>
+        
+    </div>
+</div>
+
+<div class="menu" [style.left] = "visible ? '0' : '-100%'">
+    <div class="text-menu">
+        <i class="fas fa-home nav-icon"></i>
+        <a routerLink="/"><p>Home</p></a>
+    </div>
+    <div class="text-menu">
+        <i class="fas fa-fire nav-icon"></i>
+        <a routerLink="/trending"><p>Trending</p></a>
+    </div>
+    <div class="text-menu">
+        <i class="fab fa-youtube nav-icon"></i>
+        <a routerLink="/subscription"><p>Subscription</p></a>
+    </div>
+    <div class="text-menu">
+        <i class="fa fa-id-card-o nav-icon"></i>
+        <p>Membership</p>
+    </div>
+    <div>
+        <hr>
+    </div>
+    <div class="text-menu">
+        <i class="fa fa-music nav-icon"></i>
+        <a routerLink="/music"><p>Music</p></a>
+    </div>
+    <div class="text-menu">
+        <i class="fa fa-bicycle nav-icon"></i>
+        <a routerLink="/sport"><p>Sport</p></a>
+    </div>
+    <div class="text-menu">
+        <i class="fa fa-gamepad nav-icon"></i>
+        <a routerLink="/gaming"><p>Gaming</p></a>
+    </div>
+    <div class="text-menu">
+        <i class="fa fa-television nav-icon"></i>
+        <a routerLink="/entertainment"><p>Entertainment</p></a>
+    </div>
+    <div class="text-menu">
+        <i class="fa fa-newspaper-o nav-icon"></i>
+        <a routerLink="/news"><p>News</p></a>
+    </div>
+    <div class="text-menu">
+        <i class="fa fa-plane nav-icon"></i>
+        <a routerLink="/Travel"><p>Travel</p></a>
+    </div>
+    <div>
+        <hr>
+    </div>
+    <div class="text-menu">
+        <i class="fas fa-play-circle nav-icon"></i>
+        <a routerLink="/library"><p>Library</p></a>
+    </div>
+    <div class="text-menu">
+        <i class="fas fa-fire nav-icon"></i>
+        <a routerLink="/history"><p>History</p></a>
+    </div>
+    <div class="text-menu">
+        <i class="fas fa-clock nav-icon"></i>
+        <a routerLink="/later"><p>Watch Later</p></a>
+    </div>
+</div>
+
+<div class="display-setting" [style.top] = "toggle_setting ? '0' : '-1000%'">
+    <div class="text-setting">
+        <i class="fas fa-child"></i>
+        <p>Restriction</p>
+    </div>
+    <div class="text-setting">
+        <i class="fas fa-compass"></i>
+        <p>Location</p>
+    </div>
+    <div class="text-setting" (click)="toggleModal()" (click)="toggleSetting()">
+        <i class="fas fa-keyboard"></i>
+        <p>Keyboard Shortcut</p>
+    </div>
+</div>
+
+<div class="modal-bg" [style.display] = "toggle_modal ? 'block':'none'">
+    <div class="modal-keyboard">
+        <div class="modal-header">
+            <button class="close" (click)="toggleModal()">&times;</button>
+        </div>
+        <div class="modal-component">
+            <ul>
+                <li>
+                    <p>j - backward 10 second</p>
+                </li>
+                <li>
+                    <p>k - play or pause video</p>
+                </li>
+                <li>
+                    <p>l - forward 10 second</p>
+                </li>
+                <li>
+                    <p>f - fullscreen mode</p>
+                </li>
+                <li>
+                    <p>↑ - up the video volume</p>
+                </li>
+                <li>
+                    <p>↓ - low the video volume</p>
+                </li>
+    
+                <li><p>Right-click on video player – display options:</p></li>
+                <ol>
+                    <li>
+                        <p>Loop – loop video.</p>
+                    </li>
+                    <li>
+                        <p>Copy link, copy video URL to the clipboard.</p>
+                    </li>
+                    <li>
+                        <p>Copy link with the current time, copy</p>
+                    </li>
+                </ol>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="user-menu" [style.top] = "toggle_user ? '0' : '-1000%'" *ngIf="user">
+    <div class="text-user" >
+        <img style="border-radius: 50px;" src= "{{user.photoUrl}}" alt="">
+        <p>{{user.name}}</p>
+    </div>
+    <div class="text-user">
+        <i class="fas fa-id-badge"></i>
+        <p>Your Channel</p>
+    </div>
+    <div class="text-user">
+        <i class="fas fa-dollar-sign"></i>
+        <p>Paid Membership</p>
+    </div>
+    <div class="text-user" (click)="signOut()">
+        <i class="fas fa-user-circle"></i>
+        <p>Switch Account</p>
+    </div>
+    <div class="text-user" (click)="signOutFirst()">
+        <i class="fas fa-sign-out-alt"></i>
+        <p>Sign Out</p>
+    </div>
+    <div class="text-user">
+        <i class="fas fa-child"></i>
+        <p>Restriction</p>
+    </div>
+    <div class="text-user">
+        <i class="fas fa-compass"></i>
+        <p>Location</p>
+    </div>
+    <div class="text-user" (click)="toggleModal()" (click)="toggleUser()">
+        <i class="fas fa-keyboard"></i>
+        <p>Keyboard Shortcut</p>
+    </div>
+
+</div>
+
