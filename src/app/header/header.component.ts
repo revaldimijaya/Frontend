@@ -34,8 +34,8 @@ export class HeaderComponent implements OnInit {
       this.user = user;
       this.loggedIn = (user != null);
       this.addToLocalStorage(user);
-      console.log(user);
       this.createUser(user);
+      window.location.href = ' ';
     });
 
   }
@@ -67,34 +67,6 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  getUser(): void{
-    console.log("asd")
-    this.apollo.watchQuery({
-      query: gql `
-        query getUserId($id: String!){
-          getUserId(userid: $id) {
-            id,
-            name,
-            membership,
-            photo
-          }
-        }
-      `,
-      variables:{
-        id: '123'
-      }
-    }).valueChanges.subscribe(result => {
-      console.log("masuk")
-      // console.log(result.data.userid)
-      // console.log(result.data.getUserId)
-    })
-    
-    // if(temp. == "user not found!"){
-    //   return false;
-    // }
-    // return true;
-  }
-
   signOut(): void {
     this.authService.signOut(true);
     sessionStorage.clear();
@@ -108,6 +80,7 @@ export class HeaderComponent implements OnInit {
     sessionStorage.clear();
     window.localStorage.clear();
     this.loggedIn = false;
+    window.location.href = ' ';
   }
 
   ngOnInit(): void {
@@ -122,9 +95,8 @@ export class HeaderComponent implements OnInit {
     else{
       this.getUserFromStorage();
     }
-    console.log(this.user);
+
     this.data.user_id = this.user.id;
-    console.log(this.data.user_id);
     this.data.photoUrl = this.user.photoUrl;
   }
 

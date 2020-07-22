@@ -13,17 +13,17 @@
                 <p>{{videos.watch}} views Jul 8, 2020</p>
             </div>
             <div class="menu">
-                <div class="like" title="i like this">
-                    <i class="fas fa-thumbs-up"></i>
+                <div class="like" title="i like this" (click)="likeVideo()">
+                    <i class="fas fa-thumbs-up" [style.color]="toggle_thumb == 'like'? 'blue':'black' "></i>
                     <div>
-                        <p>{{videos.like}}</p>
+                        <p>{{like.length}}</p>
                     </div>
                 </div>
 
-                <div class="dislike">
-                    <i class="fas fa-thumbs-down"></i>
+                <div class="dislike" title="i dislike this" (click)="dislikeVideo()">
+                    <i class="fas fa-thumbs-down"  [style.color]="toggle_thumb == 'dislike'? 'blue':'black'"></i>
                     <div>
-                        <p>{{videos.dislike}}</p>
+                        <p>{{dislike.length}}</p>
                     </div>
                 </div>
 

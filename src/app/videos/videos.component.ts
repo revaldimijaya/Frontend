@@ -27,14 +27,21 @@ export class VideosComponent implements OnInit {
   comment_description: string;
   date = new Date();
 
+  dislike: any;
+  like: any;
+  toggle_thumb: string;
+
   ngOnInit(): void { 
     this.activatedRoute.paramMap.subscribe(params => { 
       this.id = parseInt(params.get('id')); 
     });
-    
     this.photoURL = this.data.photoUrl.toString();
-    console.log(this.id);
+    
+    this.toggle_thumb = "none";
+    this.watch();
     this.getVideos();
+    this.totalDislike();
+    this.totalLike();
     this.toggle_comment = false;
   }
 
@@ -44,6 +51,10 @@ export class VideosComponent implements OnInit {
 
   toggleTrue(){
     this.toggle_comment = true;
+  }
+
+  toggleThumb(toggle: string){
+    this.toggle_thumb = toggle;
   }
 
   getVideos() {
@@ -207,4 +218,120 @@ export class VideosComponent implements OnInit {
       console.log('there was an error sending the query', error);
     });
   }
+
+  watch(){
+    this.apollo.mutate({
+      mutation: gql`
+        mutation watch($id: Int!){
+          watch(id: $id)
+        }
+      `,
+      variables:{
+        id: this.id
+      }
+    }).subscribe(({ data }) => {
+      console.log("view ++")
+    },(error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+
+  likeVideo(){
+    this.apollo.mutate({
+      mutation: gql`
+        mutation videoLike($id: Int!, $user_id: String! , $type: String!){
+          videoLike(id: $id, userid: $user_id, type: $type)
+        }
+      `,
+      variables:{
+        id: this.id,
+        user_id: this.data.user_id,
+        type: "like"
+      }
+    }).subscribe(({ data }) => {
+      
+    },(error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+
+  dislikeVideo(){
+    this.apollo.mutate({
+      mutation: gql`
+        mutation videoLike($id: Int!, $user_id: String! , $type: String!){
+          videoLike(id: $id, userid: $user_id, type: $type)
+        }
+      `,
+      variables:{
+        id: this.id,
+        user_id: this.data.user_id,
+        type: "dislike"
+      }
+    }).subscribe(({ data }) => {
+      console.log("dislike ++")
+    },(error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  totalLike(){
+    this.apollo.query({
+      query: gql`
+        query getVideoLike($videoid: Int!, $type: String!){
+          getVideoLike(videoid:$videoid, type:$type){
+            id,
+            video_id,
+            user_id
+          }
+        }
+      `,
+      variables:{
+        videoid: this.id,
+        type: "like"
+      }
+    }).subscribe(result => {
+      this.like = result.data.getVideoLike;
+      for(let i of this.like){
+        if(i.user_id == this.data.user_id){
+          this.toggle_thumb = "like"
+        }
+      }
+    }, (error) => {
+      console.log(this.like);
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  totalDislike(){
+    this.apollo.query({
+      query: gql`
+        query getVideoLike($videoid: Int!, $type: String!){
+          getVideoLike(videoid:$videoid, type:$type){
+            id,
+            video_id,
+            user_id
+          }
+        }
+      `,
+      variables:{
+        videoid: this.id,
+        type: "dislike"
+        
+      }
+    }).subscribe(result => {
+      this.dislike = result.data.getVideoLike;
+      for(let i of this.dislike){
+        if(i.user_id == this.data.user_id){
+          this.toggle_thumb = "dislike"
+        }
+      }
+    }, (error) => {
+      console.log(this.dislike);
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  
 }
