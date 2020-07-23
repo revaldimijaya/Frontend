@@ -55,6 +55,7 @@
                     align-items: center;
 
                     .subs{
+                        
                         background-color: red;
                         p{
                             color: white;
@@ -110,6 +111,7 @@
             flex-direction: row-reverse;
             width: 100%;
             div{
+                
                 border-style: groove;
                 padding: 0 10px 0 10px;
             }
@@ -119,6 +121,6 @@
 
 .next-video{
     width: 30%;
-
+    
 }  
 

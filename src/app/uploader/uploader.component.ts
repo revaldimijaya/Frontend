@@ -228,7 +228,7 @@ export class UploaderComponent implements OnInit {
         description: this.description,
         visibility: this.visibility,
         day: this.date.getDay(),
-        month: this.date.getMonth(),
+        month: this.date.getMonth()+1,
         year: this.date.getFullYear()
       }
     }).subscribe(({ data }) => {

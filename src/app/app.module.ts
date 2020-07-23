@@ -29,7 +29,7 @@ import { CardComponent } from './card/card.component';
 import { VideosComponent } from './videos/videos.component'
 import { CommentComponent } from './comment/comment.component'
 import { NextVideoComponent } from './next-video/next-video.component'
-
+import { ReplyComponent } from './reply/reply.component'
 
 @NgModule({
   declarations: [
@@ -46,7 +46,8 @@ import { NextVideoComponent } from './next-video/next-video.component'
     CardComponent,
     VideosComponent,
     CommentComponent,
-    NextVideoComponent
+    NextVideoComponent,
+    ReplyComponent
   ],
   imports: [
     BrowserModule,

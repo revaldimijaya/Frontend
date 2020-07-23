@@ -1,34 +1,31 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ReplaySubject } from 'rxjs';
 import { Apollo } from 'apollo-angular';
-import gql from 'graphql-tag';
 import { DataService } from '../data.service';
+import gql from 'graphql-tag';
 
 @Component({
-  selector: 'app-comment',
-  templateUrl: './comment.component.html',
-  styleUrls: ['./comment.component.scss']
+  selector: 'app-reply',
+  templateUrl: './reply.component.html',
+  styleUrls: ['./reply.component.scss']
 })
-export class CommentComponent implements OnInit {
-  @Input() comments
+export class ReplyComponent implements OnInit {
+  @Input() replys;
 
-  reply: any;
   user: any;
-  photoURL: string;
-  toggle_comment: boolean;
-  date = new Date();
-  comment_date: string;
-
   like: any;
   dislike: any;
+  photoURL: string;
+  reply_date: string;
+  date = new Date();
   toggle_thumb: string;
+  toggle_comment: boolean;
 
   constructor(private apollo: Apollo, private data: DataService) { }
 
   ngOnInit(): void {
-    this.toggle_comment = false;
     this.photoURL = this.data.photoUrl.toString();
-    console.log(this.comments);
-    this.comment_date = this.calculateDay(this.comments.day, this.comments.month, this.comments.year, this.date.getDay(), this.date.getMonth()+1, this.date.getFullYear())
+    this.reply_date = this.calculateDay(this.replys.day, this.replys.month, this.replys.year, this.date.getDay(), this.date.getMonth()+1, this.date.getFullYear())
     this.totalLike();
     this.totalDislike();
     this.apollo.watchQuery({
@@ -44,11 +41,10 @@ export class CommentComponent implements OnInit {
         }
       `,
       variables:{
-        id: this.comments.user_id
+        id: this.replys.user_id
       }
     }).valueChanges.subscribe(result => {
       this.user = result.data.getUserId;
-      this.getReply();
     })
   }
 
@@ -118,26 +114,97 @@ export class CommentComponent implements OnInit {
     }
   }
 
-  getReply(){
-    this.apollo.watchQuery({
-      query: gql`
-      query reply($commentid: Int!){
-        reply(commentid: $commentid){
-          id,
-          user_id,
-          comment_id,
-          reply,
-          day,
-          month,
-          year
+  likeReply(){
+    this.apollo.mutate({
+      mutation: gql`
+        mutation replyLike($id: Int!, $user_id: String! , $type: String!){
+          replyLike(id: $id, userid: $user_id, type: $type)
         }
-      }
       `,
       variables:{
-        commentid : this.comments.id
+        id: this.replys.id,
+        user_id: this.data.user_id,
+        type: "like"
       }
-    }).valueChanges.subscribe(result => {
-      this.reply = result.data.reply;
+    }).subscribe(({ data }) => {
+      
+    },(error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  dislikeReply(){
+    this.apollo.mutate({
+      mutation: gql`
+        mutation replyLike($id: Int!, $user_id: String! , $type: String!){
+          replyLike(id: $id, userid: $user_id, type: $type)
+        }
+      `,
+      variables:{
+        id: this.replys.id,
+        user_id: this.data.user_id,
+        type: "dislike"
+      }
+    }).subscribe(({ data }) => {
+
+    },(error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  totalLike(){
+    this.apollo.query({
+      query: gql`
+        query getReplyLike($replyid: Int!, $type: String!){
+          getReplyLike(replyid: $replyid, type:$type){
+            id,
+            user_id,
+            type,
+            reply_id
+          }
+        }
+      `,
+      variables:{
+        replyid: this.replys.id,
+        type: "like"
+      }
+    }).subscribe(result => {
+      this.like = result.data.getReplyLike;
+      
+      for(let i of this.like){
+        if(i.user_id == this.data.user_id){
+          this.toggle_thumb = "like"
+        }
+      }
+    }, (error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  totalDislike(){
+    this.apollo.query({
+      query: gql`
+        query getReplyLike($replyid: Int!, $type: String!){
+          getReplyLike(replyid: $replyid, type:$type){
+            id,
+            user_id,
+            type,
+            reply_id
+          }
+        }
+      `,
+      variables:{
+        replyid: this.replys.id,
+        type: "dislike"
+      }
+    }).subscribe(result => {
+      this.dislike = result.data.getReplyLike;
+      
+      for(let i of this.dislike){
+        if(i.user_id == this.data.user_id){
+          this.toggle_thumb = "dislike"
+        }
+      }
     }, (error) => {
       console.log('there was an error sending the query', error);
     });
@@ -167,7 +234,7 @@ export class CommentComponent implements OnInit {
       `,
       variables:{
         user_id: this.data.user_id,
-        comment_id: this.comments.id,
+        comment_id: this.replys.comment_id,
         reply: (<HTMLInputElement>document.getElementById("reply")).value,
         day: this.date.getDay(),
         month: this.date.getMonth()+1,
@@ -176,102 +243,6 @@ export class CommentComponent implements OnInit {
     }).subscribe(({ data }) => {
       console.log('got data', data);
     },(error) => {
-      console.log('there was an error sending the query', error);
-    });
-  }
-
-  likeComment(){
-    this.apollo.mutate({
-      mutation: gql`
-        mutation commentLike($id: Int!, $user_id: String! , $type: String!){
-          commentLike(id: $id, userid: $user_id, type: $type)
-        }
-      `,
-      variables:{
-        id: this.comments.id,
-        user_id: this.data.user_id,
-        type: "like"
-      }
-    }).subscribe(({ data }) => {
-      
-    },(error) => {
-      console.log('there was an error sending the query', error);
-    });
-  }
-
-  dislikeComment(){
-    this.apollo.mutate({
-      mutation: gql`
-        mutation commentLike($id: Int!, $user_id: String! , $type: String!){
-          commentLike(id: $id, userid: $user_id, type: $type)
-        }
-      `,
-      variables:{
-        id: this.comments.id,
-        user_id: this.data.user_id,
-        type: "dislike"
-      }
-    }).subscribe(({ data }) => {
-
-    },(error) => {
-      console.log('there was an error sending the query', error);
-    });
-  }
-
-  totalLike(){
-    this.apollo.query({
-      query: gql`
-        query getCommentLike($commentid: Int!, $type: String!){
-          getCommentLike(commentid:$commentid, type:$type){
-            id,
-            user_id,
-            type,
-            comment_id
-          }
-        }
-      `,
-      variables:{
-        commentid: this.comments.id,
-        type: "like"
-      }
-    }).subscribe(result => {
-      this.like = result.data.getCommentLike;
-      console.log(this.like);
-      for(let i of this.like){
-        if(i.user_id == this.data.user_id){
-          this.toggle_thumb = "like"
-        }
-      }
-    }, (error) => {
-      console.log('there was an error sending the query', error);
-    });
-  }
-
-  totalDislike(){
-    this.apollo.query({
-      query: gql`
-        query getCommentLike($commentid: Int!, $type: String!){
-          getCommentLike(commentid:$commentid, type:$type){
-            id,
-            user_id,
-            type,
-            comment_id
-          }
-        }
-      `,
-      variables:{
-        commentid: this.comments.id,
-        type: "dislike"
-      }
-    }).subscribe(result => {
-      this.dislike = result.data.getCommentLike;
-      console.log(this.dislike);
-      for(let i of this.dislike){
-        if(i.user_id == this.data.user_id){
-          this.toggle_thumb = "dislike"
-        }
-      }
-    }, (error) => {
       console.log('there was an error sending the query', error);
     });
   }

@@ -9,9 +9,9 @@ p{
 
 .container {
     margin-top: 100px;
-    margin-left: 40px;
+    justify-content: space-around;
     display: grid;  
-    grid-gap: 25px;  
+    grid-gap: 30px;  
     grid-template-columns: repeat(auto-fit, 300px);
     grid-template-rows: repeat(auto-fit, 250px);  
 }

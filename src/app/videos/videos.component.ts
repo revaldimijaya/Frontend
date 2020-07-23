@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ɵNOT_FOUND_CHECK_ONLY_ELEMENT_INJECTOR } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { DataService } from '../data.service'
@@ -31,18 +31,26 @@ export class VideosComponent implements OnInit {
   like: any;
   toggle_thumb: string;
 
+  subscription: any;
+  toggle_subs: boolean;
+  change_subs: boolean;
+  total_subs: number;
+  calculate_day: string;
+
   ngOnInit(): void { 
     this.activatedRoute.paramMap.subscribe(params => { 
       this.id = parseInt(params.get('id')); 
     });
+    this.total_subs = 0;
     this.photoURL = this.data.photoUrl.toString();
-    
+    this.toggle_subs = true;
+    this.change_subs = true;
     this.toggle_thumb = "none";
     this.watch();
     this.getVideos();
+    
     this.totalDislike();
     this.totalLike();
-    this.toggle_comment = false;
   }
 
   toggleComment(){
@@ -55,6 +63,68 @@ export class VideosComponent implements OnInit {
 
   toggleThumb(toggle: string){
     this.toggle_thumb = toggle;
+  }
+
+  monthDays:number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+  countLeapYears(month:number, year:number): number{
+    var years = year;
+
+    if(month <= 2){
+      years--;
+    }
+
+    return years/4 - years/100 + years/400;
+  }
+
+  getDifference(d1:number, m1:number, y1:number, d2:number, m2:number, y2:number): number{
+    var n1 = y1*365 + d1
+
+    for(let i = 0; i < m1 - 1 ; i++){
+      n1 += this.monthDays[i];
+    }
+
+    n1 += this.countLeapYears(m1, y1)
+
+    var n2 = y2*365 + d2
+    for( let i = 0 ; i < m2 - 1 ; i++){
+      n2 += this.monthDays[i];
+    }
+
+    n2 += this.countLeapYears(m2, y2)
+
+    return (n2 - n1);
+  }
+
+  calculateDay(d1:number, m1:number, y1:number, d2:number, m2:number, y2:number): string{
+    var days = this.getDifference(d1,m1,y1,d2,m2,y2)
+    console.log(days);
+    var year = 0;
+    var month = 0;
+    var week = 0;
+    if(days >= 365){
+      while(days > 0){
+        year++;
+        days /= 365;
+      }
+      return year + " years ago"
+
+    } else if (days >= 30){
+      while(days > 30){
+        month++;
+        days /= 30;
+      }
+      return month + " months ago"
+
+    } else if (days >= 7){
+      while(days > 7){
+        week++;
+        days /= 7
+      }
+      return week + " weeks ago"
+    } else {
+      return days + " days ago"
+    }
   }
 
   getVideos() {
@@ -87,8 +157,11 @@ export class VideosComponent implements OnInit {
       }
     }).valueChanges.subscribe(result => {
       this.videos = result.data.getVideoId;
+      this.calculate_day = this.calculateDay(this.videos.day, this.videos.month, this.videos.year, this.date.getDay(), this.date.getMonth()+1, this.date.getFullYear())
+      console.log(this.calculate_day);
       this.getUser();
       this.getNextVideo();
+      this.getComment();
     }, (error) => {
       console.log(this.videos);
       console.log('there was an error sending the query', error);
@@ -113,7 +186,13 @@ export class VideosComponent implements OnInit {
       }
     }).valueChanges.subscribe(result => {
       this.user = result.data.getUserId;
-      this.getComment();
+      this.checkSubs(this.user);
+      this.getSubs(this.user);
+      if(this.data.user_id == this.user.id){
+        this.toggle_subs = false;
+      }
+      this.toggle_comment = false;
+      
     })
   }
 
@@ -127,7 +206,10 @@ export class VideosComponent implements OnInit {
             video_id,
             comment,
             like,
-            dislike
+            dislike,
+            day,
+            month,
+            year
           }
         }
       `,
@@ -136,10 +218,7 @@ export class VideosComponent implements OnInit {
       }
     }).valueChanges.subscribe(result => {
       this.comment = result.data.comment;
-      
-      console.log(this.comment);
     },(error) => {
-      console.log(this.comment);
       console.log('there was an error sending the query', error);
     });
   }
@@ -176,7 +255,6 @@ export class VideosComponent implements OnInit {
     }).valueChanges.subscribe(result => {
       this.nextVideos = result.data.getNextVideo;
     }, (error) => {
-      console.log(this.nextVideos);
       console.log('there was an error sending the query', error);
     });
   }
@@ -329,6 +407,82 @@ export class VideosComponent implements OnInit {
       }
     }, (error) => {
       console.log(this.dislike);
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  subs(){
+    this.apollo.mutate({
+      mutation: gql`
+        mutation createSubscribe($userid: String!, $subscribeto: String!){
+          createSubscribe(userid: $userid, subscribeto: $subscribeto){
+            id,
+            user_id,
+           subscribe_to
+          }
+        }
+      `,
+      variables:{
+        userid: this.data.user_id,
+        subscribeto: this.user.id
+      }
+    }).subscribe(({ data }) => {
+      console.log(data)
+    },(error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  getSubs(users: any){
+    this.apollo.query({
+      query: gql`
+        query getSubscribe{
+          getSubscribe{
+            id,
+            user_id,
+            subscribe_to
+          }
+        }
+      `
+    }).subscribe(result => {
+      this.subscription = result.data.getSubscribe;
+      for(let i of this.subscription){
+        if(i.subscribe_to == users.id){
+          this.total_subs += 1;
+        }
+      }
+    }, (error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  check: any;
+
+  checkSubs(users: any){
+    console.log(users);
+    this.apollo.query({
+      query: gql`
+        query checkSubscribe($userid: String!, $subscribeto: String!){
+          checkSubscribe(userid: $userid, subscribeto: $subscribeto){
+            id,
+            user_id,
+            subscribe_to
+          }
+        }
+      `,
+      variables:{
+        userid: this.data.user_id,
+        subscribeto: users.id
+      }
+    }).subscribe(result => {
+      this.check = result.data.checkSubscribe;
+      console.log(this.check);
+      if(this.check.id == ""){
+        this.change_subs = true;
+      } else {
+        this.change_subs = false;
+      }
+    }, (error) => {
       console.log('there was an error sending the query', error);
     });
   }

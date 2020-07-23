@@ -10,7 +10,7 @@
 
         <div class="video-detail">
             <div class="views">
-                <p>{{videos.watch}} views Jul 8, 2020</p>
+                <p>{{videos.watch}} views &bull; {{calculate_day}}</p>
             </div>
             <div class="menu">
                 <div class="like" title="i like this" (click)="likeVideo()">
@@ -63,14 +63,14 @@
                     <div class="profile-name">
                         <div>
                             <h4>{{user.name}}</h4>
-                            <p>{{user.subscriber}} subscribers</p>
+                            <p>{{total_subs}} subscribers</p>
                         </div>
                     </div>
-                    <div class="subs-notif">
-                        <div class="subs">
+                    <div class="subs-notif" [style.display]="toggle_subs ? 'flex':'none'">
+                        <div class="subs" (click)="subs()" [style.background-color]="change_subs ? 'red':'grey'">
                             <p>SUBSCRIBE</p>
                         </div>
-                        <div class="notif">
+                        <div class="notif" >
                             <i class="fas fa-bell"></i>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
         <div class="comment-detail">
             <div class="comment-header">
                 <div>
-                    <p>0 Comments</p>
+                    <p>{{comment.length}} Comments</p>
                 </div>
                 <div class="sort">
                     <div>

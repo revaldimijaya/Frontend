@@ -4,27 +4,27 @@
     </div>
     <div class="user-detail">
         <div class="user-name">
-            <p>{{user.name}} &bull; {{comment_date}}</p>
+            <p>{{user.name}} &bull; {{reply_date}}</p>
         </div>
         <div class="comment-description">
-            <p>{{comments.comment}}</p>
+            <p>{{replys.reply}}</p>
         </div>
         <div class="comment-attribute">
-            <div class="like" title="i like this" (click)="likeComment()">
+            <div class="like" title="i like this" (click)="likeReply()">
                 <i class="fas fa-thumbs-up" [style.color]="toggle_thumb == 'like'? 'blue':'black' "></i>
                 <div>
                     <p>{{like.length}}</p>
                 </div>
             </div>
 
-            <div class="dislike" title="i dislike this" (click)="dislikeComment()">
+            <div class="dislike" title="i dislike this" (click)="dislikeReply()">
                 <i class="fas fa-thumbs-down"  [style.color]="toggle_thumb == 'dislike'? 'blue':'black'"></i>
                 <div>
                     <p>{{dislike.length}}</p>
                 </div>
             </div>
 
-            <div class="comment" (click)="toggleComment()">
+            <div class="reply" (click)="toggleComment()">
                 <div>
                     <p>REPLY</p>
                 </div>
@@ -42,12 +42,10 @@
             <div class="cancel" (click)="toggleComment()">
                 <p>CANCEL</p>
             </div>
-            <div class="reply" (click)="insertReply()">
+            <div class="comment" (click)="insertReply()">
                 <p>REPLY</p>
             </div>
         </div>
-        <div class="user-reply" *ngFor="let i of reply">
-            <app-reply [replys]="i"></app-reply>
-        </div>
+        
     </div>
 </div>
