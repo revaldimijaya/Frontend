@@ -56,76 +56,107 @@
 
 <div class="menu" [style.left] = "visible ? '0' : '-100%'">
     <div class="text-menu">
-        <i class="fas fa-home nav-icon"></i>
+        <div>
+            <i class="fas fa-home"></i>
+        </div>
         <a routerLink="/"><p>Home</p></a>
     </div>
     <div class="text-menu">
-        <i class="fas fa-fire nav-icon"></i>
+        <div>
+            <i class="fas fa-fire nav-icon"></i>
+        </div>
         <a routerLink="/trending"><p>Trending</p></a>
     </div>
-    <div class="text-menu">
-        <i class="fab fa-youtube nav-icon"></i>
+    <div class="text-menu" *ngIf="user">
+        <div>
+            <i class="fab fa-youtube nav-icon"></i>
+        </div>
         <a routerLink="/subscription"><p>Subscription</p></a>
     </div>
+    <div class="text-menu" *ngIf="!user" (click)="signInWithGoogle()">
+        <div>
+            <i class="fas fa-users"></i>
+        </div>
+        <p>Login</p>
+    </div>
     <div class="text-menu">
-        <i class="fa fa-id-card-o nav-icon"></i>
+        <div>
+            <i class="fa fa-id-card-o nav-icon"></i>
+        </div>
         <p>Membership</p>
     </div>
     <div>
         <hr>
     </div>
     <div class="text-menu">
-        <i class="fa fa-music nav-icon"></i>
-        <a routerLink="/music"><p>Music</p></a>
+        <div>    
+            <i class="fa fa-music nav-icon"></i>
+        </div>
+        <a href="/category/Music"><p>Music</p></a>
     </div>
     <div class="text-menu">
-        <i class="fa fa-bicycle nav-icon"></i>
-        <a routerLink="/sport"><p>Sport</p></a>
+        <div>
+            <i class="fa fa-bicycle nav-icon"></i>
+        </div>
+        <a href="/category/Sport"><p>Sport</p></a>
     </div>
     <div class="text-menu">
-        <i class="fa fa-gamepad nav-icon"></i>
-        <a routerLink="/gaming"><p>Gaming</p></a>
+        <div>
+            <i class="fa fa-gamepad nav-icon"></i>
+        </div>
+        <a href="/category/Gaming"><p>Gaming</p></a>
     </div>
     <div class="text-menu">
-        <i class="fa fa-television nav-icon"></i>
-        <a routerLink="/entertainment"><p>Entertainment</p></a>
+        <div>
+            <i class="fa fa-television nav-icon"></i>
+        </div>
+        <a href="/category/Entertainment"><p>Entertainment</p></a>
     </div>
     <div class="text-menu">
-        <i class="fa fa-newspaper-o nav-icon"></i>
-        <a routerLink="/news"><p>News</p></a>
+        <div>
+            <i class="fa fa-newspaper-o nav-icon"></i>
+        </div>
+        <a href="/category/News"><p>News</p></a>
     </div>
     <div class="text-menu">
-        <i class="fa fa-plane nav-icon"></i>
-        <a routerLink="/Travel"><p>Travel</p></a>
+        <div>
+            <i class="fa fa-plane nav-icon"></i>
+        </div>
+        <a href="/category/Travel"><p>Travel</p></a>
     </div>
     <div>
         <hr>
     </div>
-    <div class="text-menu">
-        <i class="fas fa-play-circle nav-icon"></i>
-        <a routerLink="/library"><p>Library</p></a>
+    <div class="text-subs">
+        <div>
+            <p>SUBSCRIPTION</p>
+        </div>
     </div>
-    <div class="text-menu">
-        <i class="fas fa-fire nav-icon"></i>
-        <a routerLink="/history"><p>History</p></a>
+    <div class="list-subs">
+        <div *ngFor="let i of subscription">
+            <app-list-subscription [subscription] = "i"></app-list-subscription>
+        </div>
     </div>
-    <div class="text-menu">
-        <i class="fas fa-clock nav-icon"></i>
-        <a routerLink="/later"><p>Watch Later</p></a>
-    </div>
+    
 </div>
 
 <div class="display-setting" [style.top] = "toggle_setting ? '0' : '-1000%'">
     <div class="text-setting">
-        <i class="fas fa-child"></i>
+        <div>
+            <i class="fas fa-child"></i>
+        </div>
         <p>Restriction</p>
     </div>
     <div class="text-setting">
-        <i class="fas fa-compass"></i>
+        <div>
+            <i class="fas fa-compass"></i>
+        </div>
         <p>Location</p>
     </div>
     <div class="text-setting" (click)="toggleModal()" (click)="toggleSetting()">
-        <i class="fas fa-keyboard"></i>
+        <div>
+            <i class="fas fa-keyboard"></i>
+        </div>
         <p>Keyboard Shortcut</p>
     </div>
 </div>
@@ -175,35 +206,51 @@
 
 <div class="user-menu" [style.top] = "toggle_user ? '0' : '-1000%'" *ngIf="user">
     <div class="text-user" >
-        <img style="border-radius: 50px;" src= "{{user.photoUrl}}" alt="">
+        <div>
+            <img style="border-radius: 50px;" src= "{{user.photoUrl}}" alt="">
+        </div>
         <p>{{user.name}}</p>
     </div>
-    <div class="text-user">
-        <i class="fas fa-id-badge"></i>
+    <div class="text-user" [routerLink]="['/channel', user.id]">
+        <div>
+            <i class="fas fa-id-badge"></i>
+        </div>
         <p>Your Channel</p>
     </div>
     <div class="text-user">
-        <i class="fas fa-dollar-sign"></i>
+        <div>
+            <i class="fas fa-dollar-sign"></i>
+        </div>
         <p>Paid Membership</p>
     </div>
     <div class="text-user" (click)="signOut()">
-        <i class="fas fa-user-circle"></i>
+        <div>
+            <i class="fas fa-user-circle"></i>
+        </div>
         <p>Switch Account</p>
     </div>
     <div class="text-user" (click)="signOutFirst()">
-        <i class="fas fa-sign-out-alt"></i>
+        <div>
+            <i class="fas fa-sign-out-alt"></i>
+        </div>
         <p>Sign Out</p>
     </div>
     <div class="text-user">
-        <i class="fas fa-child"></i>
+        <div>
+            <i class="fas fa-child"></i>
+        </div>
         <p>Restriction</p>
     </div>
     <div class="text-user">
-        <i class="fas fa-compass"></i>
+        <div>
+            <i class="fas fa-compass"></i>
+        </div>
         <p>Location</p>
     </div>
     <div class="text-user" (click)="toggleModal()" (click)="toggleUser()">
-        <i class="fas fa-keyboard"></i>
+        <div>
+            <i class="fas fa-keyboard"></i>
+        </div>
         <p>Keyboard Shortcut</p>
     </div>
 

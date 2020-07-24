@@ -1,0 +1,29 @@
+p {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 20px;
+}
+.text-menu {
+    height: 50px;
+    display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: center;
+    align-content: stretch;
+    div{
+        padding: 0 10px 0 10px;
+        width: 50px;
+        text-align: center;
+    }
+    .user-photo{
+        padding: 0 20px 0 20px;
+        width: 35px;
+        display: flex;
+        align-items: center;
+        img{
+            width: 100%;
+            border-radius: 50px;
+        }
+    }
+
+}

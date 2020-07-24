@@ -24,7 +24,7 @@ export class HeaderComponent implements OnInit {
   user: SocialUser;
   loggedIn: boolean;
   message: string;
-
+  subscription: any;
   constructor(private authService: SocialAuthService, private apollo: Apollo, private data: DataService ) { }
 
   signInWithGoogle(): void {
@@ -67,6 +67,25 @@ export class HeaderComponent implements OnInit {
     });
   }
 
+  getSubscriber(){
+    this.apollo.watchQuery({
+      query: gql `
+        query getSubscribeByUser($userid: String!){
+          getSubscribeByUser(userid: $userid){
+            id,
+            user_id,
+            subscribe_to
+          }
+        }
+      `,
+      variables:{
+        userid: this.user.id
+      }
+    }).valueChanges.subscribe(result =>{
+      this.subscription = result.data.getSubscribeByUser
+    })
+  }
+
   signOut(): void {
     this.authService.signOut(true);
     sessionStorage.clear();
@@ -94,10 +113,11 @@ export class HeaderComponent implements OnInit {
     }
     else{
       this.getUserFromStorage();
+      this.data.logged_in = true;
     }
-
     this.data.user_id = this.user.id;
     this.data.photoUrl = this.user.photoUrl;
+    this.getSubscriber();
   }
 
   addToLocalStorage(user){

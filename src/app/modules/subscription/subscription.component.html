@@ -1,3 +1,20 @@
 <div class="container">
-    <p>subscription works!</p>
+    <div *ngFor="let i of subscription">
+        <app-temporary [user]="i"></app-temporary>
+    </div>
+    
+    <!-- <div class="Today">
+        <p>Today</p>
+        <hr>
+    </div>
+
+    <div class="week">
+        <p>This week</p>
+        <hr>
+    </div>
+
+    <div class="month">
+        <p>This month</p>
+        <hr>
+    </div> -->
 </div>

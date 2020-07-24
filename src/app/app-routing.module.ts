@@ -8,6 +8,8 @@ import { LaterComponent } from './modules/later/later.component';
 import { HistoryComponent } from './modules/history/history.component';
 import { UploaderComponent } from './uploader/uploader.component'
 import { VideosComponent } from './videos/videos.component'
+import { EntertainmentComponent } from './category/entertainment/entertainment.component';
+import { ChannelComponent } from './channel/channel.component'
 
 const routes: Routes = [
   { path: '',component: HomeComponent },
@@ -17,7 +19,10 @@ const routes: Routes = [
   { path: 'later', component: LaterComponent },
   { path: 'history', component: HistoryComponent },
   { path: 'upload', component: UploaderComponent },
-  { path: 'video/:id', component: VideosComponent }
+  { path: 'video/:id', component: VideosComponent },
+  { path: 'category/:category', component: EntertainmentComponent },
+  { path: 'channel/:id', component: ChannelComponent}
+
 ];
 
 @NgModule({

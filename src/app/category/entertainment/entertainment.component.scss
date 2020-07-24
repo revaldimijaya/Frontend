@@ -1,0 +1,32 @@
+.container{
+    margin-top: 70px;
+}
+
+.container-video {
+    justify-content: space-evenly;
+    display: grid;  
+    grid-gap: 25px;  
+    grid-template-columns: repeat(auto-fit, 315px);
+    grid-template-rows: repeat(auto-fit, 265px);  
+}
+.icon{
+    display: flex;
+    align-items: center;
+    text-align: center;
+    
+    .info{
+        margin-left: 40px;
+        align-items: center;
+        
+        .icon-img{
+            display: flex;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            background-color: grey;
+            border-radius: 50px;
+        }
+    }
+}

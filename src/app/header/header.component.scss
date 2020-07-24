@@ -69,7 +69,6 @@ p {
 
 .display-setting {
     width: 300px;
-    height: 250px;
     background-color:whitesmoke;
     top: 0;
     right: 47px;
@@ -79,7 +78,7 @@ p {
     display: flex;
     flex-direction: column;
     transition: top 350ms ease-in-out;
-    div {
+    .text-user{
         &:first-child {
             margin-top: 3.2rem;
         }
@@ -88,10 +87,17 @@ p {
     }
 
     .text-setting {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
         align-items: center;
-        margin: 0px 0px 0px 0px;
-        i{
+        align-content: stretch;
+        div{
+            
             padding: 0 10px 0 10px;
+            width: 50px;
+            text-align: center;
         }
     }
 
@@ -118,7 +124,6 @@ p {
 }
 
 .menu {
-    
     overflow: scroll;
     overflow-x: hidden;
     opacity: 98%;
@@ -133,9 +138,22 @@ p {
     width: 250px;
     transition: left 350ms ease-in-out;
 
-    div {
+    .text-menu {
         &:first-child {
             margin-top: 3.2rem;
+        }
+        
+    }
+
+    .text-subs{
+        div{
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            p{
+                font-size: 14px;
+            }
         }
     }
 }
@@ -151,9 +169,41 @@ p {
 	justify-content: flex-start;
 	align-items: center;
     align-content: stretch;
-    i{
+    div{
         padding: 0 10px 0 10px;
+        width: 50px;
+        text-align: center;
     }
+}
+
+.list-subs{
+    display: flex;
+    flex-direction: column;
+    div{
+        &:hover{
+            background-color: #464646;
+        }
+    }
+}
+
+
+
+.subscribe{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-evenly;
+    
+    .photo{
+        display: flex;
+        width: 15%;
+        align-items: center;
+        img{
+            width: 100%;
+            border-radius: 50px;
+        }
+    }
+
 }
 
 hr {
@@ -225,7 +275,7 @@ hr {
     flex-direction: column;
     transition: top 350ms ease-in-out;
 
-    div {
+    .text-user {
         &:first-child {
             margin-top: 3.4rem;
         }
@@ -234,19 +284,21 @@ hr {
 
 .text-user{
     display: flex;
-    align-items: center;
-    i{
-        align-items: center;
-        padding: 0px 10px 0px 10px;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: center;
+    align-content: stretch;
+    div{
+        
+        padding: 0 10px 0 10px;
+        width: 50px;
+        text-align: center;
     }
 }
 
 .text-user img{
-    margin-top: 0.5rem;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    width: 3rem;
-    height: 3rem;
+    width: 100%;
 }
 
 .text-user:hover{

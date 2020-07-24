@@ -1,0 +1,61 @@
+
+<div class="container" >
+    <div class="icon">
+        <div>
+            <div class="info" *ngIf="category == 'Entertainment'">
+                <div class="icon-img">
+                    <i class="fas fa-tv fa-3x"></i>
+                </div>
+                <p>Entertainment</p>
+            </div>
+        </div>
+        <div>
+            <div class="info" *ngIf="category == 'Music'">
+                <div class="icon-img">
+                    <i class="fas fa-music fa-3x"></i>
+                </div>
+                <p>Music</p>
+            </div>
+        </div>
+        <div>
+            <div class="info" *ngIf="category == 'Sport'">
+                <div class="icon-img">
+                    <i class="fa fa-bicycle fa-3x"></i>
+                </div>
+                <p>Sport</p>
+            </div>
+        </div>
+        <div>
+            <div class="info" *ngIf="category == 'Gaming'">
+                <div class="icon-img">
+                    <i class="fas fa-gamepad fa-3x"></i>
+                </div>
+                <p>Gaming</p>
+            </div>
+        </div>
+        <div>
+            <div class="info" *ngIf="category == 'News'">
+                <div class="icon-img">
+                    <i class="fas fa-newspaper fa-3x"></i>
+                </div>
+                <p>News</p>
+            </div>
+        </div>
+        <div>
+            <div class="info" *ngIf="category == 'Travel'">
+                <div class="icon-img">
+                    <i class="fas fa-plane fa-3x"></i>
+                </div>
+                <p>Travel</p>
+            </div>
+        </div>
+    </div>
+    <div>
+        <hr>
+    </div>
+    <div class="container-video">
+        <div *ngFor="let video of videos" >
+            <app-card [videos] = "video"></app-card>
+        </div>
+    </div>
+</div>
