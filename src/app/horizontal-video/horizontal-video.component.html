@@ -1,0 +1,18 @@
+<div class="video-container" *ngIf="validate_day < 8" [routerLink]="['/video', videos.id]">
+    <div class="video">
+        <img src="{{videos.thumbnail}}" alt="">
+    </div>
+    <div class="video-info">
+        <div class="title">
+            <h3>{{videos.name}}</h3>
+        </div>
+        <div class="info">
+            <span>{{user.name}}</span>
+            <span> {{videos.watch}} views &bull; </span>
+            <span>{{calculate_day}}</span>
+        </div>
+        <div class="description">
+            <p>{{videos.description}}</p>
+        </div>
+    </div>
+</div>

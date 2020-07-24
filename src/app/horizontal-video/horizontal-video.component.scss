@@ -1,0 +1,29 @@
+.video-container{
+    display: flex;
+    padding: 5px;
+    
+    .video{
+        width: 300px;
+        img {
+            width: 100%;
+        }
+    }
+
+    .video-info{
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+
+        .title{
+            h3{
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+        }
+
+    }
+}
+
+.video-container:hover{
+    background-color: grey;
+}

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag'
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -12,10 +13,14 @@ export class HomeComponent implements OnInit {
   user: any;
   tempId: any;
   
+  lastIdx: number;
+  observer: any;
 
-  constructor(private apollo: Apollo) { }
+  constructor(private apollo: Apollo, private router: Router) { }
 
   ngOnInit(): void {
+    this.lastIdx = 10;
+
     this.apollo.watchQuery({
       query: gql`
         {
@@ -42,7 +47,31 @@ export class HomeComponent implements OnInit {
       `,
     }).valueChanges.subscribe(result => {
       this.videos = result.data.videos;
+
+      this.observer = new IntersectionObserver((entry)=>{
+        if(entry[0].isIntersecting){
+          let container = document.querySelector(".container");
+          for(let i = 0 ; i < 4 ; i++){
+            
+            console.log(this.lastIdx + " "+ this.videos.length);
+            if(this.lastIdx < this.videos.length){
+              
+              let div = document.createElement("div");
+              let video = document.createElement("app-card");
+              console.log(video);
+              video.setAttribute("videos","videos[this.lastIdx]");
+              div.appendChild(video);
+              container.appendChild(div);
+              this.lastIdx++;
+            }
+          }
+        }
+      });
+  
+      this.observer.observe(document.querySelector(".footer"));
     });
+
+    
     
   }
 

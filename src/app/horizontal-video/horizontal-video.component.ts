@@ -3,21 +3,22 @@ import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 
 @Component({
-  selector: 'app-card',
-  templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss']
+  selector: 'app-horizontal-video',
+  templateUrl: './horizontal-video.component.html',
+  styleUrls: ['./horizontal-video.component.scss']
 })
-export class CardComponent implements OnInit {
-  @Input() videos
+export class HorizontalVideoComponent implements OnInit {
+  @Input() videos;
 
   user: any;
   calculate_day: string;
+  validate_day: number;
   date = new Date();
 
-  constructor(private apollo: Apollo) { }
+  constructor(private apollo:Apollo) { }
+
   ngOnInit(): void {
     this.calculate_day = this.calculateDay(this.videos.day, this.videos.month, this.videos.year, this.date.getDay(), this.date.getMonth()+1, this.date.getFullYear())
-    console.log(this.videos)
     this.apollo.watchQuery({
       query: gql `
         query getUserId($id: String!) {
@@ -66,7 +67,7 @@ export class CardComponent implements OnInit {
 
     n2 += this.countLeapYears(m2, y2)
 
-    return (n2 - n1);
+    return this.validate_day = (n2 - n1);
   }
 
   calculateDay(d1:number, m1:number, y1:number, d2:number, m2:number, y2:number): string{

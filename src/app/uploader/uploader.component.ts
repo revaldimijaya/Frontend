@@ -234,6 +234,7 @@ export class UploaderComponent implements OnInit {
     }).subscribe(({ data }) => {
       console.log('got data', data);
       this.toggle_upload = false;
+      window.location.href = '/upload';
     },(error) => {
       console.log('there was an error sending the query', error);
     });

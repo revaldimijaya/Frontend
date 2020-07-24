@@ -1,1 +1,40 @@
-<p>trending works!</p>
+<div class="container">
+    <div class="icon">
+        <div>
+            <div class="icon-img">
+                <i class="fas fa-music fa-3x"></i>
+            </div>
+            <p>Music</p>
+        </div>
+        <div>
+            <div class="icon-img">
+                <i class="fas fa-gamepad fa-3x"></i>
+            </div>
+            <p>Gaming</p>
+        </div>
+        <div>
+            <div class="icon-img">
+                <i class="far fa-newspaper fa-3x"></i>
+            </div>
+            <p>News</p>
+        </div>
+        <div>
+            <div class="icon-img">
+                <i class="fas fa-film fa-3x"></i>
+            </div>
+            <p>Movies</p>
+        </div>
+
+    </div>
+
+    <div>
+        <hr>
+    </div>
+    <div class="video">
+        <div *ngFor="let i of videos">
+            <app-horizontal-video [videos]="i" ></app-horizontal-video>
+        </div>
+
+    </div>
+    
+</div>

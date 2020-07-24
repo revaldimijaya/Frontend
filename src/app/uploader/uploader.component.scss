@@ -150,7 +150,14 @@
     .right{
         width: 30%;
         padding: 10px;
-        overflow: scroll;
+
+        .vid, .thumb{
+            width: 100%;
+        }
+
+        .thumb img{
+            width: 100%;
+        }
 
     }
 }

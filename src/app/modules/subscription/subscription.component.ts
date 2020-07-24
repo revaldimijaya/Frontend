@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Apollo } from 'apollo-angular';
+import { DataService } from 'src/app/data.service';
+import gql from 'graphql-tag';
 
 @Component({
   selector: 'app-subscription',
@@ -7,9 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SubscriptionComponent implements OnInit {
 
-  constructor() { }
+  constructor(private apollo:Apollo, private data:DataService) { }
 
   ngOnInit(): void {
+    this.apollo.watchQuery({
+      query: gql`
+        query getSubscribe{
+          getSubscribe{
+            id,
+            user_id,
+            subscribe_to
+          }
+        }
+      `
+    })
   }
 
 }

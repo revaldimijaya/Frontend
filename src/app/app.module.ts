@@ -30,6 +30,7 @@ import { VideosComponent } from './videos/videos.component'
 import { CommentComponent } from './comment/comment.component'
 import { NextVideoComponent } from './next-video/next-video.component'
 import { ReplyComponent } from './reply/reply.component'
+import { HorizontalVideoComponent } from './horizontal-video/horizontal-video.component'
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { ReplyComponent } from './reply/reply.component'
     VideosComponent,
     CommentComponent,
     NextVideoComponent,
-    ReplyComponent
+    ReplyComponent,
+    HorizontalVideoComponent
   ],
   imports: [
     BrowserModule,

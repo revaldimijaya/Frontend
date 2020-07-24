@@ -1,0 +1,28 @@
+.container{
+    margin-top: 80px;
+    padding: 20px;
+}
+
+.icon{
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: space-around;
+
+    .icon-img{
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        width: 100px;
+        height: 100px;
+        background-color: grey;
+        border-radius: 50px;
+    }
+}
+
+.video{
+    display: flex;
+    flex-direction: column;
+}
+
