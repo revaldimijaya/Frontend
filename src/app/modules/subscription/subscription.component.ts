@@ -13,39 +13,32 @@ export class SubscriptionComponent implements OnInit {
 
   subscription: any;
   videos: any;
-
+  temp: any;
   constructor(private apollo:Apollo, private data:DataService) { }
 
   ngOnInit(): void {
-    console.log(this.data.logged_in);
+    console.log(this.data.user_id);
     if(this.data.logged_in == false){
       window.location.href=' ';
     }
-    this.apollo.watchQuery({
+    this.apollo.query({
       query: gql`
-        query getSubscribe{
-          getSubscribe{
+        query getSubscribeByUser($id: String!){
+          getSubscribeByUser(userid: $id){
             id,
             user_id,
-            subscribe_to
+            subscribe_to,
           }
         }
-      `
-    }).valueChanges.subscribe(result =>{
-      
-      for(let i of result.data.getSubscribe){
-        if(i.user_id == this.data.user_id){
-          this.subscription = result.data.getSubscribe;
-        }
+      `,
+      variables:{
+        id: this.data.user_id
       }
-      
+    }).subscribe(result =>{
+      this.subscription = result.data.getSubscribeByUser;
+      console.log(this.subscription);
     })
     
-  }
-
-  getVideo(temp: any){
-    
-   
   }
 
 }

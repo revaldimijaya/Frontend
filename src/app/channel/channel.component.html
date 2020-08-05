@@ -3,11 +3,27 @@
         <img src="https://firebasestorage.googleapis.com/v0/b/tpa-web-71a78.appspot.com/o/download%20(1).jpg?alt=media&token=ff9e2684-da69-4cdb-8aa6-94a5edb4bf32" alt="">
     </div>
     <div class="info">
-        <div class="user-photo">
-            <img src="{{user.photo}}" alt="">
+        <div class="info-first">
+            <div class="user-photo">
+                <img src="{{user.photo}}" alt="">
+            </div>
+            <div class="name">
+                <h3>{{user.name}}</h3>
+                <p>{{total_subs}} subscribers</p>
+            </div>
         </div>
-        <div class="name">
-            <h3>{{user.name}}</h3>
+        <div>
+            <div class="subs-notif" [style.display]="toggle_subs ? 'flex':'none'">
+                <div class="subs" (click)="subs()" [style.background-color]="change_subs ? 'red':'grey'">
+                    <p>SUBSCRIBE</p>
+                </div>
+                <div class="notif" [style.display]="change_subs ? 'none':'flex'">
+                    <i class="fas fa-bell"></i>
+                </div>
+            </div>
         </div>
+    </div>
+    <div class="header">
+        
     </div>
 </div>

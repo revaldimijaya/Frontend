@@ -36,7 +36,6 @@ export class ListSubscriptionComponent implements OnInit {
       }
     }).valueChanges.subscribe(result => {
       this.user = result.data.getUserId;
-      
     })
   }
 

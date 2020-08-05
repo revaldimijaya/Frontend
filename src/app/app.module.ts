@@ -34,6 +34,8 @@ import { HorizontalVideoComponent } from './horizontal-video/horizontal-video.co
 import { TemporaryComponent } from './temporary/temporary.component'
 import { EntertainmentComponent } from './category/entertainment/entertainment.component'
 import { ListSubscriptionComponent } from './list-subscription/list-subscription.component'
+import { PlaylistComponent } from './playlist/playlist.component'
+import { PlaylistVideoComponent } from './playlist-video/playlist-video.component'
 
 @NgModule({
   declarations: [
@@ -55,7 +57,9 @@ import { ListSubscriptionComponent } from './list-subscription/list-subscription
     HorizontalVideoComponent,
     TemporaryComponent,
     EntertainmentComponent,
-    ListSubscriptionComponent
+    ListSubscriptionComponent,
+    PlaylistComponent,
+    PlaylistVideoComponent
   ],
   imports: [
     BrowserModule,

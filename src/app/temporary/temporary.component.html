@@ -1,5 +1,10 @@
+<div class="today">
+    <p>Today</p>
+    <hr>
+</div>
 <div class="container">
-    <div *ngFor="let j of videos">
+    <div *ngFor="let j of videos" class="today">    
         <app-card [videos]="j"></app-card>
     </div>
+    
 </div>

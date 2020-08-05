@@ -425,6 +425,7 @@ export class VideosComponent implements OnInit {
       variables:{
         userid: this.data.user_id,
         subscribeto: this.user.id
+        
       }
     }).subscribe(({ data }) => {
       console.log(data)
@@ -471,8 +472,8 @@ export class VideosComponent implements OnInit {
         }
       `,
       variables:{
-        userid: this.data.user_id,
-        subscribeto: users.id
+        subscribeto:users.id,
+        userid:this.data.user_id 
       }
     }).subscribe(result => {
       this.check = result.data.checkSubscribe;

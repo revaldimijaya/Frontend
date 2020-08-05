@@ -14,12 +14,12 @@ export class HomeComponent implements OnInit {
   tempId: any;
   
   lastIdx: number;
-  observer: any;
+  observer: IntersectionObserver;
 
   constructor(private apollo: Apollo, private router: Router) { }
 
   ngOnInit(): void {
-    this.lastIdx = 10;
+    this.lastIdx = 8;
 
     this.apollo.watchQuery({
       query: gql`
@@ -58,19 +58,19 @@ export class HomeComponent implements OnInit {
               
               let div = document.createElement("div");
               let video = document.createElement("app-card");
-              console.log(video);
               video.setAttribute("videos","videos[this.lastIdx]");
               div.appendChild(video);
               container.appendChild(div);
               this.lastIdx++;
+              console.log("masuk");
             }
           }
         }
       });
-  
-      this.observer.observe(document.querySelector(".footer"));
+      this.observer.observe(document.querySelector('.footer'));
     });
 
+    console.log(this.videos)
     
     
   }

@@ -1,8 +1,8 @@
 <div class="container" >
-    <div *ngFor="let video of videos, let i = index" >
+    <div *ngFor="let video of videos; index as i" >
         <app-card *ngIf="i<(lastIdx)" [videos] = "video"></app-card>
     </div>
-</div>
-<div class="footer">
-
+    <div class="footer">
+        <p> </p>
+    </div>
 </div>

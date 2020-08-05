@@ -10,6 +10,7 @@ import { UploaderComponent } from './uploader/uploader.component'
 import { VideosComponent } from './videos/videos.component'
 import { EntertainmentComponent } from './category/entertainment/entertainment.component';
 import { ChannelComponent } from './channel/channel.component'
+import { PlaylistComponent } from './playlist/playlist.component'
 
 const routes: Routes = [
   { path: '',component: HomeComponent },
@@ -21,7 +22,9 @@ const routes: Routes = [
   { path: 'upload', component: UploaderComponent },
   { path: 'video/:id', component: VideosComponent },
   { path: 'category/:category', component: EntertainmentComponent },
-  { path: 'channel/:id', component: ChannelComponent}
+  { path: 'channel/:id', component: ChannelComponent},
+  { path: 'channel/:id', component: ChannelComponent},
+  { path: 'playlist/:id', component: PlaylistComponent}
 
 ];
 

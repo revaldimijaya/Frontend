@@ -1,0 +1,46 @@
+<div class="container">
+    <div class="bars">
+        <i class="fas fa-bars"></i>
+    </div>
+   
+    <div class="thumbnail" [routerLink]="['/video', videos.id]">
+        <img src="{{videos.thumbnail}}" alt="">
+        <div class="duration">
+            <p>19:30</p>
+        </div>
+    </div>
+   
+    <div class="info">
+        <div class="title">
+            <p>{{videos.name}}</p>
+        </div>
+        <div class="name">
+            <p>{{user.name}}</p>
+        </div>
+    </div>
+    <div class="other">
+        <div class="icon" (click)="toggleEtc()">
+            <i class="fas fa-ellipsis-v"></i>
+            <div class="etc" *ngIf="toggle_etc">
+                <div class="remove">
+                    <div>
+                        <i class="fas fa-trash"></i>
+                    </div>
+                    <p>Remove</p>
+                </div>
+                <div class="up">
+                    <div>
+                        <i class="fas fa-long-arrow-alt-up"></i>
+                    </div>
+                    <p>Move to top</p>
+                </div>
+                <div class="down">
+                    <div>
+                        <i class="fas fa-long-arrow-alt-down"></i>
+                    </div>
+                    <p>Move to down</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,152 @@
+<div class="container">
+    <div class="left">
+        <div class="thumbnail">
+            <img src="{{video.thumbnail}}" alt="">
+            <div class="play-all">
+                <i class="fas fa-play"></i>
+                <p>Play All</p>
+            </div>
+        </div>
+        
+        <div class="info">
+            <div class="title">
+                <div>
+                    <p>{{playlist[0].name}}</p>
+                </div>
+                <div (click)="toggleTitle()">
+                    <i class="fas fa-pen"></i>
+                </div>
+            </div>
+            <div class="change-title" *ngIf="toggle_title">
+                <div class="input-text">
+                    <input type="text" name="title" id="title" value="{{playlist[0].name}}">
+                </div>
+                <div class="submit">
+                    <div class="cancel" (click)="toggleTitle()">
+                        <p>CANCEL</p>
+                    </div>
+                    <div class="save" (click)="updateTitle()">
+                        <p>SAVE</p>
+                    </div>
+                </div>
+            </div>
+            <div class="total">
+                <p>{{detail.length}} videos &bull; {{playlist[0].views}} views &bull; Updated today</p>
+            </div>
+            <div class="privacy" (click)="togglePrivacy()">
+                <div class="text-logo">
+                    <p>{{playlist[0].privacy}} </p>
+                    <i class="fas fa-caret-down"></i>
+                </div>
+                <div class="dropdown" *ngIf="toggle_privacy">
+                    <div class="public" (click)="updatePrivacyPublic()">
+                        <div class="img">
+                            <i class="fas fa-globe-americas fa-2x"></i>
+                        </div>
+                        <div class="text">
+                            <p style="font-size: 14px; margin: 5px 5px 2px 5px;">Public</p>
+                            <p style="font-size: 12px; margin: 0 5px 5px 5px;">Anyone can search for and view</p>
+                        </div>
+                    </div>
+                    <div class="private" (click)="updatePrivacyPrivate()">
+                        <div class="img">
+                            <i class="fas fa-lock fa-2x"></i>
+                        </div>
+                        <div class="text">
+                            <p style="font-size: 14px; margin: 5px 5px 2px 5px;">Private</p>
+                            <p style="font-size: 12px; margin: 0 5px 5px 5px;">Only you can view</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="shuffle" (click)="test()">
+                <div class="first">
+                    <i class="fas fa-random"></i>
+                </div>
+                <div class="second">
+                    <i class="fas fa-share"></i>
+                </div>
+                <div class="third" (click)="toggleMore()">
+                    <i class="fas fa-ellipsis-h"></i>
+                    <div class="dropdown" *ngIf="toggle_more">
+                        <div>
+                            <div>
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <p>Add all to...</p>
+                        </div>
+                        <div (click)="delete()"> 
+                            <div>
+                                <i class="fas fa-trash"></i>
+                            </div>
+                            <p>Remove Playlist</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="description">
+                <div class="description-text">
+                    <p>{{playlist[0].description}}</p>
+                </div>
+                <div class="logo" (click)="toggleDesc()">
+                    <i class="fas fa-pen"></i>
+                </div>
+            </div>
+            <div class="change-description" *ngIf="toggle_desc">
+                <div class="input-text">
+                    <input type="text" name="description" id="description" value="{{playlist[0].description}}">
+                </div>
+                <div class="submit">
+                    <div class="cancel" (click)="toggleDesc()">
+                        <p>CANCEL</p>
+                    </div>
+                    <div class="save" (click)="updateDescription()">
+                        <p>SAVE</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <hr>
+            </div>
+            <div class="profil">
+                <div class="photo">
+                    <img src="{{user.photo}}" alt="">
+                </div>
+                <div class="name">
+                    <p>{{user.name}}</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="right">
+        <div class="sort" (click)="toggleSort()">
+            <i class="fas fa-sort-amount-down"></i>
+            <p>SORT BY</p>
+        </div>
+        <div *ngFor="let i of detail">
+            <app-playlist-video [detailVideo]="i"></app-playlist-video>
+        </div>
+        <div class="dropdown" *ngIf="toggle_sort">
+            <div>
+                <p>Date added (newest)</p>
+            </div>
+            <div>
+                <p>Date added (oldest)</p>
+            </div>
+            <div>
+                <p>Most popular</p>
+            </div>
+            <div>
+                <p>Date published (newest)</p>
+            </div>
+            <div>
+                <p>Date published (oldest)</p>
+            </div>
+        </div>
+        <div>
+            <hr>
+        </div>
+    </div>
+</div>
