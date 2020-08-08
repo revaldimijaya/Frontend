@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag'
+
+
 @Component({
   selector: 'app-playlist-video',
   templateUrl: './playlist-video.component.html',
@@ -23,6 +25,7 @@ export class PlaylistVideoComponent implements OnInit {
 
   toggleEtc(){
     this.toggle_etc = !this.toggle_etc;
+    this.convertToDate();
   }
 
   href(id: number){
@@ -48,7 +51,13 @@ export class PlaylistVideoComponent implements OnInit {
             category,
             thumbnail,
             description,
-            visibility
+            visibility,
+            day,
+            month,
+            year,
+            hour,
+            minute,
+            second
           }
         }
       `,
@@ -87,3 +96,4 @@ export class PlaylistVideoComponent implements OnInit {
     });
   }
 }
+

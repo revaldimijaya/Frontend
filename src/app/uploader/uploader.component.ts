@@ -6,6 +6,7 @@ import { finalize, tap } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
 import { DataService } from '../data.service'
 import gql from 'graphql-tag';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'uploader',
@@ -15,6 +16,7 @@ import gql from 'graphql-tag';
 export class UploaderComponent implements OnInit {
   
   toggle_upload: boolean;
+  toggle_playlist: boolean;
   isHovering: boolean;
   isUploaded: boolean;
   thumbnail_path: any;
@@ -45,9 +47,33 @@ export class UploaderComponent implements OnInit {
   category: string;
   description: string;
   visibility: string;
+  title: string;
+  duration: number;
+  toggle_title: boolean;
+
+  playlists: any;
+
+  videos: any;
+  lastId: number;
+
+  constructor(private storage: AngularFireStorage, private db: AngularFirestore, private apollo: Apollo, private data: DataService) { }
+  
+  ngOnInit(): void {
+    this.isUploaded = false;
+    this.toggle_title = false;
+    this.toggle_playlist = false;
+    this.user_id = this.data.user_id.toString();
+    
+    this.getPlaylist();
+    this.getVideos();
+  }
 
   toggleHover(event: boolean) {
     this.isHovering = event;
+  }
+
+  togglePlaylist(){
+    this.toggle_playlist = !this.toggle_playlist;
   }
 
   toggleUpload() {
@@ -56,15 +82,46 @@ export class UploaderComponent implements OnInit {
 
   onDrop(files: FileList) {
     console.log(files.item(0));
+    this.title = files.item(0).name;
+    this.toggle_title = true;
     this.files.push(files.item(0));
   }
 
-  constructor(private storage: AngularFireStorage, private db: AngularFirestore, private apollo: Apollo, private data: DataService) { }
-  
-  ngOnInit(): void {
-    this.isUploaded = false;
-    this.user_id = this.data.user_id.toString();
-    console.log(this.user_id);
+  getPlaylist(){
+    this.apollo.query({
+      query: gql`
+        query getPlaylist($id: String!){
+          getPlaylistUser(userid: $id){
+            id,
+            name,
+            description,
+            second,
+            minute,
+            hour,
+            day,
+            month,
+            year,
+            privacy,
+            user_id,
+            views
+          }
+        }
+      `,
+      variables:{
+        id: this.data.user_id
+      }
+    }).subscribe(result => {
+      this.playlists = result.data.getPlaylistUser;
+      for(let i of this.playlists){
+        var sel = document.getElementById("playlist");
+        var opt = document.createElement("option");
+        opt.value = i.id;
+        opt.text = i.name;
+        sel.append(opt);
+      }
+    },(error) => {
+      console.log('there was an error sending the query', error);
+    });
   }
 
   startUpload() {
@@ -117,6 +174,11 @@ export class UploaderComponent implements OnInit {
     this.thumbnailTask.then(async upload => await ref.getDownloadURL().subscribe(url => {this.thumbnailURL = url}));
   }
 
+  check(){
+    var myVid =<HTMLVideoElement>document.getElementById("myVideo");
+    console.log(Math.floor(myVid.duration));
+  }
+
   uploadVideo():void{
     this.name = (<HTMLInputElement>document.getElementById("title")).value;
     this.description = (<HTMLTextAreaElement>document.getElementById("description")).value;
@@ -142,6 +204,9 @@ export class UploaderComponent implements OnInit {
     this.dislike = 0;
     this.watch = 0;
 
+    var myVid =<HTMLVideoElement>document.getElementById("myVideo");
+    this.duration =Math.floor(myVid.duration);
+
     console.log(this.user_id);
     console.log(this.downloadURL);
     console.log(this.name);
@@ -151,7 +216,7 @@ export class UploaderComponent implements OnInit {
     console.log(this.restriction);
     console.log(this.visibility);
     console.log(this.premium);
-
+    console.log(this.duration);
     this.insertVideo();
   }
 
@@ -240,4 +305,36 @@ export class UploaderComponent implements OnInit {
     });
   }
 
+  getVideos() {
+    this.apollo.query({
+      query: gql`
+        query {
+          videos{
+            id
+          }
+        }
+      `
+    }).subscribe(result => {
+      this.videos = result.data.videos;
+      console.log(this.videos[this.videos.length-1]);
+      this.lastId = Number(this.videos[this.videos.length-1].id) + 1;
+    }, (error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  copyMessage(){
+    this.check();
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = "http://localhost:4200/video/"+this.lastId;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
 }

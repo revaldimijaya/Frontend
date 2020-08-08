@@ -19,6 +19,15 @@
 	width: 100%;
 	height: 30%;
 	display: flex;
+
+	.other{
+		width: 5%;
+		display: flex;
+		justify-content: center;
+		i{
+			cursor: pointer;
+		}
+	}
 }
 
 .photo{
@@ -34,6 +43,7 @@
 }
 
 .videodetailarea{
+	width: 65%;
     height: 60px;
     display: flex;
 	flex-direction: column;

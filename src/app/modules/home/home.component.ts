@@ -41,7 +41,11 @@ export class HomeComponent implements OnInit {
             visibility,
             day,
             month,
-            year
+            year,
+            hour,
+            minute,
+            second,
+            duration
           }
         }
       `,
@@ -62,7 +66,7 @@ export class HomeComponent implements OnInit {
               div.appendChild(video);
               container.appendChild(div);
               this.lastIdx++;
-              console.log("masuk");
+              
             }
           }
         }

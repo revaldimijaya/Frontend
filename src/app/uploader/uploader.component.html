@@ -16,6 +16,7 @@
       
       <h3>Drop Video Here</h3>
       <p>Drag and Drop a File</p>
+      <p *ngIf="toggle_title" style="margin: 0 0 10px 0;">{{title}}</p>
       
       <div class="container-file">
         <div class="file">
@@ -52,13 +53,13 @@
           <input type="text" name="title" id="title" placeholder="Title">
         </div>
         <div class="input-description">
-          <textarea name="description" id="description" cols="30" rows="10" placeholder="Description">
-
-          </textarea>
+          <textarea name="description" id="description" cols="30" rows="10" placeholder="Description" style="font-family: Arial, Helvetica, sans-serif; resize: none;"></textarea>
         </div>
         <div class="input-thumbnail">
           <h4>Thumbnail</h4>
-          <input type="file" accept="image/*" (change)="thumbnailPath($event.target.files)" (change)="startUploadThumbnail($event.target.files)">
+          <label class="file-label">
+            <input class="file-input" type="file" accept="image/*" (change)="thumbnailPath($event.target.files)" (change)="startUploadThumbnail($event.target.files)">
+          </label>
         </div>
         <div class="input-category">
           <h4>Category</h4>
@@ -85,25 +86,43 @@
 
         <div class="input-playlist">
           <h4>Playlist</h4>
-          <select name="playlist" id="">
-            <option value="test">test</option>
+          <select name="playlist" id="playlist">
           </select>
-          <p>or</p>
-          <h4>Create New Playlist</h4>
-          <h4>Privacy</h4>
-          <div>
-            <input type="radio" name="privacy" id="privacy" value="public">
-            <label for="privacy">Public</label>
+          <div class="new-playlist" (click)="togglePlaylist()">
+            <p>New Playlist</p>
           </div>
-          <div>
-            <input type="radio" name="privacy" id="privacy" value="private">
-            <label for="privacy">Private</label>
+          <div class="input-new-playlist" *ngIf="toggle_playlist">
+            <p>Title</p>
+            <input type="text" name="title-playlist" id="title-playlist" placeholder="Input title">
           </div>
-          <div>
-            <button>New Playlist</button>
+          <div *ngIf="toggle_playlist">
+            <p style="margin:0 0 5px 0;">Privacy</p>
+            <div style="display: flex; align-items: center;">
+              <input type="radio" name="privacy-playlist" id="privacy-playlist" value="public">
+              <label for="privacy-playlist">Public</label>
+            </div>
+            <div style="display: flex; align-items: center;">
+              <input type="radio" name="privacy-playlist" id="privacy-playlist" value="private">
+              <label for="privacy-playlist">Private</label>
+            </div>
+          </div>
+          <div class="submit-playlist" *ngIf="toggle_playlist">
+            <p>Submit</p>
           </div>
         </div>
 
+        <div class="input-privacy">
+          <h4>Privacy</h4>
+            <div>
+              <input type="radio" name="privacy" id="privacy" value="public">
+              <label for="privacy">Public</label>
+            </div>
+            <div>
+              <input type="radio" name="privacy" id="privacy" value="private">
+              <label for="privacy">Private</label>
+            </div>
+        </div>
+        
         <div class="input-membership">
           <h4>Membership</h4>
           <div>
@@ -118,24 +137,43 @@
 
         <div class="input-schedule">
           <h4>Schedule Upload</h4>
+          <input type="datetime-local" name="schedule" id="schedule">
         </div>
 
         <div class="button-upload">
-          <div>
-            <button (click)="uploadVideo()">Upload</button>
+          <div (click)="uploadVideo()">
+            <p>Upload</p>
           </div>
-          <div>
-            <button (click)="toggleUpload()">Cancel</button>
+          <div (click)="toggleUpload()">
+            <p>Cancel</p>
           </div>
         </div>
-
       </div>
 
       <div class="right">
-        <h4>Preview</h4>
+        <div>
+          <h3>Preview</h3>
+        </div>
         <div class="vid">
           <mat-video src="{{downloadURL}}"></mat-video>
+          <video id="myVideo" src="{{downloadURL}}" style="display: none;"></video>
+          <div class="link" >
+            <div style="display: flex; justify-content: space-between ; padding: 0;">
+              <div style="display: flex; flex-direction: column;">
+                <p style="font-size: 12px; opacity: 80%;">Video Link</p>
+                <p style="color: blue;">http://localhost:4200/video/{{lastId}}</p>
+              </div>
+              <div style="display: flex; align-items: center; opacity: 70%;">
+                <i class="fas fa-copy fa-2x" (click)="copyMessage()" value="click to copy"></i>
+              </div>
+            </div>
+            <div>
+              <p style="font-size: 12px; opacity: 80%;">Filename</p>
+              <p>{{title}}</p>
+            </div>
+          </div>
         </div>
+        
         <div class="thumb"> 
           <img src="{{thumbnail_path}}" alt="">
         </div>

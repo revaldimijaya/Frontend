@@ -29,9 +29,11 @@
     "apollo-client": "^2.6.0",
     "apollo-link": "^1.2.11",
     "firebase": "^7.16.0",
+    "get-video-duration": "^3.0.1",
     "graphql": "^14.6.0",
     "graphql-tag": "^2.10.0",
     "mat-video": "^2.8.1",
+    "node-ipinfo": "^1.0.1",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"

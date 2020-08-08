@@ -43,7 +43,6 @@ export class PlaylistComponent implements OnInit {
 
     this.getPlaylist();
     this.getDetail();
-    
   }
 
   test(){
