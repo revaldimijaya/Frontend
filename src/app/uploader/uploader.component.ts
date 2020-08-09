@@ -6,7 +6,6 @@ import { finalize, tap } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
 import { DataService } from '../data.service'
 import gql from 'graphql-tag';
-import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'uploader',
@@ -64,7 +63,6 @@ export class UploaderComponent implements OnInit {
     this.toggle_playlist = false;
     this.user_id = this.data.user_id.toString();
     
-    this.getPlaylist();
     this.getVideos();
   }
 
@@ -112,9 +110,14 @@ export class UploaderComponent implements OnInit {
       }
     }).subscribe(result => {
       this.playlists = result.data.getPlaylistUser;
+      var sel = (<HTMLSelectElement>document.getElementById("myPlaylist"));
+      var opt = (<HTMLOptionElement>document.createElement("option"))
+      opt.value = "0";
+      opt.text = "None";
+      sel.append(opt);
       for(let i of this.playlists){
-        var sel = document.getElementById("playlist");
-        var opt = document.createElement("option");
+        var sel = (<HTMLSelectElement>document.getElementById("myPlaylist"));
+        var opt = (<HTMLOptionElement>document.createElement("option"))
         opt.value = i.id;
         opt.text = i.name;
         sel.append(opt);
@@ -143,6 +146,7 @@ export class UploaderComponent implements OnInit {
         this.db.collection('files').add( { downloadURL: this.downloadURL, path });
 
         this.isUploaded = true;
+        this.getPlaylist();
       }),
     );
   }
@@ -177,6 +181,7 @@ export class UploaderComponent implements OnInit {
   check(){
     var myVid =<HTMLVideoElement>document.getElementById("myVideo");
     console.log(Math.floor(myVid.duration));
+    console.log((<HTMLSelectElement>document.getElementById("myPlaylist")).value);
   }
 
   uploadVideo():void{
@@ -217,10 +222,41 @@ export class UploaderComponent implements OnInit {
     console.log(this.visibility);
     console.log(this.premium);
     console.log(this.duration);
-    this.insertVideo();
+
+    var pl = (<HTMLSelectElement>document.getElementById("myPlaylist")).value;
+    this.insertVideo(Number(pl));
   }
 
-  insertVideo(): void{
+  createDetail(playlistid: number, videoid: number){
+    if(playlistid == 0){
+      this.toggle_upload = false;
+      window.location.reload();
+      return;
+    } 
+    this.apollo.mutate({
+      mutation: gql`
+        mutation createDetail($playlistid: Int!, $videoid: Int!){
+          createDetailPlaylist(playlistid: $playlistid, videoid: $videoid){
+            id,
+            playlist_id,
+            video_id
+          }
+        }
+      `,
+      variables:{
+        playlistid: playlistid,
+        videoid: videoid
+      }
+    }).subscribe(({ data }) => {
+      new alert("playlist masuk"+data);
+      this.toggle_upload = false;
+      window.location.reload();
+    },(error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  insertVideo(playlistid: number): void{
     this.apollo.mutate({
       mutation: gql`
         mutation insertVideo(
@@ -237,9 +273,7 @@ export class UploaderComponent implements OnInit {
             $category: String!,
             $description: String!,
             $visibility: String!,
-            $day: Int!,
-            $month: Int!,
-            $year: Int!
+            $duration: Int!
           ){
           createVideo(input:{
             user_id: $user_id, 
@@ -255,10 +289,9 @@ export class UploaderComponent implements OnInit {
             category: $category,
             description: $description,
             visibility: $visibility
-            day: $day,
-            month: $month,
-            year: $year
+            duration: $duration
           }){
+            id,
             user_id,
             url,
             watch,
@@ -272,9 +305,7 @@ export class UploaderComponent implements OnInit {
             category,
             description,
             visibility,
-            day,
-            month,
-            year
+            duration
           }
         }
       `,
@@ -292,14 +323,11 @@ export class UploaderComponent implements OnInit {
         category: this.category,
         description: this.description,
         visibility: this.visibility,
-        day: this.date.getDay(),
-        month: this.date.getMonth()+1,
-        year: this.date.getFullYear()
+        duration: this.duration
       }
     }).subscribe(({ data }) => {
-      console.log('got data', data);
-      this.toggle_upload = false;
-      window.location.href = '/upload';
+      console.log('got data', data.createVideo.id);
+      this.createDetail(playlistid, data.createVideo.id);
     },(error) => {
       console.log('there was an error sending the query', error);
     });

@@ -36,6 +36,8 @@ import { EntertainmentComponent } from './category/entertainment/entertainment.c
 import { ListSubscriptionComponent } from './list-subscription/list-subscription.component'
 import { PlaylistComponent } from './playlist/playlist.component'
 import { PlaylistVideoComponent } from './playlist-video/playlist-video.component'
+import { PlaylistListComponent } from './playlist-list/playlist-list.component'
+import { PlaylistSidebarComponent } from './playlist-sidebar/playlist-sidebar.component'
 
 @NgModule({
   declarations: [
@@ -59,7 +61,9 @@ import { PlaylistVideoComponent } from './playlist-video/playlist-video.componen
     EntertainmentComponent,
     ListSubscriptionComponent,
     PlaylistComponent,
-    PlaylistVideoComponent
+    PlaylistVideoComponent,
+    PlaylistListComponent,
+    PlaylistSidebarComponent
   ],
   imports: [
     BrowserModule,

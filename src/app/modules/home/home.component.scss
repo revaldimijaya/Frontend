@@ -8,12 +8,12 @@ p{
 }
 
 .container {
-    margin-top: 80px;
-    justify-content: space-evenly;
+    margin: 80px 20px 0 20px;
     display: grid;  
+    justify-content: space-evenly;
     grid-gap: 25px;  
-    grid-template-columns: repeat(auto-fit, 315px);
-    grid-template-rows: repeat(auto-fit, 265px);
+    grid-template-columns: repeat(auto-fit, 300px);
+    grid-template-rows: repeat(auto-fit, 250px);
     
     .footer{
         

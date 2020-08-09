@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit {
             hour,
             minute,
             second,
-            duration
+            duration,
           }
         }
       `,
@@ -57,7 +57,6 @@ export class HomeComponent implements OnInit {
           let container = document.querySelector(".container");
           for(let i = 0 ; i < 4 ; i++){
             
-            console.log(this.lastIdx + " "+ this.videos.length);
             if(this.lastIdx < this.videos.length){
               
               let div = document.createElement("div");

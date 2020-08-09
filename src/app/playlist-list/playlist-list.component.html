@@ -1,0 +1,11 @@
+<div class="container">
+    <div class="text">
+        {{playlist.name}}
+    </div>
+    <div class="private" *ngIf="!toggle_privacy">
+        <i class="fas fa-lock fa-1x"></i>
+    </div>
+    <div class="public" *ngIf="toggle_privacy">
+        <i class="fas fa-globe-americas fa-1x"></i>
+    </div>
+</div>
