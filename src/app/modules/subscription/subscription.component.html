@@ -1,3 +1,32 @@
-<div *ngFor="let k of subscription">
-    <app-temporary [user]="k"></app-temporary>
+<div class="section" style="margin-top: 70px;">
+    <p>Today</p>
+</div>
+<div class="container">
+    <div *ngFor="let k of videos; index as i" [style.display]="(day[i]) < 1 ? 'flex':'none'" >
+        <app-card [videos]="k"></app-card>
+    </div>
+</div>
+<div class="section">
+    <p>This week</p>
+</div>
+<div class="container">
+    <div *ngFor="let k of videos; index as i" [style.display]="(day[i]) > 0 && (day[i]) < 8 ? 'flex':'none'" >
+        <app-card [videos]="k"></app-card>
+    </div>
+</div>
+<div class="section">
+    <p>This month</p>
+</div>
+<div class="container">
+    <div *ngFor="let k of videos; index as i" [style.display]="(day[i]) > 7 && (day[i]) <= 31 ? 'flex':'none'" >
+        <app-card [videos]="k"></app-card>
+    </div>
+</div>
+<div class="section">
+    <p>This year</p>
+</div>
+<div class="container">
+    <div *ngFor="let k of videos; index as i" [style.display]="(day[i]) > 30 ? 'flex':'none'" >
+        <app-card [videos]="k"></app-card>
+    </div>
 </div>

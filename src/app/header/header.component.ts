@@ -25,7 +25,28 @@ export class HeaderComponent implements OnInit {
   loggedIn: boolean;
   message: string;
   subscription: any;
+  playlist: any;
+
   constructor(private authService: SocialAuthService, private apollo: Apollo, private data: DataService ) { }
+
+  ngOnInit(): void {
+    this.authService.authState.subscribe((user) => {
+      this.user = user;
+      this.loggedIn = (user != null);
+    });
+
+    if(localStorage.getItem('users') == null){
+      this.users = [];
+    }
+    else{
+      this.getUserFromStorage();
+      this.data.logged_in = true;
+    }
+    this.data.user_id = this.user.id;
+    this.data.photoUrl = this.user.photoUrl;
+    this.getSubscriber();
+    this.getPlaylist();
+  }
 
   signInWithGoogle(): void {
     this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
@@ -38,6 +59,34 @@ export class HeaderComponent implements OnInit {
       window.location.href = ' ';
     });
 
+  }
+
+  getPlaylist(){
+    this.apollo.query({
+      query: gql`
+      query getPlaylistUser($userid: String!){
+        getPlaylistUser(userid: $userid){
+          id,
+          name,
+          description,
+          second,
+          minute,
+          hour,
+          day,
+          month,
+          year,
+          privacy,
+          user_id,
+          views
+        }
+      }
+      `,
+      variables:{
+        userid: this.data.user_id 
+      }
+    }).subscribe(result =>{
+      this.playlist = result.data.getPlaylistUser
+    })
   }
 
   createUser(user: SocialUser): void {
@@ -100,24 +149,6 @@ export class HeaderComponent implements OnInit {
     window.localStorage.clear();
     this.loggedIn = false;
     window.location.href = ' ';
-  }
-
-  ngOnInit(): void {
-    this.authService.authState.subscribe((user) => {
-      this.user = user;
-      this.loggedIn = (user != null);
-    });
-
-    if(localStorage.getItem('users') == null){
-      this.users = [];
-    }
-    else{
-      this.getUserFromStorage();
-      this.data.logged_in = true;
-    }
-    this.data.user_id = this.user.id;
-    this.data.photoUrl = this.user.photoUrl;
-    this.getSubscriber();
   }
 
   addToLocalStorage(user){

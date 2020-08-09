@@ -21,6 +21,8 @@ export class CardComponent implements OnInit {
   duration: string;
 
   toggle_other: boolean;
+  toggle_modal: boolean;
+  toggle_create: boolean;
 
   constructor(private apollo: Apollo, private data: DataService) { }
 
@@ -32,7 +34,8 @@ export class CardComponent implements OnInit {
     this.calculate_day = this.calculateDay(startDate, endDate);
     this.calculateDuration();
     this.toggle_other = false;
-
+    this.toggle_modal = false;
+    this.toggle_create = false;
     if(this.videos.watch >= 1000000000){
       this.views = (Math.round(((this.videos.watch / 1000000000) + Number.EPSILON) * 10) / 10) + "B";
     } else if(this.videos.watch >= 1000000){
@@ -69,6 +72,14 @@ export class CardComponent implements OnInit {
     this.toggle_other = !this.toggle_other;
   }
 
+  toggleModal(){
+    this.toggle_modal = !this.toggle_modal;
+  }
+
+  toggleCreate(){
+    this.toggle_create = !this.toggle_create;
+  }
+
   getPlaylist(){
     this.apollo.query({
       query: gql`
@@ -95,6 +106,35 @@ export class CardComponent implements OnInit {
     }).subscribe(result =>{
       this.playlists = result.data.getPlaylistUser;
     })
+  }
+
+  createPlaylist(){
+    this.apollo.mutate({
+      mutation: gql `
+        mutation createPlaylist($name: String!, $description: String!, $privacy: String!, $userid: String!, $views: Int!){
+          createPlaylist(input:{
+            name: $name
+            description: $description
+            privacy: $privacy
+            user_id: $userid
+            views: $views
+          }){
+            name
+          }
+        }
+      `,
+      variables:{
+        name: (<HTMLInputElement>document.getElementById("title")).value,
+        description: "",
+        privacy: (<HTMLSelectElement>document.getElementById("privacy")).value,
+        userid: this.data.user_id,
+        views: 0,
+      }
+    }).subscribe(({ data }) => {
+      console.log('got data', data);
+    },(error) => {
+      console.log('there was an error sending the query', error);
+    });
   }
 
   calculateDuration(){

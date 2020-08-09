@@ -31,7 +31,6 @@ import { CommentComponent } from './comment/comment.component'
 import { NextVideoComponent } from './next-video/next-video.component'
 import { ReplyComponent } from './reply/reply.component'
 import { HorizontalVideoComponent } from './horizontal-video/horizontal-video.component'
-import { TemporaryComponent } from './temporary/temporary.component'
 import { EntertainmentComponent } from './category/entertainment/entertainment.component'
 import { ListSubscriptionComponent } from './list-subscription/list-subscription.component'
 import { PlaylistComponent } from './playlist/playlist.component'
@@ -57,7 +56,6 @@ import { PlaylistSidebarComponent } from './playlist-sidebar/playlist-sidebar.co
     NextVideoComponent,
     ReplyComponent,
     HorizontalVideoComponent,
-    TemporaryComponent,
     EntertainmentComponent,
     ListSubscriptionComponent,
     PlaylistComponent,

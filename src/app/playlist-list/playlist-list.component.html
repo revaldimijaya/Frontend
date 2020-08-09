@@ -1,4 +1,4 @@
-<div class="container">
+ <div class="container" [style.background-color]="toggle_playlist == true ? 'lightblue':'white'" (click)="togglePlaylist()">
     <div class="text">
         {{playlist.name}}
     </div>

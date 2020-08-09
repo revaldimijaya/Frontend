@@ -13,11 +13,14 @@ export class SubscriptionComponent implements OnInit {
 
   subscription: any;
   videos: any;
-  temp: any;
+  day: number[] = [];
+  userid: string;
+
   constructor(private apollo:Apollo, private data:DataService) { }
 
   ngOnInit(): void {
-    console.log(this.data.user_id);
+    this.userid = "";
+    
     if(this.data.logged_in == false){
       window.location.href=' ';
     }
@@ -36,9 +39,96 @@ export class SubscriptionComponent implements OnInit {
       }
     }).subscribe(result =>{
       this.subscription = result.data.getSubscribeByUser;
-      console.log(this.subscription);
+      this.subscription.forEach((element,index) => {
+        this.userid += element.subscribe_to;
+        if(index != this.subscription.length - 1){
+          this.userid += ",";
+        }
+      });
+      console.log(this.userid);
+      this.getSubscribe();
     })
-    
+  }
+
+  getSubscribe(){
+    this.apollo.query({
+      query: gql`
+      query getSubscribeVideo($userid: String!){
+        getSubscribeVideo(userid: $userid){
+          id,
+          user_id,
+          url,
+          watch,
+          like,
+          dislike,
+          restriction,
+          location,
+          name,
+          premium,
+          category,
+          thumbnail,
+          description,
+          visibility,
+          day,
+          month,
+          year,
+          hour,
+          minute,
+          second,
+          duration
+        }
+      }
+      `,
+      variables:{
+        userid: this.userid
+      }
+    }).subscribe(result =>{
+      this.videos = result.data.getSubscribeVideo
+      this.videos.forEach((element,index) => {
+        var startDate = new Date(Date.UTC(element.year, element.month, element.day, element.hour, element.minute, element.second));
+        var d = new Date();
+        var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
+        console.log(this.calculateDay(startDate, endDate));
+        this.day.push(this.calculateDay(startDate, endDate));
+      });
+      console.log(this.day);
+      
+    })
+  }
+
+  monthDays:number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+  countLeapYears(month:number, year:number): number{
+    var years = year;
+
+    if(month <= 2){
+      years--;
+    }
+
+    return years/4 - years/100 + years/400;
+  }
+
+  getDifference(d1:number, m1:number, y1:number, d2:number, m2:number, y2:number): number{
+    var n1 = y1*365 + d1
+
+    for(let i = 0; i < m1 - 1 ; i++){
+      n1 += this.monthDays[i];
+    }
+
+    n1 += this.countLeapYears(m1, y1)
+
+    var n2 = y2*365 + d2
+    for( let i = 0 ; i < m2 - 1 ; i++){
+      n2 += this.monthDays[i];
+    }
+
+    n2 += this.countLeapYears(m2, y2)
+
+    return (n2 - n1);
+  }
+
+  calculateDay(startDate: Date, endDate: Date): number{
+    return this.getDifference(startDate.getDate(),startDate.getMonth(),startDate.getFullYear(),endDate.getDate(),endDate.getMonth(),endDate.getFullYear())
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-playlist-sidebar',
@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./playlist-sidebar.component.scss']
 })
 export class PlaylistSidebarComponent implements OnInit {
-
+  @Input() playlist
   constructor() { }
 
   ngOnInit(): void {

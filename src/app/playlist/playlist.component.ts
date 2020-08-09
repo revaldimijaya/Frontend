@@ -26,6 +26,7 @@ export class PlaylistComponent implements OnInit {
   title: string;
   privacy: string;
   description: string;
+  updated: Date;
 
   constructor(private data: DataService, private activatedRoute: ActivatedRoute, private apollo: Apollo) { }
 
@@ -97,6 +98,7 @@ export class PlaylistComponent implements OnInit {
       this.title = this.playlist[0].name;
       this.description = this.playlist[0].description;
       this.privacy = this.playlist[0].privacy;
+      this.updated = new Date(Date.UTC(this.playlist[0].year, this.playlist[0].month, this.playlist[0].day, this.playlist[0].hour, this.playlist[0].minute, this.playlist[0].second));
       this.getUser(this.playlist);
     }, (error) => {
       console.log('there was an error sending the query', error);

@@ -127,9 +127,23 @@
     <div>
         <hr>
     </div>
+    <div class="text-playlist">
+        <div>
+            <p>PLAYLISTS</p>
+        </div>
+    </div>
+    <div class="list-playlist">
+        <div *ngFor="let i of playlist">
+            <app-playlist-sidebar [playlist]="i"></app-playlist-sidebar>
+        </div>
+    </div>
+    <div>
+        <hr>
+    </div>
+
     <div class="text-subs">
         <div>
-            <p>SUBSCRIPTION</p>
+            <p>SUBSCRIPTIONS</p>
         </div>
     </div>
     <div class="list-subs">

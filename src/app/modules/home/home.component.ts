@@ -65,17 +65,12 @@ export class HomeComponent implements OnInit {
               div.appendChild(video);
               container.appendChild(div);
               this.lastIdx++;
-              
             }
           }
         }
       });
       this.observer.observe(document.querySelector('.footer'));
     });
-
-    console.log(this.videos)
-    
-    
   }
 
 }
