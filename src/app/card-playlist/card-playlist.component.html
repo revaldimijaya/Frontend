@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="thumbnail" [routerLink]="['/playlist', playlist.id]">
+        <img src="{{videoThumbnail}}" alt="not found">
+        <div class="playlist">
+            <div class="total">
+                <p>{{details.length}}</p>
+            </div>
+            <div class="logo">
+                <i class="fas fa-list"></i>
+            </div>
+        </div>
+    </div>
+    <div class="videodetail">
+        <div class="videodetailarea">
+            <div class="videos-name">
+                <h3 style="margin: 0 0 10px 0;">{{playlist.name}}</h3>
+            </div>
+            <div>
+                <p style="margin: 0; font-size: 12px; opacity: 80%;">VIEW FULL PLAYLIST</p>
+            </div>
+        </div>
+        
+</div>

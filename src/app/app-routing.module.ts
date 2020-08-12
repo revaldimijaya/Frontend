@@ -11,6 +11,12 @@ import { VideosComponent } from './videos/videos.component'
 import { EntertainmentComponent } from './category/entertainment/entertainment.component';
 import { ChannelComponent } from './channel/channel.component'
 import { PlaylistComponent } from './playlist/playlist.component'
+import { ChHomeComponent } from './channel/ch-home/ch-home.component'
+import { ChVideoComponent } from './channel/ch-video/ch-video.component';
+import { TestingComponent } from './testing/testing.component';
+import { ChPlaylistComponent } from './channel/ch-playlist/ch-playlist.component';
+import { ChCommunityComponent } from './channel/ch-community/ch-community.component';
+import { ChAboutComponent } from './channel/ch-about/ch-about.component';
 
 const routes: Routes = [
   { path: '',component: HomeComponent },
@@ -22,9 +28,18 @@ const routes: Routes = [
   { path: 'upload', component: UploaderComponent },
   { path: 'video/:id', component: VideosComponent },
   { path: 'category/:category', component: EntertainmentComponent },
-  { path: 'channel/:id', component: ChannelComponent},
-  { path: 'channel/:id', component: ChannelComponent},
-  { path: 'playlist/:id', component: PlaylistComponent}
+  {
+    path: 'channel/:id', component: ChannelComponent,
+    children: [
+      {path :'', component: ChHomeComponent},
+      {path: 'video', component: ChVideoComponent},
+      {path: 'playlist', component: ChPlaylistComponent},
+      {path: 'community', component: ChCommunityComponent},
+      {path: 'about', component: ChAboutComponent}
+    ]
+  },
+  { path: 'playlist/:id', component: PlaylistComponent},
+  { path: 'testing', component: TestingComponent}
 
 ];
 

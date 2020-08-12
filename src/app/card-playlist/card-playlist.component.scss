@@ -1,0 +1,48 @@
+.container{
+	width: 100%;
+	background-color: white;
+	box-shadow: 3px 3px 5px lightgrey;
+}
+
+.thumbnail{
+	width: 100%;
+	height: 10rem;
+	cursor: pointer;
+    position: relative;
+    .playlist{
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100%;
+        background-color: black;
+        opacity: 80%;
+        p{
+            margin: 0 0 20px 0;
+            color: white;
+            opacity: 100%;
+        }
+        i{
+            color: white;
+            opacity: 100%;
+        }
+    }
+	
+}
+
+.thumbnail img{
+    width: 100%;
+    height: 100%;
+	overflow: hidden;
+}
+
+.videodetail{
+	padding: 10px;
+	width: 100%;
+	height: 30%;
+	display: flex;
+}

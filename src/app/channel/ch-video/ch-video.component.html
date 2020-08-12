@@ -1,0 +1,17 @@
+<div class="detail">
+    <div>
+        <p>Videos</p>
+    </div>
+    <div class="sort">
+        <i class="fas fa-list-ol"></i>
+        <p>SORT BY</p>
+    </div>
+</div>
+<div class="container">
+    <div *ngFor="let i of viewVideos; index as j" style="margin: 10px;">
+        <app-card *ngIf="j<(lastIdx)" [videos]="i"></app-card>
+    </div>
+    <div class="footer">
+        <p> </p>
+    </div>
+</div>

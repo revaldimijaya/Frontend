@@ -86,16 +86,19 @@
 
         <div class="input-playlist">
           <h4>Playlist</h4>
-          <select name="myPlaylist" id="myPlaylist">
+          <div class="new-playlist" (click)="toggleShowPlaylist()">
+            <p>Add to Playlist</p>
+          </div>
+          <select name="myPlaylist" id="myPlaylist" [style.display]="toggle_addPlaylist ? 'flex':'none'" style="margin-top: 20px;">
           </select>
           <div class="new-playlist" (click)="togglePlaylist()">
             <p>New Playlist</p>
           </div>
-          <div class="input-new-playlist" *ngIf="toggle_playlist">
+          <div class="input-new-playlist" [style.display]="toggle_playlist ? 'block':'none'">
             <p>Title</p>
             <input type="text" name="title-playlist" id="title-playlist" placeholder="Input title">
           </div>
-          <div *ngIf="toggle_playlist">
+          <div [style.display]="toggle_playlist ? 'block':'none'">
             <p style="margin:0 0 5px 0;">Privacy</p>
             <div style="display: flex; align-items: center;">
               <input type="radio" name="privacy-playlist" id="privacy-playlist" value="public">
@@ -106,7 +109,7 @@
               <label for="privacy-playlist">Private</label>
             </div>
           </div>
-          <div class="submit-playlist" *ngIf="toggle_playlist">
+          <div class="submit-playlist" [style.display]="toggle_playlist ? 'block':'none'" (click)="createPlaylist()">
             <p>Submit</p>
           </div>
         </div>
@@ -154,7 +157,7 @@
         <div>
           <h3>Preview</h3>
         </div>
-        <div class="vid">
+        <div class="vid" >
           <mat-video src="{{downloadURL}}"></mat-video>
           <video id="myVideo" src="{{downloadURL}}" style="display: none;"></video>
           <div class="link" >

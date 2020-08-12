@@ -19,6 +19,7 @@ export class HeaderComponent implements OnInit {
   toggle_setting = false;
   toggle_modal = false;
   toggle_user = false;
+  toggle_sign: boolean;
 
   users = [];
   user: SocialUser;
@@ -44,8 +45,10 @@ export class HeaderComponent implements OnInit {
     }
     this.data.user_id = this.user.id;
     this.data.photoUrl = this.user.photoUrl;
+    this.toggle_sign = false;
     this.getSubscriber();
     this.getPlaylist();
+    console.log(this.data.user_id);
   }
 
   signInWithGoogle(): void {
@@ -59,6 +62,10 @@ export class HeaderComponent implements OnInit {
       window.location.href = ' ';
     });
 
+  }
+
+  toggleSign(){
+    this.toggle_sign = !this.toggle_sign;
   }
 
   getPlaylist(){
@@ -92,8 +99,8 @@ export class HeaderComponent implements OnInit {
   createUser(user: SocialUser): void {
     this.apollo.mutate({
       mutation: gql `
-        mutation createUser($id: String!, $name: String!, $membership: String!, $photo: String!, $subscriber: Int!) {
-          createUser(input:{id:$id, name:$name, membership:$membership, photo:$photo, subscriber:$subscriber}){
+        mutation createUser($id: String!, $name: String!, $membership: String!, $photo: String!, $subscriber: Int!, $views: Int!, $description: String!, $header: String!) {
+          createUser(input:{id:$id, name:$name, membership:$membership, photo:$photo, subscriber:$subscriber, views: $views, description: $description, header: $header}){
             id,
             name,
             membership,
@@ -108,6 +115,9 @@ export class HeaderComponent implements OnInit {
           membership: 'no',
           photo: this.user.photoUrl,
           subscriber: 0,
+          views: 0,
+          description: "i'm new",
+          header: "gs://tpa-web-71a78.appspot.com/101224snowywishmv2.jpg"
         }
     }).subscribe(({ data }) => {
       console.log('got data', data);
@@ -140,7 +150,7 @@ export class HeaderComponent implements OnInit {
     sessionStorage.clear();
     window.localStorage.clear();
     this.loggedIn = false;
-    this.signInWithGoogle();  
+    this.signInWithGoogle();
   }
 
   signOutFirst(): void {
@@ -158,7 +168,7 @@ export class HeaderComponent implements OnInit {
 
   getUserFromStorage(){
     this.users = JSON.parse(localStorage.getItem('users'));
-    this.user = this.users[0];
+    this.user = this.users[this.users.length - 1];
     this.loggedIn = true;
   }
 

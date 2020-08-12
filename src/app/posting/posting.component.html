@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="img">
+        <img src="{{user.photo}}" alt="">
+    </div>
+    <div class="detail">
+        <div class="name">
+            <p style="margin-right: 5px;">{{user.name}}</p>
+            <p>&bull; {{calculate_day}}</p>
+        </div>
+        <div class="description">
+            <p>{{post.description}}</p>
+        </div>
+        <div class="picture">
+            <img src="{{post.picture}}" alt="">
+        </div>
+        <div class="like">
+            <i class="fas fa-thumbs-up" (click)="likePosting()" [style.color]="toggle_thumb == 'like'? 'blue':'black' "></i>
+            <p>{{like.length}}</p>
+            <i class="fas fa-thumbs-down" (click)="dislikePosting()" [style.color]="toggle_thumb == 'dislike'? 'blue':'black' "></i>
+            <p>{{dislike.length}}</p>
+        </div>
+    </div>
+</div>

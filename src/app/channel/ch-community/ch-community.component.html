@@ -1,0 +1,30 @@
+<div class="posting" *ngIf="isChannel" style="margin-bottom: 20px;">
+    <div class="my-comment" >
+        <div class="comment-pic">
+            <img src="{{photoURL}}" alt="">
+        </div>
+        <div class="comment-input" (click)="toggleTrue()">
+            <input type="text" name="comment" id="comment" placeholder="Input post here...">
+        </div>
+    </div>
+    <div class="input-thumbnail" *ngIf="toggle_true" style="margin-top: 10px;">
+        <label class="file-label">
+            <input class="file-input" type="file" accept="image/*" (change)="thumbnailPath($event.target.files)" (change)="startUploadThumbnail($event.target.files)">
+        </label>
+        <div>
+            <img src="{{thumbnail_path}}" alt="">
+        </div>
+    </div>
+    <div class="submit" *ngIf="toggle_true">
+        <div class="cancel" (click)="togglePost()">
+            <p>CANCEL</p>
+        </div>
+        <div class="comment" (click)="createPosting()">
+            <p>POST</p>
+        </div>
+    </div>
+</div>
+
+<div *ngFor="let i of postings" style="margin: 20px 0">
+    <app-posting [post]="i"></app-posting>
+</div>

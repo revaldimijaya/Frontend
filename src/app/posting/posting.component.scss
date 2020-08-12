@@ -1,0 +1,37 @@
+.container{
+    display: flex;
+    background-color: white;
+    box-shadow: 2px 2px 4px lightgrey;
+    
+    .img{
+        width: 5%;
+        margin: 20px;
+        img{
+            width: 100%;
+            border-radius: 50px;
+        }
+    }
+
+    .detail{
+        width: 95%;
+        display: flex;
+        flex-direction: column;
+
+        .name{
+            display: flex;
+        }
+        .description{
+
+        }
+        .picture{
+
+        }
+        .like{
+            display: flex;
+            align-items: center;
+            p{
+                margin: 20px 20px;
+            }
+        }
+    }
+}

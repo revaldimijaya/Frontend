@@ -1,6 +1,6 @@
 <div class="container">
     <div class="header">
-        <img src="https://firebasestorage.googleapis.com/v0/b/tpa-web-71a78.appspot.com/o/download%20(1).jpg?alt=media&token=ff9e2684-da69-4cdb-8aa6-94a5edb4bf32" alt="">
+        <img src="{{user.header}}" alt="">
     </div>
     <div class="info">
         <div class="info-first">
@@ -21,9 +21,49 @@
                     <i class="fas fa-bell"></i>
                 </div>
             </div>
+            <div class="customize" [style.display]="toggle_subs ? 'none':'flex'">
+                <p>Customize Channel</p>
+            </div>
         </div>
     </div>
-    <div class="header">
+    <div class="menu">
+        <div class="menu-text" [routerLink]="['/channel', id]">
+            <p>HOME</p>
+            <div *ngIf="toggle_home">
+                <hr>
+            </div>
+        </div>
         
+        <div class="menu-text" [routerLink]="['video']">
+            <p>VIDEOS</p>
+            <div *ngIf="toggle_videos">
+                <hr>
+            </div>
+        </div>
+        <div class="menu-text" [routerLink]="['playlist']">
+            <p>PLAYLISTS</p>
+            <div *ngIf="toggle_playlists">
+                <hr>
+            </div>
+        </div>
+        <div class="menu-text" [routerLink]="['community']">
+            <p>COMMUNITY</p>
+            <div *ngIf="toggle_community">
+                <hr>
+            </div>
+        </div>
+        <div class="menu-text" [routerLink]="['about']">
+            <p>ABOUT</p>
+            <div *ngIf="toggle_about">
+                <hr>
+            </div>
+        </div>
     </div>
+    <div>
+        <hr>
+    </div>
+    <div class="child">
+        <router-outlet></router-outlet>
+    </div>
+    
 </div>

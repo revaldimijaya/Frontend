@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { windowTime } from 'rxjs/operators';
 import gql from 'graphql-tag';
 import { DataService } from '../data.service';
@@ -19,8 +19,13 @@ export class ChannelComponent implements OnInit {
   total_subs: number;
   toggle_subs: boolean;
   change_subs: boolean;
+  toggle_home : boolean = false;
+  toggle_videos : boolean = false;
+  toggle_playlists : boolean = false;
+  toggle_community : boolean = false;
+  toggle_about : boolean = false;
 
-  constructor(private apollo: Apollo, private activatedRoute: ActivatedRoute, private data: DataService) { }
+  constructor(private router: Router,private apollo: Apollo, private activatedRoute: ActivatedRoute, private data: DataService) { }
 
   ngOnInit(): void {
     this.total_subs = 0;
@@ -32,6 +37,24 @@ export class ChannelComponent implements OnInit {
     this.checkSubs();
     this.toggle_subs = true;
     this.change_subs = true;
+    if(this.data.user_id == this.id){
+      this.toggle_subs = false;
+    }
+    
+    var hr = this.router.url.split("/");
+    console.log(hr);
+    if(hr.length == 3){
+      this.toggle_home = true;
+    } else if(hr[3] == "video"){
+      this.toggle_videos = true;
+    } else if(hr[3] == "playlist"){
+      this.toggle_playlists = true;
+    } else if(hr[3] == "community"){
+      this.toggle_community = true;
+    } else {
+      this.toggle_about = true;
+    }
+
   }
 
   getUser(){
@@ -43,7 +66,10 @@ export class ChannelComponent implements OnInit {
             name,
             membership,
             photo,
-            subscriber
+            created_at,
+            views,
+            description,
+            header,
           }
         }
       `,

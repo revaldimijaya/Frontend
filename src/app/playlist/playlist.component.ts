@@ -28,6 +28,8 @@ export class PlaylistComponent implements OnInit {
   description: string;
   updated: Date;
 
+  videoThumbnail: string;
+
   constructor(private data: DataService, private activatedRoute: ActivatedRoute, private apollo: Apollo) { }
 
   ngOnInit(): void {
@@ -121,7 +123,11 @@ export class PlaylistComponent implements OnInit {
       }
     }).subscribe(result => {
       this.detail = result.data.getPlaylistVideo
-      this.getVideo(this.detail[0].video_id);
+      if(this.detail.length != 0){
+        this.getVideo(this.detail[0].video_id);
+      } else {
+        this.videoThumbnail = "https://firebasestorage.googleapis.com/v0/b/tpa-web-71a78.appspot.com/o/no-thumbnail.jpg?alt=media&token=b8482f56-e21f-4cd6-bd51-59ed3c8e4688"
+      }
     }, (error) => {
       console.log('there was an error sending the query', error);
     });
@@ -177,6 +183,7 @@ export class PlaylistComponent implements OnInit {
       }
     }).subscribe(result => {
       this.video = result.data.getVideoId;
+      this.videoThumbnail = this.video.thumbnail
     }, (error) => {
       console.log('there was an error sending the query', error);
     });

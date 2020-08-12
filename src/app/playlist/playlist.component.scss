@@ -144,7 +144,7 @@
             .third{
                 cursor: pointer;
                 .dropdown{
-                    position: fixed;
+                    position: absolute;
                     display: flex;
                     flex-direction: column;
                     background-color: white;

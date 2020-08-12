@@ -1,0 +1,31 @@
+<div>
+    <p>Lastest Upload</p>
+</div>
+<div class="container">
+    <div *ngFor="let i of firstVideo" style="margin: 10px;">
+        <app-card [videos]="i"></app-card>
+    </div>
+</div>
+<div>
+    <hr>
+</div>
+<div>
+    <p>Videos</p>
+</div>
+<div class="container">
+    <div *ngFor="let i of fiveVideo" style="margin: 10px;">
+        <app-card [videos]="i"></app-card>
+    </div>
+</div>
+<div>
+    <hr>
+</div>
+<div>
+    <p>Playlists</p>
+</div>
+<div class="container">
+    <div *ngFor="let i of threePlaylists" style="margin: 10px;">
+        <app-card-playlist [playlist]="i"></app-card-playlist>
+    </div>
+</div>
+

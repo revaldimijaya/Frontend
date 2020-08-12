@@ -40,7 +40,10 @@ export class EntertainmentComponent implements OnInit {
             visibility,
             day,
             month,
-            year
+            year,
+            hour,
+            minute,
+            second,
           }
         }
       `,

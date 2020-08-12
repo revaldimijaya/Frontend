@@ -103,23 +103,23 @@ export class VideosComponent implements OnInit {
     var month = 0;
     var week = 0;
     if(days >= 365){
-      while(days > 0){
+      while(days >= 365){
         year++;
-        days /= 365;
+        days -= 365;
       }
       return year + " years ago"
 
     } else if (days >= 30){
-      while(days > 30){
+      while(days >= 30){
         month++;
-        days /= 30;
+        days -= 30;
       }
       return month + " months ago"
 
     } else if (days >= 7){
-      while(days > 7){
+      while(days >= 7){
         week++;
-        days /= 7
+        days -= 7
       }
       return week + " weeks ago"
     } else {
@@ -245,7 +245,11 @@ export class VideosComponent implements OnInit {
             visibility,
             day,
             month,
-            year
+            year,
+            hour,
+            minute,
+            second,
+            duration
           }
         }
       `, 

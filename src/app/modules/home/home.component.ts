@@ -50,7 +50,7 @@ export class HomeComponent implements OnInit {
         }
       `,
     }).valueChanges.subscribe(result => {
-      this.videos = result.data.videos;
+      this.videos = this.shuffle(result.data.videos);
 
       this.observer = new IntersectionObserver((entry)=>{
         if(entry[0].isIntersecting){
@@ -71,6 +71,21 @@ export class HomeComponent implements OnInit {
       });
       this.observer.observe(document.querySelector('.footer'));
     });
+  }
+
+  shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
   }
 
 }

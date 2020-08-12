@@ -27,7 +27,7 @@ export class UploaderComponent implements OnInit {
   percentage: Observable<number>;
   snapshot: Observable<any>;
   task: AngularFireUploadTask;
-  downloadURL: Observable<string>;
+  downloadURL: string;
 
   thumbnailPercentage: Observable<number>
   thumbnailSnapshot: Observable<any>;
@@ -49,6 +49,7 @@ export class UploaderComponent implements OnInit {
   title: string;
   duration: number;
   toggle_title: boolean;
+  toggle_addPlaylist: boolean = false;
 
   playlists: any;
 
@@ -74,6 +75,15 @@ export class UploaderComponent implements OnInit {
     this.toggle_playlist = !this.toggle_playlist;
   }
 
+  toggleChange(){
+    this.isUploaded = true;
+  }
+
+  toggleShowPlaylist(){
+    this.getPlaylist();
+    this.toggle_addPlaylist = true;
+  }
+
   toggleUpload() {
     this.toggle_upload = !this.toggle_upload;
   }
@@ -86,7 +96,7 @@ export class UploaderComponent implements OnInit {
   }
 
   getPlaylist(){
-    this.apollo.query({
+    this.apollo.watchQuery({
       query: gql`
         query getPlaylist($id: String!){
           getPlaylistUser(userid: $id){
@@ -108,10 +118,12 @@ export class UploaderComponent implements OnInit {
       variables:{
         id: this.data.user_id
       }
-    }).subscribe(result => {
+    }).valueChanges.subscribe(result => {
       this.playlists = result.data.getPlaylistUser;
+
       var sel = (<HTMLSelectElement>document.getElementById("myPlaylist"));
-      var opt = (<HTMLOptionElement>document.createElement("option"))
+      var opt = (<HTMLOptionElement>document.createElement("option"));
+      console.log(sel);
       opt.value = "0";
       opt.text = "None";
       sel.append(opt);
@@ -144,9 +156,7 @@ export class UploaderComponent implements OnInit {
         this.downloadURL = await ref.getDownloadURL().toPromise();
 
         this.db.collection('files').add( { downloadURL: this.downloadURL, path });
-
         this.isUploaded = true;
-        this.getPlaylist();
       }),
     );
   }
@@ -347,6 +357,41 @@ export class UploaderComponent implements OnInit {
       console.log(this.videos[this.videos.length-1]);
       this.lastId = Number(this.videos[this.videos.length-1].id) + 1;
     }, (error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  createPlaylist(){
+    var privacy: string;
+    if((<HTMLInputElement>document.getElementById("privacy-playlist")).checked){
+      privacy = "public";
+    } else {
+      privacy = "private";
+    }
+    this.apollo.mutate({
+      mutation: gql `
+        mutation createPlaylist($name: String!, $description: String!, $privacy: String!, $userid: String!, $views: Int!){
+          createPlaylist(input:{
+            name: $name
+            description: $description
+            privacy: $privacy
+            user_id: $userid
+            views: $views
+          }){
+            name
+          }
+        }
+      `,
+      variables:{
+        name: (<HTMLInputElement>document.getElementById("title-playlist")).value,
+        description: "",
+        privacy: privacy,
+        userid: this.data.user_id,
+        views: 0,
+      }
+    }).subscribe(({ data }) => {
+      console.log('got data', data);
+    },(error) => {
       console.log('there was an error sending the query', error);
     });
   }

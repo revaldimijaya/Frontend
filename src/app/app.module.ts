@@ -37,6 +37,17 @@ import { PlaylistComponent } from './playlist/playlist.component'
 import { PlaylistVideoComponent } from './playlist-video/playlist-video.component'
 import { PlaylistListComponent } from './playlist-list/playlist-list.component'
 import { PlaylistSidebarComponent } from './playlist-sidebar/playlist-sidebar.component'
+import { ModalPlaylistComponent } from './modal-playlist/modal-playlist.component';
+import { ChHomeComponent } from './channel/ch-home/ch-home.component';
+import { ChVideoComponent } from './channel/ch-video/ch-video.component';
+import { TestingComponent } from './testing/testing.component'
+import { ChannelComponent } from './channel/channel.component';
+import { CardPlaylistComponent } from './card-playlist/card-playlist.component';
+import { ChPlaylistComponent } from './channel/ch-playlist/ch-playlist.component';
+import { ChCommunityComponent } from './channel/ch-community/ch-community.component';
+import { ChAboutComponent } from './channel/ch-about/ch-about.component';
+import { PostingComponent } from './posting/posting.component';
+
 
 @NgModule({
   declarations: [
@@ -61,7 +72,17 @@ import { PlaylistSidebarComponent } from './playlist-sidebar/playlist-sidebar.co
     PlaylistComponent,
     PlaylistVideoComponent,
     PlaylistListComponent,
-    PlaylistSidebarComponent
+    PlaylistSidebarComponent,
+    ModalPlaylistComponent,
+    ChHomeComponent,
+    ChVideoComponent,
+    TestingComponent,
+    ChannelComponent,
+    CardPlaylistComponent,
+    ChPlaylistComponent,
+    ChCommunityComponent,
+    ChAboutComponent,
+    PostingComponent
   ],
   imports: [
     BrowserModule,

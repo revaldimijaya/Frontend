@@ -237,7 +237,7 @@
         </div>
         <p>Paid Membership</p>
     </div>
-    <div class="text-user" (click)="signOut()">
+    <div class="text-user" (click)="toggleSign()">
         <div>
             <i class="fas fa-user-circle"></i>
         </div>
@@ -267,6 +267,24 @@
         </div>
         <p>Keyboard Shortcut</p>
     </div>
+</div>
 
+<div id="myModal" class="modal" *ngIf="toggle_sign">
+
+    <div class="modal-content">
+      <span class="close" (click)="toggleSign()">&times;</span>
+      <div style="display: flex; justify-content: center;">
+          <p>Are you sure want to sign out ?</p>
+      </div>
+      <div style="display: flex; justify-content: center;">
+          <div (click)="signOut()" style="margin: 10px 10px; background-color: lightblue; width: 100px; border-radius: 5px; text-align: center;">
+              <p style="margin: 0; padding: 10px;">Yes</p>
+          </div>
+          <div style="margin: 10px 10px; background-color: lightcoral; width: 100px; border-radius: 5px; text-align: center;">
+              <p style="margin: 0; padding: 10px;">No</p>
+          </div>
+      </div>
+    </div>
+  
 </div>
 
