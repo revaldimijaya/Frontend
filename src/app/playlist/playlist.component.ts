@@ -3,11 +3,36 @@ import { DataService } from '../data.service';
 import { ActivatedRoute } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-playlist',
   templateUrl: './playlist.component.html',
-  styleUrls: ['./playlist.component.scss']
+  styleUrls: ['./playlist.component.scss'],
+  animations: [
+    trigger(
+      'fade', 
+      [
+        transition(
+          ':enter', 
+          [
+            style({opacity: 0 }),
+            animate('2000ms ease-out', 
+                    style({opacity: 1 }))
+            
+          ]
+        ),
+        transition(
+          ':leave', 
+          [
+            style({opacity: 1 }),
+            animate('2000ms ease-in', 
+                    style({opacity: 0 }))
+          ]
+        )
+      ]
+    )
+  ]
 })
 export class PlaylistComponent implements OnInit {
 
@@ -34,6 +59,9 @@ export class PlaylistComponent implements OnInit {
 
   videoThumbnail: string;
 
+  toggle_subs: boolean;
+  change_subs: boolean;
+
   constructor(private data: DataService, private activatedRoute: ActivatedRoute, private apollo: Apollo) { }
 
   ngOnInit(): void {
@@ -50,6 +78,61 @@ export class PlaylistComponent implements OnInit {
 
     this.getPlaylist();
     this.getDetail();
+
+    this.toggle_subs = true;
+    this.change_subs = true;
+    
+  }
+  check: any;
+
+  checkSubs(){
+    this.apollo.query({
+      query: gql`
+        query checkSubscribe($userid: String!, $subscribeto: String!){
+          checkSubscribe(userid: $userid, subscribeto: $subscribeto){
+            id,
+            user_id,
+            subscribe_to
+          }
+        }
+      `,
+      variables:{
+        userid: this.data.user_id,
+        subscribeto: this.playlist[0].user_id
+      }
+    }).subscribe(result => {
+      this.check = result.data.checkSubscribe;
+      console.log(this.check);
+      if(this.check.id == ""){
+        this.change_subs = true;
+      } else {
+        this.change_subs = false;
+      }
+    }, (error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  subs(){
+    this.apollo.mutate({
+      mutation: gql`
+        mutation createSubscribe($userid: String!, $subscribeto: String!){
+          createSubscribe(userid: $userid, subscribeto: $subscribeto){
+            id,
+            user_id,
+           subscribe_to
+          }
+        }
+      `,
+      variables:{
+        userid: this.data.user_id,
+        subscribeto: this.user.id
+      }
+    }).subscribe(({ data }) => {
+      console.log(data)
+    },(error) => {
+      console.log('there was an error sending the query', error);
+    });
   }
 
   test(){
@@ -105,8 +188,10 @@ export class PlaylistComponent implements OnInit {
       }
     }).subscribe(result =>{
       this.playlist = result.data.getPlaylistId;
+      this.checkSubs();
       if(this.playlist[0].user_id == this.data.user_id){
         this.toggle_self = true;
+        this.toggle_subs = false;
       }
       this.title = this.playlist[0].name;
       this.description = this.playlist[0].description;

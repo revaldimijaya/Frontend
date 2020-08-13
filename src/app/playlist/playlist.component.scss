@@ -219,6 +219,19 @@
     }
 }
 
+.subs-notif{
+    display: flex;
+    align-items: center;
+
+    .subs{
+        
+        background-color: red;
+        p{
+            color: white;
+        }
+    }
+}
+
 .right{
     width: 70%;
 

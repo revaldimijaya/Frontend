@@ -6,11 +6,36 @@ import { finalize, tap } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
 import { DataService } from '../data.service'
 import gql from 'graphql-tag';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'uploader',
   templateUrl: './uploader.component.html',
   styleUrls: ['./uploader.component.scss'],
+  animations: [
+    trigger(
+      'fade', 
+      [
+        transition(
+          ':enter', 
+          [
+            style({opacity: 0 }),
+            animate('2000ms ease-out', 
+                    style({opacity: 1 }))
+            
+          ]
+        ),
+        transition(
+          ':leave', 
+          [
+            style({opacity: 1 }),
+            animate('2000ms ease-in', 
+                    style({opacity: 0 }))
+          ]
+        )
+      ]
+    )
+  ]
 })
 export class UploaderComponent implements OnInit {
   
