@@ -36,6 +36,12 @@ export class VideosComponent implements OnInit {
   change_subs: boolean;
   total_subs: number;
   calculate_day: string;
+  toggle_modal: boolean;
+
+  lastIdx: number;
+  lastIdx2: number;
+  observer: IntersectionObserver;
+  observer2: IntersectionObserver
 
   ngOnInit(): void { 
     this.activatedRoute.paramMap.subscribe(params => { 
@@ -45,6 +51,7 @@ export class VideosComponent implements OnInit {
     this.photoURL = this.data.photoUrl.toString();
     this.toggle_subs = true;
     this.change_subs = true;
+    this.toggle_modal = false;
     this.toggle_thumb = "none";
     this.watch();
     this.getVideos();
@@ -63,6 +70,10 @@ export class VideosComponent implements OnInit {
 
   toggleThumb(toggle: string){
     this.toggle_thumb = toggle;
+  }
+
+  toggleModal(){
+    this.toggle_modal = !this.toggle_modal
   }
 
   monthDays:number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -96,9 +107,8 @@ export class VideosComponent implements OnInit {
     return (n2 - n1);
   }
 
-  calculateDay(d1:number, m1:number, y1:number, d2:number, m2:number, y2:number): string{
-    var days = this.getDifference(d1,m1,y1,d2,m2,y2)
-    console.log(days);
+  calculateDay(startDate: Date, endDate: Date): string{
+    var days = this.getDifference(startDate.getDate(),startDate.getMonth(),startDate.getFullYear(),endDate.getDate(),endDate.getMonth(),endDate.getFullYear())
     var year = 0;
     var month = 0;
     var week = 0;
@@ -119,16 +129,29 @@ export class VideosComponent implements OnInit {
     } else if (days >= 7){
       while(days >= 7){
         week++;
-        days -= 7
+        days -= 7;
       }
       return week + " weeks ago"
     } else {
+      if(days <= 0){
+        var diff = (endDate.getTime() - startDate.getTime()) / 1000;
+
+        var date = diff / (60 * 60);
+        date = Math.abs(Math.round(date));
+        if(date > 0) return date + " hours ago";
+    
+        date = diff / 60;
+        date = Math.abs(Math.round(date));
+        if(date > 0) return date + " minutes ago";
+    
+        return diff + " seconds ago";
+      }
       return days + " days ago"
     }
   }
 
   getVideos() {
-    this.apollo.watchQuery({
+    this.apollo.query({
       query: gql`
         query getVideoId($videoid: Int!){
           getVideoId(videoid: $videoid){
@@ -148,17 +171,23 @@ export class VideosComponent implements OnInit {
             visibility,
             day,
             month,
-            year
+            year,
+            hour,
+            minute,
+            second
           }
         }
       `, 
       variables:{
         videoid: this.id
       }
-    }).valueChanges.subscribe(result => {
+    }).subscribe(result => {
       this.videos = result.data.getVideoId;
-      this.calculate_day = this.calculateDay(this.videos.day, this.videos.month, this.videos.year, this.date.getDay(), this.date.getMonth()+1, this.date.getFullYear())
-      console.log(this.calculate_day);
+      console.log(this.videos)
+      var startDate = new Date(Date.UTC(this.videos.year, this.videos.month, this.videos.day, this.videos.hour, this.videos.minute, this.videos.second));
+      var d = new Date();
+      var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
+      this.calculate_day = this.calculateDay(startDate, endDate);
       this.getUser();
       this.getNextVideo();
       this.getComment();
@@ -169,7 +198,7 @@ export class VideosComponent implements OnInit {
   }
 
   getUser(){
-    this.apollo.watchQuery({
+    this.apollo.query({
       query: gql `
         query getUserId($id: String!) {
           getUserId(userid: $id) {
@@ -184,7 +213,7 @@ export class VideosComponent implements OnInit {
       variables:{
         id: this.videos.user_id
       }
-    }).valueChanges.subscribe(result => {
+    }).subscribe(result => {
       this.user = result.data.getUserId;
       this.checkSubs(this.user);
       this.getSubs(this.user);
@@ -197,7 +226,8 @@ export class VideosComponent implements OnInit {
   }
 
   getComment(){
-    this.apollo.watchQuery({
+    this.lastIdx2 = 1;
+    this.apollo.query({
       query: gql `
         query getComment($videoid: Int!){
           comment(videoid: $videoid){
@@ -209,23 +239,43 @@ export class VideosComponent implements OnInit {
             dislike,
             day,
             month,
-            year
+            year,
+            hour,
+            minute,
+            second
           }
         }
       `,
       variables:{
         videoid: this.id
       }
-    }).valueChanges.subscribe(result => {
+    }).subscribe(result => {
       this.comment = result.data.comment;
+      this.observer2 = new IntersectionObserver((entry)=>{
+        if(entry[0].isIntersecting){
+          let container = document.querySelector(".user-container");
+          for(let i = 0 ; i < 2; i++){
+            
+            if(this.lastIdx2 < this.comment.length){
+              let div = document.createElement("div");
+              let video = document.createElement("app-comment");
+              video.setAttribute("comments","comments[this.lastIdx2]");
+              div.appendChild(video);
+              container.appendChild(div);
+              this.lastIdx++;
+            }
+          }
+        }
+      });
+      this.observer2.observe(document.querySelector('.footer2'));
     },(error) => {
       console.log('there was an error sending the query', error);
     });
   }
 
   getNextVideo(){
-    
-    this.apollo.watchQuery({
+    this.lastIdx = 4;
+    this.apollo.query({
       query: gql`
         query getNextVideo($videoid: Int!){
           getNextVideo(videoid: $videoid){
@@ -256,8 +306,26 @@ export class VideosComponent implements OnInit {
       variables:{
         videoid: this.id
       }
-    }).valueChanges.subscribe(result => {
-      this.nextVideos = result.data.getNextVideo;
+    }).subscribe(result => {
+      this.nextVideos = this.shuffle(result.data.getNextVideo);
+
+      this.observer = new IntersectionObserver((entry)=>{
+        if(entry[0].isIntersecting){
+          let container = document.querySelector(".next-video");
+          for(let i = 0 ; i < 4; i++){
+            
+            if(this.lastIdx < this.nextVideos.length){
+              let div = document.createElement("div");
+              let video = document.createElement("app-next-video");
+              video.setAttribute("nextVideo","nextVideo[this.lastIdx]");
+              div.appendChild(video);
+              container.appendChild(div);
+              this.lastIdx++;
+            }
+          }
+        }
+      });
+      this.observer.observe(document.querySelector('.footer'));
     }, (error) => {
       console.log('there was an error sending the query', error);
     });
@@ -267,16 +335,13 @@ export class VideosComponent implements OnInit {
     this.comment_description = (<HTMLInputElement>document.getElementById("comment")).value;
     this.apollo.mutate({
       mutation: gql`
-        mutation insertComment($user_id: String!, $video_id: Int!, $comment: String!, $like: Int!, $dislike: Int!, $day: Int!, $month: Int!, $year: Int!){
+        mutation insertComment($user_id: String!, $video_id: Int!, $comment: String!, $like: Int!, $dislike: Int!){
           createComment(input:{
             user_id: $user_id,
             video_id: $video_id,
             comment: $comment,
             like: $like,
             dislike: $dislike,
-            day: $day,
-            month: $month,
-            year: $year
           }){
             user_id,
             video_id
@@ -289,9 +354,6 @@ export class VideosComponent implements OnInit {
         comment: this.comment_description,
         like: 0,
         dislike: 0,
-        day: this.date.getDay(),
-        month: this.date.getMonth()+1,
-        year: this.date.getFullYear(),
       }
     }).subscribe(({ data }) => {
       console.log('got data', data);
@@ -490,6 +552,21 @@ export class VideosComponent implements OnInit {
     }, (error) => {
       console.log('there was an error sending the query', error);
     });
+  }
+
+  shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
   }
 
   

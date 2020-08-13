@@ -4,11 +4,36 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { windowTime } from 'rxjs/operators';
 import gql from 'graphql-tag';
 import { DataService } from '../data.service';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-channel',
   templateUrl: './channel.component.html',
-  styleUrls: ['./channel.component.scss']
+  styleUrls: ['./channel.component.scss'],
+  animations: [
+    trigger(
+      'fade', 
+      [
+        transition(
+          ':enter', 
+          [
+            style({opacity: 0 }),
+            animate('2000ms ease-out', 
+                    style({opacity: 1 }))
+            
+          ]
+        ),
+        transition(
+          ':leave', 
+          [
+            style({opacity: 1 }),
+            animate('2000ms ease-in', 
+                    style({opacity: 0 }))
+          ]
+        )
+      ]
+    )
+  ]
 })
 export class ChannelComponent implements OnInit {
   

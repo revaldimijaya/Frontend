@@ -47,6 +47,10 @@ import { ChPlaylistComponent } from './channel/ch-playlist/ch-playlist.component
 import { ChCommunityComponent } from './channel/ch-community/ch-community.component';
 import { ChAboutComponent } from './channel/ch-about/ch-about.component';
 import { PostingComponent } from './posting/posting.component';
+import { PremiumComponent } from './premium/premium.component';
+import { SearchComponent } from './search/search.component';
+import { ChannelListComponent } from './channel-list/channel-list.component';
+import { PlaylistSearchComponent } from './playlist-search/playlist-search.component';
 
 
 @NgModule({
@@ -82,7 +86,11 @@ import { PostingComponent } from './posting/posting.component';
     ChPlaylistComponent,
     ChCommunityComponent,
     ChAboutComponent,
-    PostingComponent
+    PostingComponent,
+    PremiumComponent,
+    SearchComponent,
+    ChannelListComponent,
+    PlaylistSearchComponent
   ],
   imports: [
     BrowserModule,

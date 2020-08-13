@@ -19,7 +19,7 @@ export class ListSubscriptionComponent implements OnInit {
   }
 
   getUser(){
-    this.apollo.watchQuery({
+    this.apollo.query({
       query: gql `
         query getUserId($id: String!) {
           getUserId(userid: $id) {
@@ -34,7 +34,7 @@ export class ListSubscriptionComponent implements OnInit {
       variables:{
         id: this.subscription.subscribe_to
       }
-    }).valueChanges.subscribe(result => {
+    }).subscribe(result => {
       this.user = result.data.getUserId;
     })
   }

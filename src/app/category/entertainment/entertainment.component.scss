@@ -1,13 +1,13 @@
 .container{
-    margin-top: 70px;
+    margin: 70px 20px 0 20px;
 }
 
 .container-video {
     justify-content: space-evenly;
     display: grid;  
     grid-gap: 25px;  
-    grid-template-columns: repeat(auto-fit, 315px);
-    grid-template-rows: repeat(auto-fit, 265px);  
+    grid-template-columns: repeat(auto-fit, 300px);
+    grid-template-rows: repeat(auto-fit, 250px);
 }
 .icon{
     display: flex;

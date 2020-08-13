@@ -24,3 +24,50 @@ a{
         }
     }
 }
+
+.other{
+    display: flex;
+    justify-content: end;
+    i{
+        cursor: pointer;
+    }
+
+    .dropdown{
+        position: absolute;
+        right: 50px;
+        width: 180px;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 5px;
+        box-shadow: 2px 2px 4px lightgrey;
+        div{
+            padding: 5px;
+        }
+        p{
+            margin: 0;
+        }
+        .queue{
+            cursor: pointer;
+            &:hover{
+                background-color: grey;
+            }
+            display: flex;
+            align-items: center;
+            .logo{
+                margin-right: 10px;
+            }
+        }
+        .playlist{
+            cursor: pointer;
+            &:hover{
+                background-color: grey;
+            }
+            display: flex;
+            align-items: center;
+            .logo{
+                margin-right: 10px;
+            }
+        }
+    }
+}

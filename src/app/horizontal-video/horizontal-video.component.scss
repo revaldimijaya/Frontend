@@ -10,6 +10,7 @@
     }
 
     .video-info{
+        width: 920px;
         display: flex;
         flex-direction: column;
         margin-left: 10px;
@@ -26,4 +27,51 @@
 
 .video-container:hover{
     background-color: grey;
+}
+
+.other{
+    display: flex;
+    justify-content: end;
+    i{
+        cursor: pointer;
+    }
+
+    .dropdown{
+        position: absolute;
+        right: 75px;
+        width: 180px;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 5px;
+        box-shadow: 2px 2px 4px lightgrey;
+        div{
+            padding: 5px;
+        }
+        p{
+            margin: 0;
+        }
+        .queue{
+            cursor: pointer;
+            &:hover{
+                background-color: grey;
+            }
+            display: flex;
+            align-items: center;
+            .logo{
+                margin-right: 10px;
+            }
+        }
+        .playlist{
+            cursor: pointer;
+            &:hover{
+                background-color: grey;
+            }
+            display: flex;
+            align-items: center;
+            .logo{
+                margin-right: 10px;
+            }
+        }
+    }
 }

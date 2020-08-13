@@ -34,7 +34,7 @@
                     </div>
                 </div>
 
-                <div class="playlist">
+                <div class="playlist" (click)="toggleModal()">
                     <i class="fas fa-list-ul"></i>
                     <div>
                         <p>SAVE</p>
@@ -125,17 +125,27 @@
             </div>
             
             <div class="user-container">
-                <div *ngFor="let com of comment">
+                <div *ngFor="let com of comment; index as i">
                     <app-comment [comments]="com"></app-comment>
+                </div>
+                <div class="footer2">
+                    <p> </p>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="next-video" >
-        <div *ngFor="let next of nextVideos">
-            <app-next-video [nextVideo] = "next" ></app-next-video>
+        <div *ngFor="let next of nextVideos; index as i">
+            <app-next-video *ngIf="i<(lastIdx)" [nextVideo] = "next" ></app-next-video>
         </div>
+        <div class="footer">
+            <p> </p>
+        </div>
+    </div>
+
+    <div class="modal" *ngIf="toggle_modal">
+        <app-modal-playlist [videos]="videos"></app-modal-playlist>
     </div>
 
 </div>

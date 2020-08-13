@@ -16,6 +16,9 @@ export class SubscriptionComponent implements OnInit {
   day: number[] = [];
   userid: string;
 
+  lastIdx: number;
+  observer: IntersectionObserver;
+
   constructor(private apollo:Apollo, private data:DataService) { }
 
   ngOnInit(): void {
@@ -51,6 +54,7 @@ export class SubscriptionComponent implements OnInit {
   }
 
   getSubscribe(){
+    this.lastIdx = 4;
     this.apollo.query({
       query: gql`
       query getSubscribeVideo($userid: String!){
@@ -91,7 +95,25 @@ export class SubscriptionComponent implements OnInit {
         console.log(this.calculateDay(startDate, endDate));
         this.day.push(this.calculateDay(startDate, endDate));
       });
-      console.log(this.day);
+      // this.observer = new IntersectionObserver((entry)=>{
+      //   if(entry[0].isIntersecting){
+      //     let container = document.querySelector(".container");
+      //     for(let i = 0 ; i < 4 ; i++){
+            
+      //       if(this.lastIdx < this.videos.length){
+              
+      //         let div = document.createElement("div");
+      //         let video = document.createElement("app-card");
+      //         video.setAttribute("videos","videos[this.lastIdx]");
+      //         div.appendChild(video);
+      //         container.appendChild(div);
+      //         this.lastIdx++;
+      //       }
+      //     }
+      //   }
+      // });
+      // this.observer.observe(document.querySelector('.footer'));
+      // console.log(this.day);
       
     })
   }

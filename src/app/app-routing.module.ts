@@ -13,10 +13,11 @@ import { ChannelComponent } from './channel/channel.component'
 import { PlaylistComponent } from './playlist/playlist.component'
 import { ChHomeComponent } from './channel/ch-home/ch-home.component'
 import { ChVideoComponent } from './channel/ch-video/ch-video.component';
-import { TestingComponent } from './testing/testing.component';
 import { ChPlaylistComponent } from './channel/ch-playlist/ch-playlist.component';
 import { ChCommunityComponent } from './channel/ch-community/ch-community.component';
 import { ChAboutComponent } from './channel/ch-about/ch-about.component';
+import { PremiumComponent } from './premium/premium.component'
+import { SearchComponent } from './search/search.component'
 
 const routes: Routes = [
   { path: '',component: HomeComponent },
@@ -39,7 +40,8 @@ const routes: Routes = [
     ]
   },
   { path: 'playlist/:id', component: PlaylistComponent},
-  { path: 'testing', component: TestingComponent}
+  { path: 'premium', component: PremiumComponent},
+  { path: 'search/:name', component: SearchComponent},
 
 ];
 

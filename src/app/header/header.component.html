@@ -13,10 +13,22 @@
     </div>
 
     <div class="">
-        <div class="search-bar">
-            <input type="text" name="search" id="search" placeholder="Search">
+        <div class="search-bar" (keyup)="getAll()" (click)="toggleSearch()">
+            <input type="text" name="search" id="search" placeholder="Search" autocomplete="off">
         </div>
-        <div class="search">
+        <div class="autocomplete" *ngIf="toggle_search">
+            <div class="isi" *ngFor="let i of searchVideos; index as k" (click)="inputSearch(i)" >
+                <p *ngIf="k < 3" >{{i.name}}</p>
+            </div>
+            <div class="isi" *ngFor="let i of searchPlaylists; index as k" (click)="inputSearch(i)" >
+                <p *ngIf="k < 3">{{i.name}}</p>
+            </div>
+            <div class="isi" *ngFor="let i of searchChannel; index as k" (click)="inputSearch(i)" >
+                <p *ngIf="k < 3">{{i.name}}</p>
+            </div>
+        </div>
+        
+        <div class="search" (click)="search()">
             <button class="search-button">
                 <i class="fas fa-search"></i>
             </button>
@@ -83,7 +95,7 @@
         <div>
             <i class="fa fa-id-card-o nav-icon"></i>
         </div>
-        <p>Membership</p>
+        <a href="/membership"><p>Membership</p></a>
     </div>
     <div>
         <hr>
@@ -235,7 +247,7 @@
         <div>
             <i class="fas fa-dollar-sign"></i>
         </div>
-        <p>Paid Membership</p>
+        <a href="/premium"><p>Paid Membership</p></a>
     </div>
     <div class="text-user" (click)="toggleSign()">
         <div>

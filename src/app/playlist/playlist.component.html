@@ -13,7 +13,7 @@
                 <div>
                     <p>{{playlist[0].name}}</p>
                 </div>
-                <div (click)="toggleTitle()">
+                <div (click)="toggleTitle()" *ngIf="toggle_self">
                     <i class="fas fa-pen"></i>
                 </div>
             </div>
@@ -34,11 +34,11 @@
                 <p>{{detail.length}} videos &bull; {{playlist[0].views}} views &bull; Updated {{updated}}</p>
             </div>
             <div class="privacy" (click)="togglePrivacy()">
-                <div class="text-logo">
+                <div class="text-logo" *ngIf="toggle_self">
                     <p>{{playlist[0].privacy}} </p>
                     <i class="fas fa-caret-down"></i>
                 </div>
-                <div class="dropdown" *ngIf="toggle_privacy">
+                <div class="dropdown" *ngIf="toggle_privacy && toggle_self">
                     <div class="public" (click)="updatePrivacyPublic()">
                         <div class="img">
                             <i class="fas fa-globe-americas fa-2x"></i>
@@ -66,7 +66,7 @@
                 <div class="second">
                     <i class="fas fa-share"></i>
                 </div>
-                <div class="third" (click)="toggleMore()">
+                <div class="third" (click)="toggleMore()" *ngIf="toggle_self">
                     <i class="fas fa-ellipsis-h"></i>
                     <div class="dropdown" *ngIf="toggle_more">
                         <div>
@@ -88,7 +88,7 @@
                 <div class="description-text">
                     <p>{{playlist[0].description}}</p>
                 </div>
-                <div class="logo" (click)="toggleDesc()">
+                <div class="logo" (click)="toggleDesc()" *ngIf="toggle_self">
                     <i class="fas fa-pen"></i>
                 </div>
             </div>
@@ -117,7 +117,6 @@
                 </div>
             </div>
         </div>
-        
     </div>
 
     <div class="right">
@@ -125,8 +124,13 @@
             <i class="fas fa-sort-amount-down"></i>
             <p>SORT BY</p>
         </div>
-        <div *ngFor="let i of detail">
-            <app-playlist-video [detailVideo]="i"></app-playlist-video>
+        <div class="container-vid">
+            <div *ngFor="let i of detail">
+                <app-playlist-video [detailVideo]="i" [playlist]="playlist"></app-playlist-video>
+            </div>
+            <div class=".footer">
+                <p> </p>
+            </div>
         </div>
         <div class="dropdown" *ngIf="toggle_sort">
             <div>

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag'
+import { DataService } from '../data.service';
 
 
 @Component({
@@ -10,16 +11,21 @@ import gql from 'graphql-tag'
 })
 export class PlaylistVideoComponent implements OnInit {
   @Input() detailVideo
+  @Input() playlist
 
   videos: any;
   user: any;
   toggle_etc:boolean;
   duration: string;
   calculate_day: string;
+  toggle_self: boolean = false;;
 
-  constructor(private apollo: Apollo) { }
+  constructor(private apollo: Apollo, private data: DataService) { }
 
   ngOnInit(): void {
+    if(this.playlist[0].user_id == this.data.user_id){
+      this.toggle_self = true;
+    }
     console.log(this.detailVideo);
     this.toggle_etc = false;
     this.getVideo();
@@ -98,9 +104,26 @@ export class PlaylistVideoComponent implements OnInit {
       }
     }).subscribe(result => {
       this.user = result.data.getUserId;
+      
     }, (error) => {
       console.log('there was an error sending the query', error);
     });
+  }
+
+  deleteDetail(){
+    this.apollo.mutate({
+      mutation: gql`
+      mutation deleteDetail($playlistid: Int!, $videoid: Int!){
+        deleteDetailPlaylistVideo(playlistid: $playlistid, videoid: $videoid)
+      }
+      `,
+      variables:{
+        playlistid: this.detailVideo.playlist_id,
+        videoid: this.detailVideo.video_id
+      }
+    }).subscribe(({data})=>{
+      console.log(data);
+    })
   }
 
   calculateDuration(){

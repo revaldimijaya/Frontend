@@ -1,0 +1,11 @@
+<div class="container">
+    <div *ngFor="let i of searchVideos">
+        <app-horizontal-video [videos]="i"></app-horizontal-video>
+    </div>
+    <div *ngFor="let i of searchPlaylists" style="width: 307px; margin: 15px 0; padding: 5px;">
+        <app-playlist-search [playlist]="i" ></app-playlist-search>
+    </div>
+    <div *ngFor="let i of searchChannel">
+        <app-channel-list [user]="i"></app-channel-list>
+    </div>    
+</div>

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-next-video',
@@ -15,10 +16,19 @@ export class NextVideoComponent implements OnInit {
   duration: string;
   views: string;
   date = new Date();
-  constructor(private apollo: Apollo) { }
+  toggle_modal : boolean = false;
+  toggle_login: boolean;
+  toggle_other: boolean;
+
+  constructor(private apollo: Apollo, private data: DataService) { }
 
   ngOnInit(): void {
     this.getUser();
+    if(this.data.user_id == ""){
+      this.toggle_login = false;
+    } else {
+      this.toggle_login = true;
+    }
     var startDate = new Date(Date.UTC(this.nextVideo.year, this.nextVideo.month, this.nextVideo.day, this.nextVideo.hour, this.nextVideo.minute, this.nextVideo.second));
     var d = new Date();
     var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
@@ -32,6 +42,18 @@ export class NextVideoComponent implements OnInit {
       this.views = this.nextVideo.watch;
     }
     this.calculate_day = this.calculateDay(startDate, endDate);
+  }
+
+  toggleModal(){
+    this.toggle_modal = !this.toggle_modal;
+  }
+
+  toggleOther(){
+    this.toggle_other = !this.toggle_other;
+  }
+
+  href(){
+    window.location.href= "video/"+this.nextVideo.id;
   }
 
   calculateDuration(){
@@ -155,7 +177,7 @@ export class NextVideoComponent implements OnInit {
   }
 
   getUser(){
-    this.apollo.watchQuery({
+    this.apollo.query({
       query: gql `
         query getUserId($id: String!) {
           getUserId(userid: $id) {
@@ -170,7 +192,7 @@ export class NextVideoComponent implements OnInit {
       variables:{
         id: this.nextVideo.user_id
       }
-    }).valueChanges.subscribe(result => {
+    }).subscribe(result => {
       this.user = result.data.getUserId;
     })
   }

@@ -1,0 +1,23 @@
+<div class="info" >
+    <div class="info-first">
+        <div class="user-photo" [routerLink]="['/channel',user.id]" >
+            <img src="{{user.photo}}" alt="">
+        </div>
+        <div class="name">
+            <h3 style="margin-top: 0;">{{user.name}}</h3>
+            <p>{{total_subs}} subscribers</p>
+            <p>{{user.description}}</p>
+            <p>{{totalVideo}} videos</p>
+        </div>
+    </div>
+    <div>
+        <div class="subs-notif" [style.display]="toggle_subs ? 'flex':'none'">
+            <div class="subs" (click)="subs()" [style.background-color]="change_subs ? 'red':'grey'">
+                <p>SUBSCRIBE</p>
+            </div>
+            <div class="notif" [style.display]="change_subs ? 'none':'flex'">
+                <i class="fas fa-bell"></i>
+            </div>
+        </div>
+    </div>
+</div>

@@ -5,14 +5,16 @@
     <div *ngFor="let k of videos; index as i" [style.display]="(day[i]) < 1 ? 'flex':'none'" >
         <app-card [videos]="k"></app-card>
     </div>
+    
 </div>
 <div class="section">
     <p>This week</p>
 </div>
 <div class="container">
-    <div *ngFor="let k of videos; index as i" [style.display]="(day[i]) > 0 && (day[i]) < 8 ? 'flex':'none'" >
+    <div *ngFor="let k of videos; index as i" [style.display]="(day[i]) >= 1 && (day[i]) < 8 ? 'flex':'none'" >
         <app-card [videos]="k"></app-card>
     </div>
+    
 </div>
 <div class="section">
     <p>This month</p>
@@ -21,6 +23,7 @@
     <div *ngFor="let k of videos; index as i" [style.display]="(day[i]) > 7 && (day[i]) <= 31 ? 'flex':'none'" >
         <app-card [videos]="k"></app-card>
     </div>
+    
 </div>
 <div class="section">
     <p>This year</p>
@@ -29,4 +32,5 @@
     <div *ngFor="let k of videos; index as i" [style.display]="(day[i]) > 30 ? 'flex':'none'" >
         <app-card [videos]="k"></app-card>
     </div>
+    
 </div>

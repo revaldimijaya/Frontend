@@ -21,7 +21,7 @@
                 <p>{{views}} views &bull; {{calculate_day}}</p>
             </div>
         </div>
-        <div class="other">
+        <div class="other" *ngIf="toggle_login">
             <i class="fas fa-ellipsis-v" (click)="toggleOther()"></i>
             <div class="dropdown" *ngIf="toggle_other">
                 <div class="queue">
@@ -44,39 +44,7 @@
         </div>
     </div>
     <div class="modal" *ngIf="toggle_modal">
-        <div class="modal-content">
-            <div class="exit">
-                <p>Save to...</p>
-                <p style="font-size: 28px; margin: 0;" (click)="toggleModal()">&times;</p>
-            </div>
-            <div>
-                <hr>
-            </div>
-            <div class="list" >
-                <div *ngFor="let i of playlists">
-                    <app-playlist-list [playlist]="i" [video]="videos"></app-playlist-list>
-                </div>
-            </div>
-            <div>
-                <hr>
-            </div>
-            <div class="create-playlist" (click)="toggleCreate()">
-                <i class="fas fa-plus"></i>
-                <p>Create new playlist</p>
-            </div>
-            <div class="dropdown-playlist" *ngIf="toggle_create">
-                <p>Title</p>
-                <input type="text" name="title" id="title">
-                <p>Privacy</p>
-                <select name="privacy" id="privacy">
-                    <option value="public">Public</option>
-                    <option value="private">Private</option>
-                </select>
-                <div (click)="createPlaylist()" style="display: flex; justify-content: end; align-items: flex-end; text-align: end; color: blue;">
-                    <p style="display: flex; justify-content: end; align-items: flex-end;">Done</p>
-                </div>
-            </div>
-        </div>
+        <app-modal-playlist  [videos]="videos"></app-modal-playlist>
     </div>
 </div>
 

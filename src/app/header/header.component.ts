@@ -20,6 +20,7 @@ export class HeaderComponent implements OnInit {
   toggle_modal = false;
   toggle_user = false;
   toggle_sign: boolean;
+  toggle_search: boolean = false;
 
   users = [];
   user: SocialUser;
@@ -27,6 +28,10 @@ export class HeaderComponent implements OnInit {
   message: string;
   subscription: any;
   playlist: any;
+
+  searchVideos: any;
+  searchPlaylists: any;
+  searchChannel: any;
 
   constructor(private authService: SocialAuthService, private apollo: Apollo, private data: DataService ) { }
 
@@ -66,6 +71,18 @@ export class HeaderComponent implements OnInit {
 
   toggleSign(){
     this.toggle_sign = !this.toggle_sign;
+  }
+
+  toggleSearch(){
+    this.toggle_search = !this.toggle_search
+  }
+
+  inputSearch(i){
+    (<HTMLInputElement>document.getElementById("search")).value = i.name;
+  }
+
+  search(){
+    window.location.href = "/search/"+(<HTMLInputElement>document.getElementById("search")).value;
   }
 
   getPlaylist(){
@@ -143,6 +160,101 @@ export class HeaderComponent implements OnInit {
     }).valueChanges.subscribe(result =>{
       this.subscription = result.data.getSubscribeByUser
     })
+  }
+
+  getSearchVideo(){
+    this.apollo.query({
+      query: gql`
+      query searchVideo($name: String!){
+        searchVideo(name: $name){
+          id,
+          user_id,
+          url,
+          watch,
+          like,
+          dislike,
+          restriction,
+          location,
+          name,
+          premium,
+          category,
+          thumbnail,
+          description,
+          visibility,
+          day,
+          month,
+          year,
+          hour,
+          minute,
+          second
+        }
+      }      
+      `,
+      variables:{
+        name: "%"+(<HTMLInputElement>document.getElementById("search")).value+"%"
+      }
+    }).subscribe(result => {
+      this.searchVideos = result.data.searchVideo
+    })
+  }
+
+  getSearchPlaylists(){
+    this.apollo.query({
+      query: gql`
+      query searchPlaylists($name: String!){
+        searchPlaylist(name:$name){
+          id,
+          name,
+          description,
+          second,
+          minute,
+          hour,
+          day,
+          month,
+          year,
+          privacy,
+          user_id,
+          views
+        }
+      }
+      `,
+      variables:{
+        name: "%"+(<HTMLInputElement>document.getElementById("search")).value+"%"
+      }
+    }).subscribe(result => {
+      this.searchPlaylists = result.data.searchPlaylist
+    })
+  }
+
+  getSearchChannel(){
+    this.apollo.query({
+      query: gql`
+      query searchChannel($name: String!){
+        searchChannel(name: $name){
+          id,
+          name,
+          photo,
+          membership,
+          subscriber,
+          created_at,
+          views,
+          description,
+          header
+        }
+      }
+      `,
+      variables:{
+        name: "%"+(<HTMLInputElement>document.getElementById("search")).value+"%"
+      }
+    }).subscribe(result => {
+      this.searchChannel = result.data.searchChannel
+    })
+  }
+
+  getAll(){
+    this.getSearchChannel();
+    this.getSearchPlaylists();
+    this.getSearchVideo();
   }
 
   signOut(): void {

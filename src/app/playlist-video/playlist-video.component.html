@@ -18,11 +18,11 @@
             <p>{{user.name}}</p>
         </div>
     </div>
-    <div class="other">
+    <div class="other" *ngIf="toggle_self">
         <div class="icon" (click)="toggleEtc()">
             <i class="fas fa-ellipsis-v"></i>
             <div class="etc" *ngIf="toggle_etc">
-                <div class="remove">
+                <div class="remove" (click)="deleteDetail()">
                     <div>
                         <i class="fas fa-trash"></i>
                     </div>

@@ -1,5 +1,5 @@
-<div class="video-container" *ngIf="validate_day < 8" [routerLink]="['/video', videos.id]">
-    <div class="video">
+<div class="video-container" >
+    <div class="video" [routerLink]="['/video', videos.id]">
         <img src="{{videos.thumbnail}}" alt="">
     </div>
     <div class="video-info">
@@ -15,4 +15,28 @@
             <p>{{videos.description}}</p>
         </div>
     </div>
+    <div class="other" *ngIf="toggle_login">
+        <i class="fas fa-ellipsis-v" (click)="toggleOther()"></i>
+        <div class="dropdown" *ngIf="toggle_other">
+            <div class="queue">
+                <div class="logo">
+                    <i class="fas fa-list-ol"></i>
+                </div>
+                <div class="text">
+                    <p>Add to queue</p>
+                </div>
+            </div>
+            <div class="playlist" (click)="toggleModal()">
+                <div class="logo">
+                    <i class="fas fa-list-ul"></i>
+                </div>
+                <div class="text">
+                    <p>Save to playlist</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="toggle_modal">
+    <app-modal-playlist [videos]="videos"></app-modal-playlist>
 </div>

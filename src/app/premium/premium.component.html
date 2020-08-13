@@ -1,0 +1,75 @@
+<div class="container" [@fade]>
+    <div class="not-premium" *ngIf="toggle_premium">
+        <div class="logo">
+            <img src="../../assets/images/ytr_lp2_logo_premium_desktop_552x71.png" alt="">
+        </div>
+        <div class="text">
+            <p>View premium videos, View not yet published or scheduled videos, Download videos.</p>
+        </div>
+        <div class="history">
+            <p>History</p>
+            <div *ngFor="let i of history">
+                <p>Purchase: {{i}}</p>
+
+            </div>
+        </div>
+        <div class="offer">
+            <div class="left" *ngIf="isMonth">
+                <p>Current Plan</p>
+                <h4>Month</h4>
+                <p>59,000.00/month</p>
+            </div>
+            <div class="right" *ngIf="!isMonth">
+                <p>Current Plan</p>
+                <h4>Annual</h4>
+                <p>708,000.00/year</p>
+            </div>
+        </div>
+        <div class="next-payment" >
+            <p>Next payment : {{date1}}</p>
+        </div>
+        <div class="text2">
+            <p>We'll remind you 7 days before your trial ends Recurring billing • Cancel anytime</p>
+        </div>
+        <div class="text3">
+            <p>Or save money with a family or student plan</p>
+        </div>
+        <div class="text4">
+            <p>Restrictions apply. Learn more here.</p>
+        </div>
+    </div>
+    
+    <div class="not-premium" *ngIf="!toggle_premium">
+        <div class="logo">
+            <img src="../../assets/images/ytr_lp2_logo_premium_desktop_552x71.png" alt="">
+        </div>
+        <div class="text">
+            <p>View premium videos, View not yet published or scheduled videos, Download videos.</p>
+        </div>
+        <div class="offer">
+            <div class="left">
+                <h4>Month</h4>
+                <p>59,000.00/month</p>
+                <div class="button-buy1">
+                    <p (click)="createMembershipMonth()">Register</p>
+                </div>
+            </div>
+            <div class="right">
+                <h4>Annual</h4>
+                <p>708,000.00/year</p>
+                <div class="button-buy2">
+                    <p (click)="createMembershipYear()">Register</p>
+                </div>
+            </div>
+        </div>
+        <div class="text2">
+            <p>We'll remind you 7 days before your trial ends Recurring billing • Cancel anytime</p>
+        </div>
+        <div class="text3">
+            <p>Or save money with a family or student plan</p>
+        </div>
+        <div class="text4">
+            <p>Restrictions apply. Learn more here.</p>
+        </div>
+    </div>
+</div>

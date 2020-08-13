@@ -17,6 +17,7 @@ export class PlaylistComponent implements OnInit {
   toggle_more: boolean;
   toggle_privacy: boolean;
   toggle_sort: boolean;
+  toggle_self: boolean = false;
 
   playlist: any;
   detail: any;
@@ -27,6 +28,9 @@ export class PlaylistComponent implements OnInit {
   privacy: string;
   description: string;
   updated: Date;
+
+  lastIdx: number;
+  observer: IntersectionObserver;
 
   videoThumbnail: string;
 
@@ -72,6 +76,10 @@ export class PlaylistComponent implements OnInit {
     this.toggle_sort = !this.toggle_sort;
   }
 
+  toggleSelf(){
+
+  }
+
   getPlaylist(){
     this.apollo.query({
       query: gql`
@@ -97,6 +105,9 @@ export class PlaylistComponent implements OnInit {
       }
     }).subscribe(result =>{
       this.playlist = result.data.getPlaylistId;
+      if(this.playlist[0].user_id == this.data.user_id){
+        this.toggle_self = true;
+      }
       this.title = this.playlist[0].name;
       this.description = this.playlist[0].description;
       this.privacy = this.playlist[0].privacy;
@@ -108,6 +119,7 @@ export class PlaylistComponent implements OnInit {
   }
 
   getDetail(){
+    this.lastIdx = 4;
     this.apollo.query({
       query: gql`
         query getDetail($id: Int!){
@@ -128,6 +140,25 @@ export class PlaylistComponent implements OnInit {
       } else {
         this.videoThumbnail = "https://firebasestorage.googleapis.com/v0/b/tpa-web-71a78.appspot.com/o/no-thumbnail.jpg?alt=media&token=b8482f56-e21f-4cd6-bd51-59ed3c8e4688"
       }
+      this.observer = new IntersectionObserver((entry)=>{
+        if(entry[0].isIntersecting){
+          let container = document.querySelector(".container-vid");
+          for(let i = 0 ; i < 4 ; i++){
+            
+            if(this.lastIdx < this.detail.length){
+              
+              let div = document.createElement("div");
+              let video = document.createElement("app-playlist-video");
+              video.setAttribute("detailVideo","detailVideo[this.lastIdx]");
+              div.appendChild(video);
+              container.appendChild(div);
+              this.lastIdx++;
+            }
+          }
+        }
+      });
+      this.observer.observe(document.querySelector('.footer'));
+
     }, (error) => {
       console.log('there was an error sending the query', error);
     });
@@ -184,6 +215,7 @@ export class PlaylistComponent implements OnInit {
     }).subscribe(result => {
       this.video = result.data.getVideoId;
       this.videoThumbnail = this.video.thumbnail
+      
     }, (error) => {
       console.log('there was an error sending the query', error);
     });
@@ -240,6 +272,8 @@ export class PlaylistComponent implements OnInit {
       console.log('there was an error sending the query', error);
     });
   }
+
+  
 
   updateTitle(){
     this.title = (<HTMLInputElement>document.getElementById("title")).value;

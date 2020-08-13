@@ -53,9 +53,36 @@
     <div>
         <hr>
     </div>
+    <div>
+        <p>Today</p>
+    </div>
     <div class="container-video">
-        <div *ngFor="let video of videos" >
-            <app-card [videos] = "video"></app-card>
+        <div *ngFor="let video of videos;index as i" [style.display]="(day[i]) < 1 ? 'flex':'none'" >
+            <app-card *ngIf="i < 20" [videos] = "video"></app-card>
+        </div>
+    </div>
+    <div>
+        <p>This week</p>
+    </div>
+    <div class="container-video">
+        <div *ngFor="let video of videos;index as i" [style.display]="(day[i]) >= 1 && (day[i]) <= 7 ? 'flex':'none'" >
+            <app-card  *ngIf="i < 20" [videos] = "video"></app-card>
+        </div>
+    </div>
+    <div>
+        <p>This month</p>
+    </div>
+    <div class="container-video">
+        <div *ngFor="let video of videos;index as i" [style.display]="(day[i]) > 7 && (day[i]) <= 31 ? 'flex':'none'" >
+            <app-card  *ngIf="i < 20" [videos] = "video"></app-card>
+        </div>
+    </div>
+    <div>
+        <p>All time</p>
+    </div>
+    <div class="container-video">
+        <div *ngFor="let video of videos;index as i">
+            <app-card  *ngIf="i < 20" [videos] = "video"></app-card>
         </div>
     </div>
 </div>

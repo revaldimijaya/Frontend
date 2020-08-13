@@ -1,0 +1,39 @@
+.info{
+    padding: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &:hover{
+        background-color: grey;
+    }
+    div{
+        padding: 0 10px 0 10px;
+    }
+    .info-first{
+        display: flex;
+    }
+
+    .user-photo{
+        img{
+            border-radius: 50px;
+        }
+    }
+
+    .subs-notif{
+        display: flex;
+        align-items: center;
+
+        .subs{
+            
+            background-color: red;
+            p{
+                color: white;
+            }
+        }
+    }
+    .customize{
+        display: flex;
+        align-items: center;
+        background-color: lightblue;
+    }
+}

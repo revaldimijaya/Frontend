@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.lastIdx = 8;
 
-    this.apollo.watchQuery({
+    this.apollo.query({
       query: gql`
         {
           videos{
@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit {
           }
         }
       `,
-    }).valueChanges.subscribe(result => {
+    }).subscribe(result => {
       this.videos = this.shuffle(result.data.videos);
 
       this.observer = new IntersectionObserver((entry)=>{

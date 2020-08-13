@@ -1,6 +1,6 @@
-<a href="video/{{nextVideo.id}}">
+
 <div class="container">
-    <div class="thumbnail">
+    <div class="thumbnail" (click)="href()">
         <img src="{{nextVideo.thumbnail}}" alt="">
     </div>
     
@@ -15,5 +15,28 @@
             <p>{{views}} views &bull; {{calculate_day}}</p>
         </div>
     </div>
+    <div class="other" *ngIf="toggle_login">
+        <i class="fas fa-ellipsis-v" (click)="toggleOther()"></i>
+        <div class="dropdown" *ngIf="toggle_other">
+            <div class="queue">
+                <div class="logo">
+                    <i class="fas fa-list-ol"></i>
+                </div>
+                <div class="text">
+                    <p>Add to queue</p>
+                </div>
+            </div>
+            <div class="playlist" (click)="toggleModal()">
+                <div class="logo">
+                    <i class="fas fa-list-ul"></i>
+                </div>
+                <div class="text">
+                    <p>Save to playlist</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</a>
+<div *ngIf="toggle_modal">
+    <app-modal-playlist [videos]="nextVideo"></app-modal-playlist>
+</div>

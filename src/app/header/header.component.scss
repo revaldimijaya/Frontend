@@ -1,4 +1,5 @@
 .flex-container{
+    box-shadow: 1px 1px 5px grey;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -60,6 +61,35 @@ p {
 
 .search {
     padding: 0px 10px 0px 10px;
+    background-color: lightgrey;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid grey;
+    i{
+        font-size: 14px;
+    }
+
+}
+.autocomplete{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 19.15rem;
+    background-color: white;
+    top: 40px;
+    div{
+        padding: 0 10px;
+        &:hover{
+            background-color: lightgrey;
+        }
+    }
+    
+    p{
+        font-size: 14px;
+        font-family: Roboto, "Helvetica Neue", sans-serif;
+    }
 }
 
 .studio {

@@ -23,10 +23,16 @@ export class CardComponent implements OnInit {
   toggle_other: boolean;
   toggle_modal: boolean;
   toggle_create: boolean;
+  toggle_login: boolean;
 
   constructor(private apollo: Apollo, private data: DataService) { }
 
   ngOnInit(): void {
+    if(this.data.user_id == ""){
+      this.toggle_login = false;
+    } else {
+      this.toggle_login = true;
+    }
     var startDate = new Date(Date.UTC(this.videos.year, this.videos.month, this.videos.day, this.videos.hour, this.videos.minute, this.videos.second));
     var d = new Date();
     var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
@@ -48,7 +54,7 @@ export class CardComponent implements OnInit {
 
     this.getPlaylist();
 
-    this.apollo.watchQuery({
+    this.apollo.query({
       query: gql `
         query getUserId($id: String!) {
           getUserId(userid: $id) {
@@ -63,7 +69,7 @@ export class CardComponent implements OnInit {
       variables:{
         id: this.videos.user_id
       }
-    }).valueChanges.subscribe(result => {
+    }).subscribe(result => {
       this.user = result.data.getUserId;
     })
   }

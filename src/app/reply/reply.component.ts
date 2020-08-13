@@ -25,7 +25,10 @@ export class ReplyComponent implements OnInit {
 
   ngOnInit(): void {
     this.photoURL = this.data.photoUrl.toString();
-    this.reply_date = this.calculateDay(this.replys.day, this.replys.month, this.replys.year, this.date.getDay(), this.date.getMonth()+1, this.date.getFullYear())
+    var startDate = new Date(Date.UTC(this.replys.year, this.replys.month, this.replys.day, this.replys.hour, this.replys.minute, this.replys.second));
+    var d = new Date();
+    var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
+    this.reply_date = this.calculateDay(startDate, endDate);
     this.totalLike();
     this.totalDislike();
     this.apollo.watchQuery({
@@ -83,33 +86,45 @@ export class ReplyComponent implements OnInit {
     return (n2 - n1);
   }
 
-  calculateDay(d1:number, m1:number, y1:number, d2:number, m2:number, y2:number): string{
-    var days = this.getDifference(d1,m1,y1,d2,m2,y2)
-    console.log(days);
+  calculateDay(startDate: Date, endDate: Date): string{
+    var days = this.getDifference(startDate.getDate(),startDate.getMonth(),startDate.getFullYear(),endDate.getDate(),endDate.getMonth(),endDate.getFullYear())
     var year = 0;
     var month = 0;
     var week = 0;
     if(days >= 365){
-      while(days > 0){
+      while(days >= 365){
         year++;
-        days /= 365;
+        days -= 365;
       }
       return year + " years ago"
 
     } else if (days >= 30){
-      while(days > 30){
+      while(days >= 30){
         month++;
-        days /= 30;
+        days -= 30;
       }
       return month + " months ago"
 
     } else if (days >= 7){
-      while(days > 7){
+      while(days >= 7){
         week++;
-        days /= 7
+        days -= 7;
       }
       return week + " weeks ago"
     } else {
+      if(days <= 0){
+        var diff = (endDate.getTime() - startDate.getTime()) / 1000;
+
+        var date = diff / (60 * 60);
+        date = Math.abs(Math.round(date));
+        if(date > 0) return date + " hours ago";
+    
+        date = diff / 60;
+        date = Math.abs(Math.round(date));
+        if(date > 0) return date + " minutes ago";
+    
+        return diff + " seconds ago";
+      }
       return days + " days ago"
     }
   }

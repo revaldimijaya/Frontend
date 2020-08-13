@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-horizontal-video',
@@ -13,8 +14,10 @@ export class HorizontalVideoComponent implements OnInit {
   user: any;
   calculate_day: string;
   validate_day: number;
-
-  constructor(private apollo:Apollo) { }
+  toggle_login: boolean;
+  toggle_other: boolean;
+  toggle_modal: boolean;
+  constructor(private apollo:Apollo, private data:DataService) { }
 
   ngOnInit(): void {
     this.validate_day = 0;
@@ -22,8 +25,13 @@ export class HorizontalVideoComponent implements OnInit {
     var d = new Date();
     var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
     this.calculate_day = this.calculateDay(startDate, endDate);
-    
+    if(this.data.user_id == ""){
+      this.toggle_login = false;
+    } else {
+      this.toggle_login = true;
+    }
     this.apollo.watchQuery({
+      
       query: gql `
         query getUserId($id: String!) {
           getUserId(userid: $id) {
@@ -43,6 +51,13 @@ export class HorizontalVideoComponent implements OnInit {
     })
   }
 
+  toggleOther(){
+    this.toggle_other = !this.toggle_other;
+  }
+
+  toggleModal(){
+    this.toggle_modal = !this.toggle_modal;
+  }
   monthDays:number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
   countLeapYears(month:number, year:number): number{
