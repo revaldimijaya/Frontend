@@ -74,6 +74,10 @@ export class CardComponent implements OnInit {
     })
   }
 
+  toUser(){
+    window.location.href="channel/"+this.user.id;
+  }
+
   toggleOther(){
     this.toggle_other = !this.toggle_other;
   }
