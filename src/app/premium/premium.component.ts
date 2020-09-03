@@ -42,6 +42,7 @@ export class PremiumComponent implements OnInit {
   toggle_premium: boolean;
   isMonth: boolean;
   date1 : Date;
+  strDate: string="";
   date2 : Date;
   history: string[]=[];
 
@@ -49,10 +50,13 @@ export class PremiumComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.data.user_id.toString();
+    console.log(this.id);
+    if(this.id == ""){
+      window.location.href="/";
+      return;
+    }
     this.getUser();
   }
-
-  
 
   getUser(){
     this.apollo.query({
@@ -146,10 +150,18 @@ export class PremiumComponent implements OnInit {
       this.memberships = result.data.getMembership
 
       this.memberships.forEach(element => {
-        this.history.push((new Date(element.created_at)).toString());
+        var date = new Date(element.created_at);
+        this.history.push(date.getDate().toString() +"-"+date.getMonth().toString() +"-"+date.getFullYear().toString()+" "+element.type);
       });
 
+      if(this.memberships[this.memberships.length-1].type == "month"){
+        this.isMonth = true;
+      } else {
+        this.isMonth = false;
+      }
+
       this.date1 = new Date(this.memberships[this.memberships.length-1].end_at);
+      this.strDate = this.date1.getDate().toString() +"-"+this.date1.getMonth().toString() +"-"+this.date1.getFullYear().toString()
       var d = new Date();
       this.date2 = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
       console.log(this.date1, this.date2);

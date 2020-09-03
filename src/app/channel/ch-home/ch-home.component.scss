@@ -2,4 +2,19 @@
     display: grid;  
     grid-template-columns: repeat(auto-fit, 310px);
     grid-template-rows: repeat(auto-fit, 260px);
+    align-items: center;
+    .all-video{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: black;
+        opacity: 70%;
+        width: 40%;
+        height: 93%;
+        margin-left: 8px;
+        cursor: pointer;
+        p{
+            color: white;
+        }
+    }
 }

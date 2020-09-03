@@ -43,9 +43,13 @@ export class PlaylistComponent implements OnInit {
   toggle_privacy: boolean;
   toggle_sort: boolean;
   toggle_self: boolean = false;
+  toggle_share: boolean = false;
+  section: string;
 
   playlist: any;
+  firstPlaylist: any;
   detail: any;
+  detailLen: number;
   user: any;
   video: any;
 
@@ -69,7 +73,7 @@ export class PlaylistComponent implements OnInit {
       this.id = parseInt(params.get('id'));
     });
     console.log(this.id);
-
+    this.section = "playlist";
     this.toggle_desc = false;
     this.toggle_title = false;
     this.toggle_more = false;
@@ -139,6 +143,10 @@ export class PlaylistComponent implements OnInit {
     console.log(this.title + this.description + this.privacy)
   }
 
+  toggleShare(){
+    this.toggle_share = !this.toggle_share;
+  }
+
   toggleTitle(){
     this.toggle_title = !this.toggle_title;
   }
@@ -162,6 +170,10 @@ export class PlaylistComponent implements OnInit {
   toggleSelf(){
 
   }
+
+  playlistName: string;
+  views: number;
+  playlistDescription: string;
 
   getPlaylist(){
     this.apollo.query({
@@ -189,6 +201,10 @@ export class PlaylistComponent implements OnInit {
     }).subscribe(result =>{
       this.playlist = result.data.getPlaylistId;
       this.checkSubs();
+      this.firstPlaylist = this.playlist[0];
+      this.playlistName = this.firstPlaylist.name;
+      this.playlistDescription = this.firstPlaylist.description;
+      this.views = this.firstPlaylist.views;
       if(this.playlist[0].user_id == this.data.user_id){
         this.toggle_self = true;
         this.toggle_subs = false;
@@ -203,8 +219,9 @@ export class PlaylistComponent implements OnInit {
     });
   }
 
+
   getDetail(){
-    this.lastIdx = 4;
+    this.lastIdx = 2;
     this.apollo.query({
       query: gql`
         query getDetail($id: Int!){
@@ -219,7 +236,8 @@ export class PlaylistComponent implements OnInit {
         id: this.id
       }
     }).subscribe(result => {
-      this.detail = result.data.getPlaylistVideo
+      this.detail = result.data.getPlaylistVideo;
+      this.detailLen = this.detail.length;
       if(this.detail.length != 0){
         this.getVideo(this.detail[0].video_id);
       } else {
@@ -249,6 +267,9 @@ export class PlaylistComponent implements OnInit {
     });
   }
 
+  name: string;
+  photo: string;
+
   getUser(temp: any){
     this.apollo.query({
       query: gql `
@@ -267,9 +288,15 @@ export class PlaylistComponent implements OnInit {
       }
     }).subscribe(result => {
       this.user = result.data.getUserId;
+      this.name = this.user.name;
+      this.photo = this.user.photo;
     }, (error) => {
       console.log('there was an error sending the query', error);
     });
+  }
+
+  hrefChannel(){
+    window.location.href = "channel/"+this.user.id;
   }
 
   getVideo(id: number){
@@ -358,7 +385,20 @@ export class PlaylistComponent implements OnInit {
     });
   }
 
-  
+  deleteAllPlaylist(){
+    this.apollo.mutate({
+      mutation: gql`
+      mutation deleteAll($id: Int!){
+        deleteAllDetail(id: $id)
+      }
+      `,
+      variables:{
+        id: this.id
+      }
+    }).subscribe(({data})=>{
+      console.log("got data", data);
+    })
+  }
 
   updateTitle(){
     this.title = (<HTMLInputElement>document.getElementById("title")).value;

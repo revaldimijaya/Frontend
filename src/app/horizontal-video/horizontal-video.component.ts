@@ -12,11 +12,17 @@ export class HorizontalVideoComponent implements OnInit {
   @Input() videos;
 
   user: any;
+  name: string;
   calculate_day: string;
   validate_day: number;
   toggle_login: boolean;
   toggle_other: boolean;
   toggle_modal: boolean;
+  toggle_premium: boolean = false;
+
+  duration: string;
+  views: string;
+
   constructor(private apollo:Apollo, private data:DataService) { }
 
   ngOnInit(): void {
@@ -30,8 +36,12 @@ export class HorizontalVideoComponent implements OnInit {
     } else {
       this.toggle_login = true;
     }
+
+    if(this.videos.premium == "premium"){
+      this.toggle_premium = true;
+    }
+    
     this.apollo.watchQuery({
-      
       query: gql `
         query getUserId($id: String!) {
           getUserId(userid: $id) {
@@ -48,7 +58,73 @@ export class HorizontalVideoComponent implements OnInit {
       }
     }).valueChanges.subscribe(result => {
       this.user = result.data.getUserId;
+      this.name = this.user.name;
     })
+
+    this.calculateViews();
+    this.calculateDuration();
+  }
+
+  href(){
+    window.location.href = "channel/"+this.user.id;
+  }
+
+  calculateDuration(){
+    var second: number = this.videos.duration;
+    var minute: number = 0;
+    var hour: number = 0;
+
+    var strSecond: string, strMinute : string, strHour: string;
+
+    if(second > 0){
+      while(second >= 60){
+        minute++;
+        second -= 60;
+      }
+      if(second < 10){
+        strSecond = "0"+ second.toString();
+      } else {
+        strSecond = second.toString();
+      }
+    }
+
+    if(minute > 0){
+      while(minute >= 60){
+        hour++;
+        minute -= 60
+      }
+      if(minute < 10){
+        strMinute = "0"+ minute.toString();
+      } else {
+        strMinute = minute.toString();
+      }
+    } else {
+      this.duration = "00:" + strSecond;
+      return;
+    }
+
+    if(hour > 0){
+      if(hour < 10){
+        strHour = "0"+ hour.toString();
+      } else {
+        strHour = hour.toString();
+      }
+      this.duration = strHour+":"+ strMinute +":"+ strSecond;
+    } else {
+      this.duration = strMinute +":"+ strSecond;
+    }
+  }
+
+  calculateViews(){
+    if(this.videos.watch >= 1000000000){
+      this.views = (Math.round(((this.videos.watch / 1000000000) + Number.EPSILON) * 10) / 10) + "B";
+    } else if(this.videos.watch >= 1000000){
+      this.views = (Math.round(((this.videos.watch / 1000000) + Number.EPSILON) * 10) / 10) + "M";
+    } else if(this.videos.watch >= 1000){
+      this.views = Math.round(((this.videos.watch / 1000) + Number.EPSILON) * 10) / 10 + "K";
+    } else {
+      this.views = this.videos.watch;
+    }
   }
 
   toggleOther(){
@@ -92,7 +168,6 @@ export class HorizontalVideoComponent implements OnInit {
   calculateDay(startDate: Date, endDate: Date): string{
     var days = this.getDifference(startDate.getDate(),startDate.getMonth(),startDate.getFullYear(),endDate.getDate(),endDate.getMonth(),endDate.getFullYear())
     this.validate_day = days;
-    console.log(this.validate_day);
     var year = 0;
     var month = 0;
     var week = 0;

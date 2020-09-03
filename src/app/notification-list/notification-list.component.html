@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="photo">
+        <img src={{notification.photo}} alt="">
+    </div>
+    <div class="detail" (click)="href()">
+        <div class="decsription">
+            <p>{{notification.description}}</p>
+        </div>
+        <div class="date" style="font-size:12px; color: grey; opacity: 90%;">
+            <p>{{day}}-{{month}}-{{year}}</p>
+        </div>
+    </div>
+    <div class="thumbnail">
+        <img src={{notification.thumbnail}} alt="">
+    </div>
+    <div class="other">
+        <i class="fas fa-ellipsis-v"></i>
+    </div>
+</div>

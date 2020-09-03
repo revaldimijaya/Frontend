@@ -5,6 +5,7 @@ import { windowTime } from 'rxjs/operators';
 import gql from 'graphql-tag';
 import { DataService } from '../data.service';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { StringValueNode } from 'graphql';
 
 @Component({
   selector: 'app-channel',
@@ -39,6 +40,9 @@ export class ChannelComponent implements OnInit {
   
   id: string;
   user: any;
+  name: string;
+  header: string;
+  photo: string;
 
   subscription: any;
   total_subs: number;
@@ -103,6 +107,9 @@ export class ChannelComponent implements OnInit {
       }
     }).subscribe(result => {
       this.user = result.data.getUserId;
+      this.name = this.user.name;
+      this.header = this.user.header;
+      this.photo = this.user.photo;
       
     },(error) => {
       console.log('there was an error sending the query', error);

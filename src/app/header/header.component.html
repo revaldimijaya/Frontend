@@ -49,13 +49,17 @@
             </button>
             
         </div>
-        <div class="notification" *ngIf="user">
-            <button class="notification-button">
+        <div class="notification" *ngIf="user" (click)="toggleNotif()">
+            <div class="notification-button">
                 <i class="fas fa-bell"></i>
-            </button>
+                <div class="total-notif">
+                    <p>{{notificationLen}}</p>
+                </div>
+            </div>
+            
         </div>
         <div class="profile">
-            <button *ngIf="!user" (click)="signInWithGoogle()">
+            <button *ngIf="!user" (click)="toggleLogin()">
                 <img src="../../assets/images/profile.png" alt="">
             </button>
             <button *ngIf="user" (click)="toggleUser()">
@@ -145,9 +149,15 @@
         </div>
     </div>
     <div class="list-playlist">
-        <div *ngFor="let i of playlist">
-            <app-playlist-sidebar [playlist]="i"></app-playlist-sidebar>
+        <div *ngFor="let i of playlist; index as idx">
+            <app-playlist-sidebar [playlist]="i" *ngIf="idx < (lastPlaylist)"></app-playlist-sidebar>
         </div>
+    </div>
+    <div class="show-playlist" *ngIf="playlistLen > 5">
+        <i *ngIf="toggle_playlist" class="fas fa-angle-up" style="margin-right: 10px;"></i>
+        <i *ngIf="!toggle_playlist" class="fas fa-angle-down" style="margin-right: 10px;"></i>
+        <p *ngIf="!toggle_playlist" (click)="morePlaylist()">SHOW MORE</p>
+        <p *ngIf="toggle_playlist" (click)="hidePlaylist()">SHOW LESS</p>
     </div>
     <div>
         <hr>
@@ -159,9 +169,15 @@
         </div>
     </div>
     <div class="list-subs">
-        <div *ngFor="let i of subscription">
-            <app-list-subscription [subscription] = "i"></app-list-subscription>
+        <div *ngFor="let i of subscription; index as idx">
+            <app-list-subscription [subscription] = "i" *ngIf="idx < (lastSubscribe)"></app-list-subscription>
         </div>
+    </div>
+    <div class="show-playlist"  *ngIf="subscribeLen > 5">
+        <i *ngIf="toggle_subscribe" class="fas fa-angle-up" style="margin-right: 10px;"></i>
+        <i *ngIf="!toggle_subscribe" class="fas fa-angle-down" style="margin-right: 10px;"></i>
+        <p *ngIf="!toggle_subscribe" (click)="moreSubscription()">SHOW MORE</p>
+        <p *ngIf="toggle_subscribe" (click)="hideSubscription()">SHOW LESS</p>
     </div>
     <div>
         <hr>
@@ -180,7 +196,9 @@
         <div>
             <i class="fas fa-child"></i>
         </div>
-        <p>Restriction</p>
+        <p>Restriction </p>
+        <p *ngIf="toggle_restriction" style="color: green;">YES</p>
+        <p *ngIf="!toggle_restriction" style="color: red;">NO</p>
     </div>
     <div class="text-setting">
         <div>
@@ -270,11 +288,13 @@
         </div>
         <p>Sign Out</p>
     </div>
-    <div class="text-user">
+    <div class="text-user" (click)="toggleRestriction()">
         <div>
             <i class="fas fa-child"></i>
         </div>
         <p>Restriction</p>
+        <p *ngIf="!toggle_restriction" style="color: red; margin-left: 5px; font-size: 16px;">NO</p>
+        <p *ngIf="toggle_restriction" style="color: green; margin-left: 5px; font-size: 16px;">YES</p>
     </div>
     <div class="text-user">
         <div>
@@ -302,10 +322,39 @@
               <p style="margin: 0; padding: 10px;">Yes</p>
           </div>
           <div style="margin: 10px 10px; background-color: lightcoral; width: 100px; border-radius: 5px; text-align: center;">
-              <p style="margin: 0; padding: 10px;">No</p>
+              <p style="margin: 0; padding: 10px;" (click)="toggleSign()">No</p>
           </div>
       </div>
     </div>
   
+</div>
+
+<div id="myModal" class="modal" *ngIf="toggle_login">
+
+    <div class="modal-content">
+      <span class="close" (click)="toggleLogin()">&times;</span>
+      <div style="display: flex; justify-content: center;">
+          <p>Login</p>
+      </div>
+      <div style="display: flex; justify-content: center;">
+          <div (click)="signInWithGoogle()" style="margin: 10px 10px; background-color: lightblue; width: 100px; border-radius: 5px; text-align: center;">
+              <p style="margin: 0; padding: 10px;">Yes</p>
+          </div>
+          <div style="margin: 10px 10px; background-color: lightcoral; width: 100px; border-radius: 5px; text-align: center;">
+              <p style="margin: 0; padding: 10px;" (click)="toggleLogin()">No</p>
+          </div>
+      </div>
+    </div>
+  
+</div>
+
+<div class="dropdown-notif" *ngIf="toggle_notif">
+    <div class="first">
+        <p> </p>
+    </div>
+    <div class="second" *ngFor="let i of notifications" >
+        <app-notification-list [notification]="i"></app-notification-list>
+    </div>
+    
 </div>
 

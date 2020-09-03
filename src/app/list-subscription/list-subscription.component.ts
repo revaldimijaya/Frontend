@@ -11,6 +11,9 @@ export class ListSubscriptionComponent implements OnInit {
   @Input() subscription;
 
   user: any;
+  id: string;
+  photo: string;
+  name: string;
 
   constructor(private apollo: Apollo) { }
 
@@ -36,6 +39,9 @@ export class ListSubscriptionComponent implements OnInit {
       }
     }).subscribe(result => {
       this.user = result.data.getUserId;
+      this.id = this.user.id;
+      this.photo = this.user.photo;
+      this.name = this.user.name;
     })
   }
 

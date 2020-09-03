@@ -90,6 +90,7 @@ export class ModalPlaylistComponent implements OnInit {
             user_id: $userid
             views: $views
           }){
+            id,
             name
           }
         }
@@ -103,6 +104,29 @@ export class ModalPlaylistComponent implements OnInit {
       }
     }).subscribe(({ data }) => {
       console.log('got data', data);
+      this.createDetail(data.createPlaylist.id);
+    },(error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  createDetail(id: number){
+    this.apollo.mutate({
+      mutation: gql `
+        mutation createDetail($playlistid: Int!, $videoid: Int!){
+          createDetailPlaylist(playlistid: $playlistid, videoid: $videoid){
+            id,
+            playlist_id,
+            video_id
+          }
+        }
+      `,
+      variables:{
+        playlistid: id,
+        videoid: this.videos.id
+      }
+    }).subscribe(({data})=>{
+      console.log(data);
     },(error) => {
       console.log('there was an error sending the query', error);
     });

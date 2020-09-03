@@ -228,14 +228,11 @@ export class ReplyComponent implements OnInit {
   insertReply(){
     this.apollo.mutate({
       mutation: gql`
-      mutation createReply($user_id: String!, $comment_id: Int!, $reply: String!, $day: Int!, $month: Int!, $year: Int!){
+      mutation createReply($user_id: String!, $comment_id: Int!, $reply: String!){
         createReply(input:{
           user_id: $user_id, 
           comment_id: $comment_id, 
-          reply: $reply,
-          day: $day,
-          month: $month,
-          year: $year,
+          reply: $reply
         }){
           id,
           user_id,
@@ -251,9 +248,6 @@ export class ReplyComponent implements OnInit {
         user_id: this.data.user_id,
         comment_id: this.replys.comment_id,
         reply: (<HTMLInputElement>document.getElementById("reply")).value,
-        day: this.date.getDay(),
-        month: this.date.getMonth()+1,
-        year: this.date.getFullYear()
       }
     }).subscribe(({ data }) => {
       console.log('got data', data);

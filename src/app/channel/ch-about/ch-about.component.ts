@@ -14,13 +14,21 @@ export class ChAboutComponent implements OnInit {
   id: string;
   user: any;
   date: Date;
+
+  section: string;
+  toggle_share: boolean= false;
   constructor(private apollo:Apollo, private data:DataService, private activatedRoute:ActivatedRoute) { }
 
   ngOnInit(): void {
     this.activatedRoute.parent.paramMap.subscribe(params => { 
       this.id = params.get('id'); 
     });
+    this.section = "channel";
     this.getUser();
+  }
+
+  toggleShare(){
+    this.toggle_share = !this.toggle_share;
   }
 
   getUser(){

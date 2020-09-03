@@ -2,13 +2,16 @@
 <div class="container">
     <div class="thumbnail" (click)="href()">
         <img src="{{nextVideo.thumbnail}}" alt="">
+        <div class="duration">
+            <p>{{duration}}</p>
+        </div>
     </div>
     
     <div class="video-detail">
         <div>
             <h3>{{nextVideo.name}}</h3>
         </div>
-        <div>
+        <div (click)="toUser()">
             <p>{{user.name}}</p>
         </div>
         <div>

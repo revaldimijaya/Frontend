@@ -5,21 +5,25 @@
         <div class="duration">
             <p>{{duration}}</p>
         </div>
+        <div class="premium" *ngIf="toggle_premium">
+            <p>PREMIUM</p>
+        </div>
     </div>
     <div class="videodetail">
         <div class="photo">
-            <img src="{{user.photo}}" alt="not found">
+            <img src="{{photo}}" alt="not found">
         </div>
         <div class="videodetailarea">
             <div class="videos-name">
                 <h3>{{videos.name}}</h3>
             </div>
             <div>
-                <p (click)="toUser()">{{user.name}}</p>
+                <p (click)="toUser()">{{name}}</p>
             </div>
             <div>
                 <p>{{views}} views &bull; {{calculate_day}}</p>
             </div>
+            
         </div>
         <div class="other" *ngIf="toggle_login">
             <i class="fas fa-ellipsis-v" (click)="toggleOther()"></i>

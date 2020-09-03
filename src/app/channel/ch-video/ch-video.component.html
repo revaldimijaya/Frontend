@@ -2,9 +2,26 @@
     <div>
         <p>Videos</p>
     </div>
-    <div class="sort">
-        <i class="fas fa-list-ol"></i>
-        <p>SORT BY</p>
+    <div style="display: flex; flex-direction: column;"> 
+        <div class="sort" (click)="toggleSort()">
+            <i class="fas fa-list-ol"></i>
+            <p>SORT BY</p>
+        </div>
+    
+        <div class="sort-by" *ngIf="toggle_sort">
+            <div>
+                <input type="radio" name="sort" id="sort" (click)="toggleView()">
+                <label for="sort">Most Popular</label>
+            </div>
+            <div>
+                <input type="radio" name="sort" id="sort" (click)="toggleOldest()">
+                <label for="sort">Oldest</label>
+            </div>
+            <div>
+                <input type="radio" name="sort" id="sort" (click)="toggleNewest()">
+                <label for="sort">Newest</label>
+            </div>
+        </div>
     </div>
 </div>
 <div class="container">

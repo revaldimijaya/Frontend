@@ -46,8 +46,17 @@
                 <p>REPLY</p>
             </div>
         </div>
-        <div class="user-reply" *ngFor="let i of reply">
-            <app-reply [replys]="i"></app-reply>
+        <div *ngIf="is_exist">
+            <div class="show" *ngIf="toggle_show" (click)="toggleShowAll()">
+                <p style="color: blue; margin: 5px 0;">Show {{replyLen}} replies</p>
+            </div>
+            <div class="user-reply" *ngFor="let i of reply">
+                <app-reply [replys]="i" *ngIf="toggle_showAll"></app-reply>
+            </div>
+            <div class="hide" *ngIf="!toggle_show" (click)="toggleShowAll()">
+                <p style="color: blue; margin: 5px 0;">Hide replies</p>
+            </div>
+
         </div>
     </div>
 </div>

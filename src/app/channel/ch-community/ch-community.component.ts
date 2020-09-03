@@ -27,7 +27,7 @@ export class ChCommunityComponent implements OnInit {
   thumbnailPercentage: Observable<number>;
   thumbnailSnapshot: Observable<any>;
   thumbnailTask: AngularFireUploadTask;
-  thumbnailURL: Observable<string>;
+  thumbnailURL: string = "";
   thumbnail_path: any;
 
   constructor(private storage: AngularFireStorage, private db: AngularFirestore, private apollo: Apollo, private data: DataService, private activatedRoute: ActivatedRoute) { }
@@ -105,7 +105,8 @@ export class ChCommunityComponent implements OnInit {
         createPosting(user_id: $id, description: $description, picture: $picture){
           id,
           user_id,
-          created_at
+          created_at,
+          description
         }
       }
       `,
@@ -115,9 +116,51 @@ export class ChCommunityComponent implements OnInit {
         picture: this.thumbnailURL
       }
     }).subscribe(({ data }) => {
-      console.log('got data', data);
+      console.log(data.createPosting.id);
+      this.createNotification(data.createPosting.id);
     },(error) => { 
       console.log('there was an error sending the query', error);
+    });
+  }
+
+  createNotification(id: number){  
+    this.apollo.mutate({
+      mutation: gql`
+      mutation createNotification($userid: String!, $type: String!, $typeid: Int!, $thumbnail: String!, $photo: String!, $description: String!){
+        createNotification(input:{
+          user_id: $userid,
+          type: $type,
+          type_id: $typeid,
+          thumbnail: $thumbnail,
+          photo: $photo,
+          created_at:" ",
+          description: $description
+        }){
+          id,
+          user_id,
+          type,
+          type_id,
+          thumbnail,
+          photo,
+          created_at,
+          description
+        }
+      }
+      `,
+      variables:{
+        userid: this.data.user_id,
+        type: "post",
+        typeid: id,
+        thumbnail: this.thumbnailURL,
+        photo: this.data.photoUrl,
+        description:(<HTMLInputElement>document.getElementById("comment")).value,
+      }
+    }).subscribe(({data})=>{
+      console.log(data);
+      new alert("notification"+data);
+    },(error) => {
+      console.log('there was an error sending the query', error);
+      new alert("notification gagal"+error);
     });
   }
 

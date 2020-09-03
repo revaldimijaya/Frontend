@@ -12,4 +12,8 @@ export class PlaylistSidebarComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  href(){
+    window.location.href = "playlist/"+this.playlist.id
+  }
+
 }

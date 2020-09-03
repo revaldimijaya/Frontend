@@ -1,11 +1,53 @@
 <div class="container">
-    <div *ngFor="let i of searchVideos">
-        <app-horizontal-video [videos]="i"></app-horizontal-video>
+    <div class="filter-text" (click)="toggleFilter()">
+        <p>Filter</p>
+        <i class="fas fa-filter"></i>
     </div>
-    <div *ngFor="let i of searchPlaylists" style="width: 307px; margin: 15px 0; padding: 5px;">
-        <app-playlist-search [playlist]="i" ></app-playlist-search>
+    <div class="filter" *ngIf="toggle_filter">
+        <div class="type">
+            <p style="margin: 5px 0;">Type : </p>
+            <div >
+                <input (click)="toggleVideo()" type="radio" name="filter-type" id="filter-type">
+                <label for="filter-type">Video</label>
+            </div> 
+            <div >
+                <input (click)="toggleChannel()" type="radio" name="filter-type" id="filter-type">
+                <label for="filter-type">Channel</label>
+            </div>
+            <div >
+                <input (click)="togglePlaylist()" type="radio" name="filter-type" id="filter-type">
+                <label for="filter-type">Playlist</label>
+            </div>
+        </div>
+        <div class="upload-date">
+            <p style="margin: 5px 0;">Upload Date : </p>
+            <div>
+                <input (click)="toggleWeek()" type="radio" name="filter-date" id="filter-date">
+                <label for="filter-date">This Week</label>
+            </div>
+            <div>
+                <input (click)="toggleMonth()" type="radio" name="filter-date" id="filter-date">
+                <label for="filter-date">This Month</label>
+            </div>
+            <div>
+                <input (click)="toggleYear()" type="radio" name="filter-date" id="filter-date">
+                <label for="filter-date">This Year</label>
+            </div>
+        </div>
     </div>
-    <div *ngFor="let i of searchChannel">
-        <app-channel-list [user]="i"></app-channel-list>
-    </div>    
+    <div *ngIf="toggle_video">
+        <div *ngFor="let i of searchVideos; index as k">
+            <app-horizontal-video [videos]="i" *ngIf="day_video[k] <= constraintDate"></app-horizontal-video>
+        </div>
+    </div>
+    <div *ngIf="toggle_playlist">
+        <div *ngFor="let i of searchPlaylists; index as k" style="width: 307px; margin: 15px 0; padding: 5px;">
+            <app-playlist-search [playlist]="i" *ngIf="day_playlist[k] <= constraintDate" ></app-playlist-search>
+        </div>
+    </div>
+    <div *ngIf="toggle_channel">
+        <div *ngFor="let i of searchChannel; index as k">
+            <app-channel-list [user]="i" *ngIf="day_channel[k] <= constraintDate"></app-channel-list>
+        </div>    
+    </div>
 </div>

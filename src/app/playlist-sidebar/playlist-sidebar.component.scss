@@ -10,8 +10,10 @@ p {
     justify-content: flex-start;
     align-items: center;
     align-content: stretch;
-    &:hover{
-        background-color: grey;
+    cursor: pointer;
+    
+    p{
+        margin: 10px;
     }
 }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, ɵNOT_FOUND_CHECK_ONLY_ELEMENT_INJECTOR } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { DataService } from '../data.service'
 import gql from 'graphql-tag';
@@ -12,7 +12,7 @@ import gql from 'graphql-tag';
 })
 export class VideosComponent implements OnInit {
 
-  constructor(private activatedRoute: ActivatedRoute, private apollo: Apollo, private data: DataService) {
+  constructor(private router: Router ,private activatedRoute: ActivatedRoute, private apollo: Apollo, private data: DataService) {
     
   }
   
@@ -22,6 +22,7 @@ export class VideosComponent implements OnInit {
   user: any;
   comment: any;
   nextVideos: any;
+  video: any;
 
   toggle_comment: boolean;
   comment_description: string;
@@ -30,6 +31,7 @@ export class VideosComponent implements OnInit {
   dislike: any;
   like: any;
   toggle_thumb: string;
+  bools: boolean = false;
 
   subscription: any;
   toggle_subs: boolean;
@@ -37,11 +39,18 @@ export class VideosComponent implements OnInit {
   total_subs: number;
   calculate_day: string;
   toggle_modal: boolean;
+  toggle_autoplay: boolean = false;
+  toggle_video: boolean = false;
+  toggle_download: boolean = false;
+  toggle_share: boolean = false;
+  toggle_newest: boolean = false;
+  toggle_sort: boolean = false;
+  section: string;
 
   lastIdx: number;
   lastIdx2: number;
   observer: IntersectionObserver;
-  observer2: IntersectionObserver
+  observer2: IntersectionObserver;
 
   ngOnInit(): void { 
     this.activatedRoute.paramMap.subscribe(params => { 
@@ -52,12 +61,67 @@ export class VideosComponent implements OnInit {
     this.toggle_subs = true;
     this.change_subs = true;
     this.toggle_modal = false;
+    this.section = "video";
     this.toggle_thumb = "none";
-    this.watch();
-    this.getVideos();
-    
-    this.totalDislike();
-    this.totalLike();
+    this.getUserPremium();
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.watch();
+      this.getVideos();
+      this.getComment();
+      this.totalDislike();
+      this.totalLike();
+      this.auto();
+    })
+    document.onkeyup = (e) => {
+      let vid = (<HTMLVideoElement>document.getElementById('mat-video').querySelector('video'))
+      e.preventDefault()
+      if(this.toggle_video){
+        if(e.keyCode == 74){
+          vid.currentTime -= 10
+        }
+        else if(e.keyCode == 75){
+          vid.paused ? vid.play() : vid.pause()
+        }
+        else if(e.keyCode == 76){
+          vid.currentTime += 10
+        }
+        else if(e.keyCode == 70){
+          vid.requestFullscreen();
+        }
+        else if(e.keyCode == 38){
+          if(vid.volume < 1)
+            vid.volume += 0.2
+        }
+        else if(e.keyCode == 40){
+          if(vid.volume > 0)
+            vid.volume -= 0.2
+          
+        }
+      }
+    }
+  }
+
+  toggleSort(){
+    this.toggle_sort = !this.toggle_sort;
+  }
+
+  toggleNewest(){
+    this.toggle_newest = true;
+    this.comment.sort((a,b) => {return b.id - a.id});
+    // this.getComment();
+
+  }
+
+  toggleShare(){
+    this.toggle_share = !this.toggle_share;
+  }
+
+  toggleVideo(){
+    this.toggle_video = !this.toggle_video;
+  }
+
+  toggleAutoplay(){
+    this.toggle_autoplay = !this.toggle_autoplay;
   }
 
   toggleComment(){
@@ -74,6 +138,18 @@ export class VideosComponent implements OnInit {
 
   toggleModal(){
     this.toggle_modal = !this.toggle_modal
+  }
+
+  autoplay:boolean = false;
+
+  auto(){
+    var auto = (<HTMLVideoElement>document.getElementById('mat-video').querySelector('video'))
+    console.log(auto);
+    auto.onended = () => {
+      console.log(this.toggle_autoplay);
+      if(this.toggle_autoplay)
+        this.router.navigate(["video/"+this.nextVideos[0].id]);
+    }
   }
 
   monthDays:number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -151,7 +227,7 @@ export class VideosComponent implements OnInit {
   }
 
   getVideos() {
-    this.apollo.query({
+    this.apollo.query<any>({
       query: gql`
         query getVideoId($videoid: Int!){
           getVideoId(videoid: $videoid){
@@ -183,6 +259,7 @@ export class VideosComponent implements OnInit {
       }
     }).subscribe(result => {
       this.videos = result.data.getVideoId;
+      
       console.log(this.videos)
       var startDate = new Date(Date.UTC(this.videos.year, this.videos.month, this.videos.day, this.videos.hour, this.videos.minute, this.videos.second));
       var d = new Date();
@@ -190,15 +267,17 @@ export class VideosComponent implements OnInit {
       this.calculate_day = this.calculateDay(startDate, endDate);
       this.getUser();
       this.getNextVideo();
-      this.getComment();
+      
     }, (error) => {
       console.log(this.videos);
       console.log('there was an error sending the query', error);
     });
   }
 
+  videoTemp: any[]=[];
+
   getUser(){
-    this.apollo.query({
+    this.apollo.query<any>({
       query: gql `
         query getUserId($id: String!) {
           getUserId(userid: $id) {
@@ -225,9 +304,47 @@ export class VideosComponent implements OnInit {
     })
   }
 
+  getUserPremium(){
+    if(this.data.user_id == ""){
+      return;
+    }
+    this.apollo.query<any>({
+      query: gql `
+        query getUserId($id: String!) {
+          getUserId(userid: $id) {
+            id,
+            name,
+            membership,
+            photo,
+            subscriber
+          }
+        }
+      `,
+      variables:{
+        id: this.data.user_id
+      }
+    }).subscribe(result => {
+      if(result.data.getUserId.membership == "yes"){
+        this.toggle_download = true;
+      }
+      
+    })
+  }
+
+  compareDesc(a,b){
+    let comparasion = 0;
+    if(a.id > b.id){
+      comparasion = 1;
+    } else {
+      comparasion = -1;
+    }
+    return comparasion;
+  }
+
   getComment(){
-    this.lastIdx2 = 1;
-    this.apollo.query({
+    this.comment=[];
+    this.lastIdx2 = 3;
+    this.apollo.query<any>({
       query: gql `
         query getComment($videoid: Int!){
           comment(videoid: $videoid){
@@ -251,10 +368,14 @@ export class VideosComponent implements OnInit {
       }
     }).subscribe(result => {
       this.comment = result.data.comment;
+      if(this.toggle_newest){
+        
+        console.log(this.comment);
+      }
       this.observer2 = new IntersectionObserver((entry)=>{
         if(entry[0].isIntersecting){
           let container = document.querySelector(".user-container");
-          for(let i = 0 ; i < 2; i++){
+          for(let i = 0 ; i < 4; i++){
             
             if(this.lastIdx2 < this.comment.length){
               let div = document.createElement("div");
@@ -262,7 +383,7 @@ export class VideosComponent implements OnInit {
               video.setAttribute("comments","comments[this.lastIdx2]");
               div.appendChild(video);
               container.appendChild(div);
-              this.lastIdx++;
+              this.lastIdx2++;
             }
           }
         }
@@ -275,7 +396,7 @@ export class VideosComponent implements OnInit {
 
   getNextVideo(){
     this.lastIdx = 4;
-    this.apollo.query({
+    this.apollo.query<any>({
       query: gql`
         query getNextVideo($videoid: Int!){
           getNextVideo(videoid: $videoid){
@@ -333,7 +454,7 @@ export class VideosComponent implements OnInit {
 
   insertComment(){
     this.comment_description = (<HTMLInputElement>document.getElementById("comment")).value;
-    this.apollo.mutate({
+    this.apollo.mutate<any>({
       mutation: gql`
         mutation insertComment($user_id: String!, $video_id: Int!, $comment: String!, $like: Int!, $dislike: Int!){
           createComment(input:{
@@ -364,7 +485,7 @@ export class VideosComponent implements OnInit {
   }
 
   watch(){
-    this.apollo.mutate({
+    this.apollo.mutate<any>({
       mutation: gql`
         mutation watch($id: Int!){
           watch(id: $id)
@@ -382,7 +503,7 @@ export class VideosComponent implements OnInit {
 
 
   likeVideo(){
-    this.apollo.mutate({
+    this.apollo.mutate<any>({
       mutation: gql`
         mutation videoLike($id: Int!, $user_id: String! , $type: String!){
           videoLike(id: $id, userid: $user_id, type: $type)
@@ -402,7 +523,7 @@ export class VideosComponent implements OnInit {
 
 
   dislikeVideo(){
-    this.apollo.mutate({
+    this.apollo.mutate<any>({
       mutation: gql`
         mutation videoLike($id: Int!, $user_id: String! , $type: String!){
           videoLike(id: $id, userid: $user_id, type: $type)
@@ -421,7 +542,7 @@ export class VideosComponent implements OnInit {
   }
 
   totalLike(){
-    this.apollo.query({
+    this.apollo.query<any>({
       query: gql`
         query getVideoLike($videoid: Int!, $type: String!){
           getVideoLike(videoid:$videoid, type:$type){
@@ -449,7 +570,7 @@ export class VideosComponent implements OnInit {
   }
 
   totalDislike(){
-    this.apollo.query({
+    this.apollo.query<any>({
       query: gql`
         query getVideoLike($videoid: Int!, $type: String!){
           getVideoLike(videoid:$videoid, type:$type){
@@ -478,7 +599,7 @@ export class VideosComponent implements OnInit {
   }
 
   subs(){
-    this.apollo.mutate({
+    this.apollo.mutate<any>({
       mutation: gql`
         mutation createSubscribe($userid: String!, $subscribeto: String!){
           createSubscribe(userid: $userid, subscribeto: $subscribeto){
@@ -501,7 +622,7 @@ export class VideosComponent implements OnInit {
   }
 
   getSubs(users: any){
-    this.apollo.query({
+    this.apollo.query<any>({
       query: gql`
         query getSubscribe{
           getSubscribe{
@@ -527,7 +648,7 @@ export class VideosComponent implements OnInit {
 
   checkSubs(users: any){
     console.log(users);
-    this.apollo.query({
+    this.apollo.query<any>({
       query: gql`
         query checkSubscribe($userid: String!, $subscribeto: String!){
           checkSubscribe(userid: $userid, subscribeto: $subscribeto){
@@ -552,6 +673,26 @@ export class VideosComponent implements OnInit {
     }, (error) => {
       console.log('there was an error sending the query', error);
     });
+  }
+
+  createNotif(){
+    this.apollo.mutate<any>({
+      mutation: gql`
+      mutation createNotif($userid: String!, $notifto: String!){
+        createNotif(userid: $userid, notifto: $notifto){
+          id,
+          user_id,
+          notif_to
+        }
+      }
+      `,
+      variables:{
+        userid: this.data.user_id,
+        notifto: this.user.id
+      }
+    }).subscribe(({data})=>{
+      console.log(data);
+    })
   }
 
   shuffle(array) {

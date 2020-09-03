@@ -51,6 +51,8 @@ import { PremiumComponent } from './premium/premium.component';
 import { SearchComponent } from './search/search.component';
 import { ChannelListComponent } from './channel-list/channel-list.component';
 import { PlaylistSearchComponent } from './playlist-search/playlist-search.component';
+import { NotificationListComponent } from './notification-list/notification-list.component';
+import { ModalShareComponent } from './modal-share/modal-share.component';
 
 
 @NgModule({
@@ -90,7 +92,9 @@ import { PlaylistSearchComponent } from './playlist-search/playlist-search.compo
     PremiumComponent,
     SearchComponent,
     ChannelListComponent,
-    PlaylistSearchComponent
+    PlaylistSearchComponent,
+    NotificationListComponent,
+    ModalShareComponent
   ],
   imports: [
     BrowserModule,

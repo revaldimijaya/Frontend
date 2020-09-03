@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { query } from '@angular/animations';
 import gql from 'graphql-tag';
+import { DataService } from 'src/app/data.service';
 
 @Component({
   selector: 'app-trending',
@@ -12,56 +13,86 @@ export class TrendingComponent implements OnInit {
 
   temps: any;
   videos: any[] = [];
+  user: any;
   calculate_day: string;
   validate_day: number;
 
-  constructor(private apollo: Apollo,) { }
+  constructor(private apollo: Apollo, private data: DataService) { }
 
   ngOnInit(): void {
     
-    this.apollo.watchQuery({
-     query: gql`
-      query getVideoTrending{
-        getVideoTrending{
-          id,
-          user_id,
-          url,
-          watch,
-          like,
-          dislike,
-          restriction,
-          location,
-          name,
-          premium,
-          category,
-          thumbnail,
-          description,
-          visibility,
-          day,
-          month,
-          year,
-          hour,
-          minute,
-          second,
-          duration
+      this.apollo.query({
+        query: gql `
+          query getUserId($id: String!) {
+            getUserId(userid: $id) {
+              id,
+              name,
+              membership,
+              photo,
+              subscriber
+            }
+          }
+        `,
+        variables:{
+          id: this.data.user_id
         }
-      }
-     `
-    }).valueChanges.subscribe(result =>{
-      this.temps = result.data.getVideoTrending;
-      var count = 0;
-      this.temps.forEach(element => {
-        this.validate_day = 0;
-        var startDate = new Date(Date.UTC(element.year, element.month, element.day, element.hour, element.minute, element.second));
-        var d = new Date();
-        var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
-        this.calculate_day = this.calculateDay(startDate, endDate);
-        if(this.validate_day < 8 && count <= 20){
-          this.videos.push(element);
-          count++;
-        }
-      });
-    })
+      }).subscribe(result => {
+        this.user = result.data.getUserId;
+
+        this.apollo.query({
+          query: gql`
+           query getVideoTrending{
+             getVideoTrending{
+               id,
+               user_id,
+               url,
+               watch,
+               like,
+               dislike,
+               restriction,
+               location,
+               name,
+               premium,
+               category,
+               thumbnail,
+               description,
+               visibility,
+               day,
+               month,
+               year,
+               hour,
+               minute,
+               second,
+               duration
+             }
+           }
+          `
+         }).subscribe(result =>{
+           this.temps = result.data.getVideoTrending;
+           var count = 0;
+           if(this.data.user_id != "") {
+             if(this.user.membership == "no"){
+               this.temps = this.temps.filter(vid => vid.premium == "regular")
+             } 
+             if(this.data.isRestriction){
+               this.temps = this.temps.filter(vid => vid.restriction == "kids")
+             }
+           }
+           this.temps.forEach(element => {
+             this.validate_day = 0;
+             var startDate = new Date(Date.UTC(element.year, element.month, element.day, element.hour, element.minute, element.second));
+             var d = new Date();
+             var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
+             
+             this.calculate_day = this.calculateDay(startDate, endDate);
+             if(this.validate_day < 8 && count <= 20){
+               this.videos.push(element);
+               count++;
+             }
+           });
+         })
+
+      }) 
   }
 
   monthDays:number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -98,7 +129,6 @@ export class TrendingComponent implements OnInit {
   calculateDay(startDate: Date, endDate: Date): string{
     var days = this.getDifference(startDate.getDate(),startDate.getMonth(),startDate.getFullYear(),endDate.getDate(),endDate.getMonth(),endDate.getFullYear())
     this.validate_day = days;
-    console.log(this.validate_day);
     var year = 0;
     var month = 0;
     var week = 0;

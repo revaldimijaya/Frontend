@@ -13,6 +13,8 @@ export class CardComponent implements OnInit {
   @Input() videos
 
   user: any;
+  name: string;
+  photo: string;
   playlists: any;
 
   calculate_day: string;
@@ -24,6 +26,7 @@ export class CardComponent implements OnInit {
   toggle_modal: boolean;
   toggle_create: boolean;
   toggle_login: boolean;
+  toggle_premium: boolean = false;
 
   constructor(private apollo: Apollo, private data: DataService) { }
 
@@ -33,6 +36,11 @@ export class CardComponent implements OnInit {
     } else {
       this.toggle_login = true;
     }
+
+    if(this.videos.premium == "premium"){
+      this.toggle_premium = true;
+    }
+
     var startDate = new Date(Date.UTC(this.videos.year, this.videos.month, this.videos.day, this.videos.hour, this.videos.minute, this.videos.second));
     var d = new Date();
     var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
@@ -71,6 +79,8 @@ export class CardComponent implements OnInit {
       }
     }).subscribe(result => {
       this.user = result.data.getUserId;
+      this.name = this.user.name;
+      this.photo = this.user.photo;
     })
   }
 

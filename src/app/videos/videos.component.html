@@ -1,7 +1,8 @@
-<div class="container">
-    <div class="video">
-        <div class="video-display">
-            <mat-video src="{{videos.url}}"></mat-video>
+<div class="container" >
+    <div class="video" >
+        <div class="video-display" >
+            <mat-video (click)="toggleVideo()" id="mat-video" style="width: 100%;  height: 100%;" [color]="primary" [quality]="true" [keyboard]="true" src="{{videos.url}}" [download]="toggle_download" autoplay="true" showFrameByFrame="true">
+            </mat-video>
         </div>
 
         <div class="video-name">
@@ -27,7 +28,7 @@
                     </div>
                 </div>
 
-                <div class="share">
+                <div class="share" (click)="toggleShare()">
                     <i class="fas fa-share"></i>
                     <div>
                         <p>SHARE</p>
@@ -38,13 +39,6 @@
                     <i class="fas fa-list-ul"></i>
                     <div>
                         <p>SAVE</p>
-                    </div>
-                </div>
-
-                <div class="download">
-                    <i class="fas fa-download"></i>
-                    <div>
-                        <p>DOWNLOAD</p>
                     </div>
                 </div>
                 
@@ -74,7 +68,7 @@
                         <div class="subs" (click)="subs()" [style.background-color]="change_subs ? 'red':'grey'">
                             <p>SUBSCRIBE</p>
                         </div>
-                        <div class="notif" >
+                        <div class="notif" (click)="createNotif()">
                             <i class="fas fa-bell"></i>
                         </div>
                     </div>
@@ -97,12 +91,24 @@
                 <div>
                     <p>{{comment.length}} Comments</p>
                 </div>
-                <div class="sort">
-                    <div>
-                        <i class="fas fa-sort-amount-up-alt"></i>
+                <div style="display: flex; flex-direction: column;">
+                    <div class="sort" (click)="toggleSort()">
+                        <div>
+                            <i class="fas fa-sort-amount-up-alt"></i>
+                        </div>
+                        <div>
+                            <p>SORT BY</p>
+                        </div>
                     </div>
-                    <div>
-                        <p>SORT BY</p>
+                    <div *ngIf="toggle_sort">
+                        <div>
+                            <input type="radio" name="sort" id="sort" (click)="toggleNewest()">
+                            <label for="sort">Newest</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="sort" id="sort">
+                            <label for="sort">Top Liked</label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -126,7 +132,7 @@
             
             <div class="user-container">
                 <div *ngFor="let com of comment; index as i">
-                    <app-comment [comments]="com"></app-comment>
+                    <app-comment [comments]="com" *ngIf="i<(lastIdx2)"></app-comment>
                 </div>
                 <div class="footer2">
                     <p> </p>
@@ -136,8 +142,26 @@
     </div>
 
     <div class="next-video" >
+        <div class="next-text">
+            <div>
+                <p>Up next</p>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <p style="opacity: 90%; font-size: 14px;">AUTOPLAY</p>
+                <div>
+                    <label class="switch" style="margin-left: 10px;">
+                        <input type="checkbox" (click)="toggleAutoplay()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+
+        </div>
         <div *ngFor="let next of nextVideos; index as i">
             <app-next-video *ngIf="i<(lastIdx)" [nextVideo] = "next" ></app-next-video>
+            <div *ngIf="i == 0">
+                <hr>
+            </div>
         </div>
         <div class="footer">
             <p> </p>
@@ -146,6 +170,10 @@
 
     <div class="modal" *ngIf="toggle_modal">
         <app-modal-playlist [videos]="videos"></app-modal-playlist>
+    </div>
+
+    <div class="modal-share" *ngIf="toggle_share">
+        <app-modal-share [videos]="videos" [section]="section"></app-modal-share>
     </div>
 
 </div>

@@ -142,6 +142,7 @@
             }
 
             .third{
+                padding-right: 20px;
                 cursor: pointer;
                 .dropdown{
                     position: absolute;
@@ -166,6 +167,9 @@
                         }
                     }
                 }
+            }
+            .fourth{
+                cursor: pointer;
             }
         }
 

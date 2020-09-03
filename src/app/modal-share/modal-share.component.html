@@ -1,0 +1,28 @@
+<div id="myModal" class="modal" *ngIf="toggle_share">
+
+  <div class="modal-content">
+    <span class="close" style="display: flex; width: 100%; justify-content: flex-end;" (click)="toggleShare()" >&times;</span>
+    <p style="margin: 0 0 20px 0;">Share to...</p>
+    <div style="display: flex;">
+        <a [href]="'http://twitter.com/share?text=This is video &url=' + url" target="_blank">
+            <div class="twitter">
+                <i class="fab fa-twitter fa-2x"></i>
+            </div>
+        </a>
+        <a [href]="'https://www.facebook.com/sharer/sharer.php?u=' + url" target="_blank">
+            <div class="facebook">
+                <i class="fab fa-facebook-f fa-2x"></i>
+            </div>
+        </a>
+    </div>
+    <div class="text-copy">
+        <div class="text">
+            <p style="background-color: lightgrey; padding: 5px; border-radius: 5px;">{{url}}</p>
+        </div>
+        <div class="logo" (click)="copyMessage()">
+            <i class="fas fa-copy fa-2x" style="opacity: 70%; margin-left: 10px;"></i>
+        </div>
+    </div>
+  </div>
+
+</div>

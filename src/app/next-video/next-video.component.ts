@@ -42,6 +42,11 @@ export class NextVideoComponent implements OnInit {
       this.views = this.nextVideo.watch;
     }
     this.calculate_day = this.calculateDay(startDate, endDate);
+    this.calculateDuration();
+  }
+
+  toUser(){
+    window.location.href="channel/"+this.user.id;
   }
 
   toggleModal(){
@@ -177,7 +182,7 @@ export class NextVideoComponent implements OnInit {
   }
 
   getUser(){
-    this.apollo.query({
+    this.apollo.query<any>({
       query: gql `
         query getUserId($id: String!) {
           getUserId(userid: $id) {

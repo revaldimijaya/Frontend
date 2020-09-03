@@ -11,7 +11,7 @@
         <div class="info">
             <div class="title">
                 <div>
-                    <p>{{playlist[0].name}}</p>
+                    <p>{{playlistName}}</p>
                 </div>
                 <div (click)="toggleTitle()" *ngIf="toggle_self">
                     <i class="fas fa-pen"></i>
@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="total">
-                <p>{{detail.length}} videos &bull; {{playlist[0].views}} views &bull; Updated {{updated}}</p>
+                <p>{{detailLen}} videos &bull; {{views}} views &bull; Updated {{updated}}</p>
             </div>
             <div class="privacy" (click)="togglePrivacy()">
                 <div class="text-logo" *ngIf="toggle_self">
@@ -63,7 +63,7 @@
                 <div class="first">
                     <i class="fas fa-random"></i>
                 </div>
-                <div class="second">
+                <div class="second" (click)="toggleShare()">
                     <i class="fas fa-share"></i>
                 </div>
                 <div class="third" (click)="toggleMore()" *ngIf="toggle_self">
@@ -81,12 +81,21 @@
                             </div>
                             <p>Remove Playlist</p>
                         </div>
+                        <div (click)="deleteAllPlaylist()">
+                            <div>
+                                <i class="fas fa-trash"></i>
+                            </div>
+                            <p>Remove All Videos</p>
+                        </div>
                     </div>
+                </div>
+                <div class="fourth">
+                    <i class="fas fa-plus"></i>
                 </div>
             </div>
             <div class="description">
                 <div class="description-text">
-                    <p>{{playlist[0].description}}</p>
+                    <p>{{playlistDescription}}</p>
                 </div>
                 <div class="logo" (click)="toggleDesc()" *ngIf="toggle_self">
                     <i class="fas fa-pen"></i>
@@ -110,10 +119,10 @@
             </div>
             <div class="profil">
                 <div class="photo">
-                    <img src="{{user.photo}}" alt="">
+                    <img src="{{photo}}" alt="">
                 </div>
-                <div class="name">
-                    <p>{{user.name}}</p>
+                <div class="name" (click)="hrefChannel()">
+                    <p>{{name}}</p>
                 </div>
                 <div class="subs-notif" [style.display]="toggle_subs ? 'flex':'none'" style="margin-left: 60px;">
                     <div class="subs" (click)="subs()" [style.background-color]="change_subs ? 'red':'grey'">
@@ -133,10 +142,10 @@
             <p>SORT BY</p>
         </div>
         <div class="container-vid">
-            <div *ngFor="let i of detail">
-                <app-playlist-video [detailVideo]="i" [playlist]="playlist"></app-playlist-video>
+            <div *ngFor="let i of detail; index as idx">
+                <app-playlist-video *ngIf="idx < lastIdx" [detailVideo]="i" [playlist]="playlist"></app-playlist-video>
             </div>
-            <div class=".footer">
+            <div class="footer">
                 <p> </p>
             </div>
         </div>
@@ -161,4 +170,7 @@
             <hr>
         </div>
     </div>
+</div>
+<div *ngIf="toggle_share">
+    <app-modal-share [videos]="id" [section]="section" ></app-modal-share>
 </div>

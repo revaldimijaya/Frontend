@@ -15,6 +15,7 @@ export class SubscriptionComponent implements OnInit {
   videos: any;
   day: number[] = [];
   userid: string;
+  user:any;
 
   lastIdx: number;
   observer: IntersectionObserver;
@@ -49,6 +50,28 @@ export class SubscriptionComponent implements OnInit {
         }
       });
       console.log(this.userid);
+      this.getUser();
+    })
+  }
+
+  getUser(){
+    this.apollo.query({
+      query: gql `
+        query getUserId($id: String!) {
+          getUserId(userid: $id) {
+            id,
+            name,
+            membership,
+            photo,
+            subscriber
+          }
+        }
+      `,
+      variables:{
+        id: this.data.user_id
+      }
+    }).subscribe(result => {
+      this.user = result.data.getUserId;
       this.getSubscribe();
     })
   }
@@ -88,6 +111,14 @@ export class SubscriptionComponent implements OnInit {
       }
     }).subscribe(result =>{
       this.videos = result.data.getSubscribeVideo
+      if(this.data.user_id != "") {
+        if(this.user.membership == "no"){
+          this.videos = this.videos.filter(vid => vid.premium == "regular")
+        } 
+        if(this.data.isRestriction){
+          this.videos = this.videos.filter(vid => vid.restriction == "kids")
+        }
+      }
       this.videos.forEach((element,index) => {
         var startDate = new Date(Date.UTC(element.year, element.month, element.day, element.hour, element.minute, element.second));
         var d = new Date();
@@ -95,6 +126,7 @@ export class SubscriptionComponent implements OnInit {
         console.log(this.calculateDay(startDate, endDate));
         this.day.push(this.calculateDay(startDate, endDate));
       });
+      
       // this.observer = new IntersectionObserver((entry)=>{
       //   if(entry[0].isIntersecting){
       //     let container = document.querySelector(".container");

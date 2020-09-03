@@ -14,7 +14,10 @@ export class PlaylistVideoComponent implements OnInit {
   @Input() playlist
 
   videos: any;
+  videosid: number;
+  videosname: string;
   user: any;
+  thumbnail: string;
   toggle_etc:boolean;
   duration: string;
   calculate_day: string;
@@ -23,6 +26,7 @@ export class PlaylistVideoComponent implements OnInit {
   constructor(private apollo: Apollo, private data: DataService) { }
 
   ngOnInit(): void {
+    console.log(this.playlist);
     if(this.playlist[0].user_id == this.data.user_id){
       this.toggle_self = true;
     }
@@ -74,6 +78,9 @@ export class PlaylistVideoComponent implements OnInit {
       }
     }).subscribe(result => {
       this.videos = result.data.getVideoId;
+      this.videosid = this.videos.id;
+      this.thumbnail = this.videos.thumbnail;
+      this.videosname = this.videos.name;
       var startDate = new Date(Date.UTC(this.videos.year, this.videos.month, this.videos.day, this.videos.hour, this.videos.minute, this.videos.second));
       var d = new Date();
       var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
@@ -85,6 +92,8 @@ export class PlaylistVideoComponent implements OnInit {
       console.log('there was an error sending the query', error);
     });
   }
+
+  name: string;
 
   getUser(temp: any){
     this.apollo.query({
@@ -104,7 +113,7 @@ export class PlaylistVideoComponent implements OnInit {
       }
     }).subscribe(result => {
       this.user = result.data.getUserId;
-      
+      this.name = this.user.name;
     }, (error) => {
       console.log('there was an error sending the query', error);
     });

@@ -262,10 +262,52 @@ export class UploaderComponent implements OnInit {
     this.insertVideo(Number(pl));
   }
 
+  createNotification(id: number){  
+    this.apollo.mutate({
+      mutation: gql`
+      mutation createNotification($userid: String!, $type: String!, $typeid: Int!, $thumbnail: String!, $photo: String!, $description: String!){
+        createNotification(input:{
+          user_id: $userid,
+          type: $type,
+          type_id: $typeid,
+          thumbnail: $thumbnail,
+          photo: $photo,
+          created_at:" ",
+          description: $description
+        }){
+          id,
+          user_id,
+          type,
+          type_id,
+          thumbnail,
+          photo,
+          created_at,
+          description
+        }
+      }
+      `,
+      variables:{
+        userid: this.data.user_id,
+        type: "video",
+        typeid: id,
+        thumbnail: this.thumbnailURL,
+        photo: this.data.photoUrl,
+        description:(<HTMLInputElement>document.getElementById("title")).value,
+      }
+    }).subscribe(({data})=>{
+      console.log(data);
+      new alert("notification"+data);
+    },(error) => {
+      console.log('there was an error sending the query', error);
+      new alert("notification gagal"+error);
+    });
+  }
+
   createDetail(playlistid: number, videoid: number){
     if(playlistid == 0){
       this.toggle_upload = false;
-      window.location.reload();
+      this.createNotification(videoid);
+      // window.location.reload();
       return;
     } 
     this.apollo.mutate({
@@ -285,7 +327,8 @@ export class UploaderComponent implements OnInit {
     }).subscribe(({ data }) => {
       new alert("playlist masuk"+data);
       this.toggle_upload = false;
-      window.location.reload();
+      this.createNotification(videoid);
+      // window.location.reload();
     },(error) => {
       console.log('there was an error sending the query', error);
     });
@@ -363,6 +406,7 @@ export class UploaderComponent implements OnInit {
     }).subscribe(({ data }) => {
       console.log('got data', data.createVideo.id);
       this.createDetail(playlistid, data.createVideo.id);
+      
     },(error) => {
       console.log('there was an error sending the query', error);
     });

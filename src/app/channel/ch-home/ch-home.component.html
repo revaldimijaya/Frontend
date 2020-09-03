@@ -16,6 +16,9 @@
     <div *ngFor="let i of fiveVideo" style="margin: 10px;">
         <app-card [videos]="i"></app-card>
     </div>
+    <div class="all-video" [routerLink]="['video']">
+        <p>See All Video</p>
+    </div>
 </div>
 <div>
     <hr>
@@ -26,6 +29,9 @@
 <div class="container">
     <div *ngFor="let i of threePlaylists" style="margin: 10px;">
         <app-card-playlist [playlist]="i"></app-card-playlist>
+    </div>
+    <div class="all-video" [routerLink]="['playlist']">
+        <p>See All Playlist</p>
     </div>
 </div>
 

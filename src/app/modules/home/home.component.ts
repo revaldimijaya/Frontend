@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag'
 import { ActivatedRoute, Router } from '@angular/router';
+import { DataService } from 'src/app/data.service';
 
 @Component({
   selector: 'app-home',
@@ -9,18 +10,51 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  videos: any;
+  videos: any[]=[];
   user: any;
   tempId: any;
-  
+  tempVideos:any[]=[];
+
+
   lastIdx: number;
   observer: IntersectionObserver;
 
-  constructor(private apollo: Apollo, private router: Router) { }
+  constructor(private apollo: Apollo, private router: Router, private data:DataService) { }
 
   ngOnInit(): void {
     this.lastIdx = 8;
+    if(this.data.user_id != ""){
+      this.getUser();
+    } else {
+      this.getVideos();
+    }
+    
+    
+  }
 
+  getUser(){
+    this.apollo.query({
+      query: gql `
+        query getUserId($id: String!) {
+          getUserId(userid: $id) {
+            id,
+            name,
+            membership,
+            photo,
+            subscriber
+          }
+        }
+      `,
+      variables:{
+        id: this.data.user_id
+      }
+    }).subscribe(result => {
+      this.user = result.data.getUserId;
+      this.getVideos();
+    })
+  }
+
+  getVideos(){
     this.apollo.query({
       query: gql`
         {
@@ -51,7 +85,15 @@ export class HomeComponent implements OnInit {
       `,
     }).subscribe(result => {
       this.videos = this.shuffle(result.data.videos);
-
+      console.log(this.data.user_id);
+      if(this.data.user_id != "") {
+        if(this.user.membership == "no"){
+          this.videos = this.videos.filter(vid => vid.premium == "regular")
+        } 
+        if(this.data.isRestriction){
+          this.videos = this.videos.filter(vid => vid.restriction == "kids")
+        }
+      }
       this.observer = new IntersectionObserver((entry)=>{
         if(entry[0].isIntersecting){
           let container = document.querySelector(".container");

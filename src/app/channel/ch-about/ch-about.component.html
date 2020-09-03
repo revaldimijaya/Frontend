@@ -19,5 +19,13 @@
         <div>
             <hr>
         </div>
+        <div class="share" (click)="toggleShare()">
+            <i class="fas fa-share"></i>
+        </div>
     </div>
+
+</div>
+
+<div *ngIf="toggle_share">
+    <app-modal-share [videos]="id" [section]="section"></app-modal-share>
 </div>

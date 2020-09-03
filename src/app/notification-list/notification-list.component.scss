@@ -1,0 +1,37 @@
+.container{
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    width: 100%;
+    .photo{
+        width: 10%;
+        padding: 0 10px 0 10px;
+        justify-content: center;
+        img{
+            width: 40px;
+            border-radius: 50px;
+        }
+    }
+    .detail{
+        width: 55%;
+        padding: 0 10px 0 10px;
+        justify-content: center;
+        p{
+            margin: 10px 0;
+        }
+    }
+    .thumbnail{
+        width: 30%;
+        padding: 0 10px 0 10px;
+        justify-content: center;
+        img{
+            width: 100px;
+        }
+    }
+    .other{
+        width: 5%;
+        padding: 0 10px 0 10px;
+        display: flex;
+        justify-content: center;
+    }
+}

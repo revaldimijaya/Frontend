@@ -149,6 +149,51 @@ p {
 
 .notification {
     padding: 0px 10px 0px 10px;
+
+    .notification-button{
+        position: relative;
+        .total-notif{
+            position: absolute;
+            background-color: red;
+            border-radius: 50px;
+            top: 0;
+            right: 0;
+            height: 12px;
+            width: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            p{
+                text-align: center;
+                font-size: 10px;
+                color: white;
+                margin: 0;
+            }
+        }   
+    }
+}
+
+.dropdown-notif{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    top: 0;
+    right: 45px;
+    z-index: 990;
+    width: 400px;
+    .first{
+        margin-top: 32px;
+    }
+    .second{
+        padding: 0 10px;
+    }
+    div{
+        cursor: pointer;
+        &:hover{
+            background-color: lightgrey;
+        }
+    }
 }
 
 .profile {
@@ -378,4 +423,18 @@ hr {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.show-playlist{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    &:hover{
+        background-color: #464646;
+    }
+    p{
+        font-size: 14px;
+        margin: 5;
+    }
 }

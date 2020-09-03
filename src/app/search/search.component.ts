@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../data.service';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
+import { start } from 'repl';
 
 @Component({
   selector: 'app-search',
@@ -12,9 +13,19 @@ import gql from 'graphql-tag';
 export class SearchComponent implements OnInit {
 
   name: string;
+  constraintDate: number = 10000;
   searchVideos: any;
   searchPlaylists: any;
   searchChannel: any;
+
+  toggle_video: boolean = true;
+  toggle_channel: boolean = true;
+  toggle_playlist: boolean = true;
+  toggle_filter: boolean = false;
+
+  day_video: number[]=[];
+  day_channel: number[]=[];
+  day_playlist: number[]=[];
 
   constructor(private activatedRoute: ActivatedRoute, private data: DataService, private apollo: Apollo) { }
 
@@ -23,9 +34,80 @@ export class SearchComponent implements OnInit {
       this.name = params.get('name'); 
     });
     console.log("name");
+    // this.activatedRoute.paramMap.subscribe(params => {
+    // })
     this.getSearchChannel();
     this.getSearchPlaylists();
     this.getSearchVideo();
+  }
+
+  toggleFilter(){
+    this.toggle_filter = !this.toggle_filter;
+  }
+
+  toggleVideo(){
+    this.toggle_channel = false;
+    this.toggle_playlist = false;
+    this.toggle_video = true;
+  }
+
+  toggleChannel(){
+    this.toggle_channel = true;
+    this.toggle_playlist = false;
+    this.toggle_video = false;
+  }
+
+  togglePlaylist(){
+    this.toggle_channel = false;
+    this.toggle_playlist = true;
+    this.toggle_video = false;
+  }
+
+  toggleWeek(){
+    this.constraintDate = 7;
+  }
+
+  toggleMonth(){
+    this.constraintDate = 31;
+  }
+
+  toggleYear(){
+    this.constraintDate = 365;
+  }
+
+  monthDays:number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+  countLeapYears(month:number, year:number): number{
+    var years = year;
+
+    if(month <= 2){
+      years--;
+    }
+
+    return years/4 - years/100 + years/400;
+  }
+
+  getDifference(d1:number, m1:number, y1:number, d2:number, m2:number, y2:number): number{
+    var n1 = y1*365 + d1
+
+    for(let i = 0; i < m1 - 1 ; i++){
+      n1 += this.monthDays[i];
+    }
+
+    n1 += this.countLeapYears(m1, y1)
+
+    var n2 = y2*365 + d2
+    for( let i = 0 ; i < m2 - 1 ; i++){
+      n2 += this.monthDays[i];
+    }
+
+    n2 += this.countLeapYears(m2, y2)
+
+    return (n2 - n1);
+  }
+
+  calculateDay(startDate: Date, endDate: Date): number{
+    return this.getDifference(startDate.getDate(),startDate.getMonth(),startDate.getFullYear(),endDate.getDate(),endDate.getMonth(),endDate.getFullYear())
   }
 
   getSearchVideo(){
@@ -62,6 +144,12 @@ export class SearchComponent implements OnInit {
       }
     }).subscribe(result => {
       this.searchVideos = result.data.searchVideo
+      this.searchVideos.forEach(element => {
+        var startDate = new Date(Date.UTC(element.year, element.month, element.day, element.hour, element.minute, element.second));
+        var d = new Date();
+        var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
+        this.day_video.push(this.calculateDay(startDate, endDate));
+      });
     })
   }
 
@@ -89,7 +177,13 @@ export class SearchComponent implements OnInit {
         name: "%"+this.name+"%"
       }
     }).subscribe(result => {
-      this.searchPlaylists = result.data.searchPlaylist
+      this.searchPlaylists = result.data.searchPlaylist;
+      this.searchPlaylists.forEach(element => {
+        var startDate = new Date(Date.UTC(element.year, element.month, element.day, element.hour, element.minute, element.second));
+        var d = new Date();
+        var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
+        this.day_playlist.push(this.calculateDay(startDate, endDate));
+      });
     })
   }
 
@@ -115,6 +209,13 @@ export class SearchComponent implements OnInit {
       }
     }).subscribe(result => {
       this.searchChannel = result.data.searchChannel
+      this.searchChannel.forEach(element => { 
+        var startDate = new Date(element.created_at);
+        var d = new Date();
+        var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
+        console.log(this.calculateDay(startDate,endDate));
+        this.day_channel.push(this.calculateDay(startDate, endDate));
+      });
     })
   }
 

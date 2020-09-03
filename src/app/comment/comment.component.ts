@@ -21,6 +21,10 @@ export class CommentComponent implements OnInit {
   like: any;
   dislike: any;
   toggle_thumb: string;
+  toggle_show: boolean = true;
+  toggle_showAll: boolean = false;
+  replyLen: number = 0;
+  is_exist: boolean = false;
 
   constructor(private apollo: Apollo, private data: DataService) { }
 
@@ -57,6 +61,11 @@ export class CommentComponent implements OnInit {
 
   toggleComment(){
     this.toggle_comment = !this.toggle_comment;
+  }
+
+  toggleShowAll(){
+    this.toggle_showAll = !this.toggle_showAll;
+    this.toggle_show = !this.toggle_show;
   }
 
   monthDays:number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -156,6 +165,10 @@ export class CommentComponent implements OnInit {
       }
     }).valueChanges.subscribe(result => {
       this.reply = result.data.reply;
+      this.replyLen = this.reply.length;
+      if(this.replyLen != 0){
+        this.is_exist = true;
+      }
     }, (error) => {
       console.log('there was an error sending the query', error);
     });

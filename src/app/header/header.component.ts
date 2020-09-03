@@ -8,6 +8,7 @@ import gql from 'graphql-tag'
 import { User } from 'firebase';
 import { subscribe } from 'graphql';
 import { DataService } from '../data.service'
+import { NumberValueAccessor } from '@angular/forms';
 
 @Component({
   selector: 'app-header',
@@ -21,13 +22,27 @@ export class HeaderComponent implements OnInit {
   toggle_user = false;
   toggle_sign: boolean;
   toggle_search: boolean = false;
+  toggle_playlist: boolean = false;
+  toggle_subscribe: boolean = false;
+  toggle_restriction: Boolean = new Boolean();
+  toggle_notif: boolean = false;
+  toggle_login: boolean = false;
 
+  userDB: any;
   users = [];
   user: SocialUser;
   loggedIn: boolean;
   message: string;
   subscription: any;
   playlist: any;
+  notifications: any;
+  notifs: any;
+  listNotif: string="";
+  lastPlaylist: number;
+  lastSubscribe: number;
+  playlistLen: number = 0;
+  subscribeLen: number = 0;
+  notificationLen: number = 0;
 
   searchVideos: any;
   searchPlaylists: any;
@@ -47,13 +62,18 @@ export class HeaderComponent implements OnInit {
     else{
       this.getUserFromStorage();
       this.data.logged_in = true;
+      this.data.user_id = this.user.id;
+      this.data.photoUrl = this.user.photoUrl;
+      this.getSubscriber();
+      this.getPlaylist();
+      this.getUser();
+      this.getNotif();
+      console.log(this.data.user_id);
+      this.lastPlaylist = 5;
+      this.lastSubscribe = 5;
     }
-    this.data.user_id = this.user.id;
-    this.data.photoUrl = this.user.photoUrl;
+    
     this.toggle_sign = false;
-    this.getSubscriber();
-    this.getPlaylist();
-    console.log(this.data.user_id);
   }
 
   signInWithGoogle(): void {
@@ -64,9 +84,13 @@ export class HeaderComponent implements OnInit {
       this.loggedIn = (user != null);
       this.addToLocalStorage(user);
       this.createUser(user);
-      window.location.href = ' ';
+      window.location.reload(); 
     });
 
+  }
+
+  toggleLogin(){
+    this.toggle_login = !this.toggle_login;
   }
 
   toggleSign(){
@@ -77,12 +101,128 @@ export class HeaderComponent implements OnInit {
     this.toggle_search = !this.toggle_search
   }
 
+  toggleNotif(){
+    this.toggle_notif = !this.toggle_notif
+  }
+
+  toggleRestriction(){
+    if(this.userDB.restriction == "false"){
+      this.updateRestriction("true");
+    } else {
+      this.updateRestriction("false");
+    }
+  }
+
   inputSearch(i){
     (<HTMLInputElement>document.getElementById("search")).value = i.name;
   }
 
   search(){
     window.location.href = "/search/"+(<HTMLInputElement>document.getElementById("search")).value;
+  }
+
+  getNotification(){
+    this.apollo.query({
+      query: gql`
+        query getNotification($userid: String!){
+          getNotification(userid: $userid){
+            id,
+            user_id,
+            type,
+            type_id,
+            description,
+            thumbnail,
+            photo,
+            created_at
+          }
+        }
+      `,
+      variables:{
+        userid: this.listNotif
+      }
+    }).subscribe(result => {
+      this.notifications = result.data.getNotification;
+      this.notificationLen = this.notifications.length;
+      console.log(this.notifications);
+    })
+  }
+
+  getNotif(){
+    this.apollo.query({
+      query: gql`
+      query getNotif($userid: String!){
+        getNotif(userid: $userid){
+          id,
+          user_id,
+          notif_to
+        }
+      }
+      `,
+      variables:{
+        userid: this.data.user_id
+      }
+    }).subscribe(result => {
+      this.notifs = result.data.getNotif
+      this.notifs.forEach((element,index) => {
+        this.listNotif += element.notif_to;
+        if(index != this.notifs.length-1){
+          this.listNotif += ",";
+        }
+      });
+      console.log(this.listNotif);
+      this.getNotification();
+    })
+  }
+
+  getUser(){
+    this.apollo.query({
+      query: gql `
+        query getUserId($id: String!) {
+          getUserId(userid: $id) {
+            id,
+            name,
+            membership,
+            photo,
+            subscriber,
+            restriction
+          }
+        }
+      `,
+      variables:{
+        id: this.data.user_id
+      }
+    }).subscribe(result => {
+      this.userDB = result.data.getUserId;
+      console.log(this.userDB.restriction);
+      if(this.userDB.restriction == "false"){
+        this.data.isRestriction = false;
+        this.toggle_restriction = false;
+      } else {
+        this.data.isRestriction = true;
+        this.toggle_restriction = true;
+      }
+      
+      console.log(this.toggle_restriction);
+    })
+  }
+
+  updateRestriction(bool: string){
+    this.apollo.mutate({
+      mutation: gql`
+        mutation updateRestriction($userid: String! ,$bool: String!){
+          updateRestriction(userid: $userid, bool: $bool)
+        }
+      `,
+      variables:{
+        userid: this.data.user_id,
+        bool: bool
+      }
+    }).subscribe(({ data }) => {
+      console.log('got data', data);
+      window.location.href = ' ';
+    },(error) => {
+      console.log('there was an error sending the query', this.data);
+    });
   }
 
   getPlaylist(){
@@ -110,10 +250,48 @@ export class HeaderComponent implements OnInit {
       }
     }).subscribe(result =>{
       this.playlist = result.data.getPlaylistUser
+      this.playlistLen = this.playlist.length;
     })
   }
 
-  createUser(user: SocialUser): void {
+  morePlaylist(){
+    this.toggle_playlist = true;
+    this.lastPlaylist = this.playlist.length
+    let container = document.querySelector(".list-playlist");
+    for(let i = 4 ; i < this.playlist.length-1 ; i++){
+      let div = document.createElement("div");
+      let video = document.createElement("app-playlist-sidebar");
+      video.setAttribute("playlist","playlist[i]");
+      div.appendChild(video);
+      container.appendChild(div);
+    }
+  }
+
+  hidePlaylist(){
+    this.toggle_playlist = false;
+    this.lastPlaylist = 5;
+  }
+
+  moreSubscription(){
+    this.toggle_subscribe = true;
+    this.lastSubscribe = this.subscription.length
+    let container = document.querySelector(".list-subs");
+    for(let i = 4 ; i < this.subscription.length-1 ; i++){
+      let div = document.createElement("div");
+      let video = document.createElement("app-list-subscription");
+      video.setAttribute("subscription","subscription[i]");
+      div.appendChild(video);
+      container.appendChild(div);
+    }
+  }
+
+  hideSubscription(){
+    this.toggle_subscribe = false;
+    this.lastSubscribe = 5;
+  }
+
+  createUser(user: any): void {
+    console.log(user);
     this.apollo.mutate({
       mutation: gql `
         mutation createUser($id: String!, $name: String!, $membership: String!, $photo: String!, $subscriber: Int!, $views: Int!, $description: String!, $header: String!) {
@@ -127,24 +305,25 @@ export class HeaderComponent implements OnInit {
         }
         `,
         variables:{
-          id: this.user.id,
-          name: this.user.name,
+          id: user.id,
+          name: user.name,
           membership: 'no',
-          photo: this.user.photoUrl,
+          photo: user.photoUrl,
           subscriber: 0,
           views: 0,
           description: "i'm new",
-          header: "gs://tpa-web-71a78.appspot.com/101224snowywishmv2.jpg"
+          header: "https://firebasestorage.googleapis.com/v0/b/tpa-web-71a78.appspot.com/o/101224snowywishmv2.jpg?alt=media&token=007ac3c0-2551-4fbb-ba6a-2ccbb70a6e22"
         }
     }).subscribe(({ data }) => {
       console.log('got data', data);
+      window.location.href = ' ';
     },(error) => {
-      console.log('there was an error sending the query', error);
+      console.log('there was an error sending the query', this.data);
     });
   }
 
   getSubscriber(){
-    this.apollo.watchQuery({
+    this.apollo.query({
       query: gql `
         query getSubscribeByUser($userid: String!){
           getSubscribeByUser(userid: $userid){
@@ -157,8 +336,9 @@ export class HeaderComponent implements OnInit {
       variables:{
         userid: this.user.id
       }
-    }).valueChanges.subscribe(result =>{
+    }).subscribe(result =>{
       this.subscription = result.data.getSubscribeByUser
+      this.subscribeLen = this.subscription.length;
     })
   }
 
@@ -270,7 +450,7 @@ export class HeaderComponent implements OnInit {
     sessionStorage.clear();
     window.localStorage.clear();
     this.loggedIn = false;
-    window.location.href = ' ';
+    window.location.reload();
   }
 
   addToLocalStorage(user){
