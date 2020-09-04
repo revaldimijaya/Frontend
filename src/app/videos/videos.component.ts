@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { DataService } from '../data.service'
 import gql from 'graphql-tag';
+import { ThrowStmt } from '@angular/compiler';
 
 
 @Component({
@@ -52,10 +53,14 @@ export class VideosComponent implements OnInit {
   observer: IntersectionObserver;
   observer2: IntersectionObserver;
 
+  url: string = "";
+  url2: string = "";
+
   ngOnInit(): void { 
     this.activatedRoute.paramMap.subscribe(params => { 
       this.id = parseInt(params.get('id')); 
     });
+    this.checkCurrentTime();
     this.total_subs = 0;
     this.photoURL = this.data.photoUrl.toString();
     this.toggle_subs = true;
@@ -64,6 +69,7 @@ export class VideosComponent implements OnInit {
     this.section = "video";
     this.toggle_thumb = "none";
     this.getUserPremium();
+    this.rightClickEvent();
     this.activatedRoute.paramMap.subscribe(params => {
       this.watch();
       this.getVideos();
@@ -108,12 +114,14 @@ export class VideosComponent implements OnInit {
   toggleNewest(){
     this.toggle_newest = true;
     this.comment.sort((a,b) => {return b.id - a.id});
-    // this.getComment();
 
   }
 
   toggleShare(){
     this.toggle_share = !this.toggle_share;
+    let video = document.getElementById('mat-video').querySelector('video') as HTMLVideoElement;
+    this.url = "http://localhost:4200/video/"+this.id;
+    this.url2 = this.url + "?time="+video.currentTime;
   }
 
   toggleVideo(){
@@ -138,6 +146,10 @@ export class VideosComponent implements OnInit {
 
   toggleModal(){
     this.toggle_modal = !this.toggle_modal
+  }
+
+  goToNext(){
+    this.router.navigate(["video/"+this.nextVideos[0].id]);
   }
 
   autoplay:boolean = false;
@@ -294,15 +306,21 @@ export class VideosComponent implements OnInit {
       }
     }).subscribe(result => {
       this.user = result.data.getUserId;
+      if(this.user.membership == "no" && this.videos.premium == "regular"){
+        window.location.href ="/";
+        return;
+      }
       this.checkSubs(this.user);
       this.getSubs(this.user);
       if(this.data.user_id == this.user.id){
         this.toggle_subs = false;
       }
       this.toggle_comment = false;
-      
+      this.getNotif();
     })
   }
+
+  user_premium: any;
 
   getUserPremium(){
     if(this.data.user_id == ""){
@@ -324,6 +342,7 @@ export class VideosComponent implements OnInit {
         id: this.data.user_id
       }
     }).subscribe(result => {
+      this.user_premium = result.data.getUserId;
       if(result.data.getUserId.membership == "yes"){
         this.toggle_download = true;
       }
@@ -429,7 +448,14 @@ export class VideosComponent implements OnInit {
       }
     }).subscribe(result => {
       this.nextVideos = this.shuffle(result.data.getNextVideo);
-
+      if(this.data.user_id != "") {
+        if(this.user_premium.membership == "no"){
+          this.nextVideos = this.nextVideos.filter(vid => vid.premium == "regular")
+        } 
+        if(this.data.isRestriction){
+          this.nextVideos = this.nextVideos.filter(vid => vid.restriction == "kids")
+        }
+      }
       this.observer = new IntersectionObserver((entry)=>{
         if(entry[0].isIntersecting){
           let container = document.querySelector(".next-video");
@@ -675,11 +701,69 @@ export class VideosComponent implements OnInit {
     });
   }
 
+  notifs: any;
+  toggle_notif: boolean= false;
+
+  getNotif(){
+    this.apollo.query<any>({
+      query: gql`
+      query getNotif($userid: String!){
+        getNotif(userid: $userid){
+          id,
+          user_id,
+          notif_to
+        }
+      }
+      `,
+      variables:{
+        userid: this.data.user_id
+      }
+    }).subscribe(result =>{
+      this.notifs = result.data.getNotif;
+      this.notifs.forEach(element => {
+        if(this.data.user_id == element.user_id && this.user.id == element.notif_to){
+          this.toggle_notif = true;
+        }
+      });
+      console.log(this.notifs, this.toggle_notif);
+    }, (error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  toggleNotif(){
+    if(this.toggle_notif == true){
+      this.deleteNotif();
+    } else {
+      this.createNotif();
+    }
+  }
+
   createNotif(){
     this.apollo.mutate<any>({
       mutation: gql`
       mutation createNotif($userid: String!, $notifto: String!){
         createNotif(userid: $userid, notifto: $notifto){
+          id,
+          user_id,
+          notif_to
+        }
+      }
+      `,
+      variables:{
+        userid: this.data.user_id,
+        notifto: this.user.id
+      }
+    }).subscribe(({data})=>{
+      console.log(data);
+    })
+  }
+
+  deleteNotif(){
+    this.apollo.mutate<any>({
+      mutation: gql`
+      mutation deleteNotif($userid: String!, $notifto: String!){
+        deleteNotif(userid: $userid, notifto: $notifto){
           id,
           user_id,
           notif_to
@@ -709,6 +793,94 @@ export class VideosComponent implements OnInit {
   
     return array;
   }
+  count: number = 0;
+  rightClickEvent(){
+    let video = document.querySelector('#mat-video') as HTMLVideoElement;
+    video.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      let menu = document.querySelector('.right-click-modal') as HTMLElement;
+      menu.style.top = `${e.pageY}px`;
+      menu.style.left = `${e.pageX}px`;
+      if(this.count % 2 == 0){
+        menu.style.display = 'block';
+      } else {
+        menu.style.display = 'none';
+      }
+      this.count++;
+    })
+  }
 
+  toggle_loop: boolean = false;
+
+  toggleLoop(){
+    this.toggle_loop = !this.toggle_loop;
+  }
+
+  copyMessage(){
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = "http://localhost:4200/video/"+this.id;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
+  copyMessageWithTime(){
+    let video = document.getElementById('mat-video').querySelector('video') as HTMLVideoElement;
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = "http://localhost:4200/video/"+this.id+"?time="+video.currentTime;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
+  copyMessageShare(){
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.url;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
+  copyMessageWithTimeShare(){
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.url2;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
+
+  checkCurrentTime(){
+    this.activatedRoute.queryParams.subscribe(params => {
+      if(Object.keys(params.time).length != 0){
+        let video = document.getElementById('mat-video').querySelector('video') as HTMLVideoElement
+        video.currentTime = parseInt(params.time);
+      }
+    })
+  }
   
 }

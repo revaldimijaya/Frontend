@@ -27,6 +27,8 @@ export class SearchComponent implements OnInit {
   day_channel: number[]=[];
   day_playlist: number[]=[];
 
+  user_premium: any;
+
   constructor(private activatedRoute: ActivatedRoute, private data: DataService, private apollo: Apollo) { }
 
   ngOnInit(): void {
@@ -38,7 +40,8 @@ export class SearchComponent implements OnInit {
     // })
     this.getSearchChannel();
     this.getSearchPlaylists();
-    this.getSearchVideo();
+    this.getUserPremium();
+    
   }
 
   toggleFilter(){
@@ -110,6 +113,31 @@ export class SearchComponent implements OnInit {
     return this.getDifference(startDate.getDate(),startDate.getMonth(),startDate.getFullYear(),endDate.getDate(),endDate.getMonth(),endDate.getFullYear())
   }
 
+  getUserPremium(){
+    if(this.data.user_id == ""){
+      return;
+    }
+    this.apollo.query<any>({
+      query: gql `
+        query getUserId($id: String!) {
+          getUserId(userid: $id) {
+            id,
+            name,
+            membership,
+            photo,
+            subscriber
+          }
+        }
+      `,
+      variables:{
+        id: this.data.user_id
+      }
+    }).subscribe(result => {
+      this.user_premium = result.data.getUserId;
+      this.getSearchVideo();
+    })
+  }
+
   getSearchVideo(){
     this.apollo.query({
       query: gql`
@@ -144,6 +172,14 @@ export class SearchComponent implements OnInit {
       }
     }).subscribe(result => {
       this.searchVideos = result.data.searchVideo
+      if(this.data.user_id != "") {
+        if(this.user_premium.membership == "no"){
+          this.searchVideos = this.searchVideos.filter(vid => vid.premium == "regular")
+        } 
+        if(this.data.isRestriction){
+          this.searchVideos = this.searchVideos.filter(vid => vid.restriction == "kids")
+        }
+      }
       this.searchVideos.forEach(element => {
         var startDate = new Date(Date.UTC(element.year, element.month, element.day, element.hour, element.minute, element.second));
         var d = new Date();

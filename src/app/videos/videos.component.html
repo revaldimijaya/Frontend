@@ -1,8 +1,11 @@
 <div class="container" >
     <div class="video" >
         <div class="video-display" >
-            <mat-video (click)="toggleVideo()" id="mat-video" style="width: 100%;  height: 100%;" [color]="primary" [quality]="true" [keyboard]="true" src="{{videos.url}}" [download]="toggle_download" autoplay="true" showFrameByFrame="true">
-            </mat-video>
+            <mat-video (click)="toggleVideo()" id="mat-video" style="width: 100%;  height: 100%;" [color]="primary" [quality]="true" [keyboard]="true" src="{{videos.url}}" [download]="toggle_download" autoplay="true" showFrameByFrame="true" [loop]="toggle_loop">
+            </mat-video> 
+        </div>
+        <div (click)="goToNext()" class="next" style="cursor: pointer; background-color: lightgrey; width: 80px; display: flex;  align-items: center; padding: 10px; justify-content: center; margin-top: 10px;">
+            <p style="margin: 0;">Next Video</p>
         </div>
 
         <div class="video-name">
@@ -68,9 +71,15 @@
                         <div class="subs" (click)="subs()" [style.background-color]="change_subs ? 'red':'grey'">
                             <p>SUBSCRIBE</p>
                         </div>
-                        <div class="notif" (click)="createNotif()">
-                            <i class="fas fa-bell"></i>
+                        <div *ngIf="toggle_subs">
+                            <div class="notif" (click)="toggleNotif()" *ngIf="toggle_notif">
+                                <i class="fas fa-bell" style="color: grey;"></i>
+                            </div>
+                            <div class="notif" (click)="toggleNotif()" *ngIf="!toggle_notif">
+                                <i class="fas fa-bell" style="color: black;"></i>
+                            </div>
                         </div>
+                        
                     </div>
                 </div>
                 
@@ -172,8 +181,57 @@
         <app-modal-playlist [videos]="videos"></app-modal-playlist>
     </div>
 
-    <div class="modal-share" *ngIf="toggle_share">
-        <app-modal-share [videos]="videos" [section]="section"></app-modal-share>
-    </div>
-
 </div>
+
+<div class="right-click-modal">
+    <div class="menu" (click)="toggleLoop()">
+        <p>Loop</p>
+    </div>
+    <div class="menu" (click)="copyMessage()">
+        <p>Copy link video</p>
+    </div>
+    <div class="menu" (click)="copyMessageWithTime()">
+        <p>Copy link with current time</p>
+    </div>
+</div>
+
+<div id="myModal-video" class="modal-video" *ngIf="toggle_share">
+
+    <div class="modal-content-video">
+      <span class="close" style="display: flex; width: 100%; justify-content: flex-end;" (click)="toggleShare()" >&times;</span>
+      <p style="margin: 0 0 20px 0;">Share to...</p>
+      <div style="display: flex;">
+          <a [href]="'http://twitter.com/share?text=This is video &url=' + url" target="_blank">
+              <div class="twitter">
+                  <i class="fab fa-twitter fa-2x"></i>
+              </div>
+          </a>
+          <a [href]="'https://www.facebook.com/sharer/sharer.php?u=' + url" target="_blank">
+              <div class="facebook">
+                  <i class="fab fa-facebook-f fa-2x"></i>
+              </div>
+          </a>
+      </div>
+      <div class="text-copy">
+          <div style="display: flex; align-items: center;">
+              <div class="text">
+                  <p style="background-color: lightgrey; padding: 5px; border-radius: 5px;">{{url}}</p>
+              </div>
+              <div class="logo" (click)="copyMessageShare()">
+                  <i class="fas fa-copy fa-2x" style="opacity: 70%; margin-left: 10px;"></i>
+              </div>
+          </div>
+          <div style="display: flex; align-items: center;">
+              <div class="text">
+                  <p style="background-color: lightgrey; padding: 5px; border-radius: 5px;">{{url2}}</p>
+              </div>
+              <div class="logo" (click)="copyMessageWithTimeShare()">
+                  <i class="fas fa-copy fa-2x" style="opacity: 70%; margin-left: 10px;"></i>
+              </div>
+          </div>
+          
+      </div>
+    </div>
+  
+  </div>
+

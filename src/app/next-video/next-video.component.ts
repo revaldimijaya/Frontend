@@ -19,6 +19,7 @@ export class NextVideoComponent implements OnInit {
   toggle_modal : boolean = false;
   toggle_login: boolean;
   toggle_other: boolean;
+  toggle_premium: boolean = false ;
 
   constructor(private apollo: Apollo, private data: DataService) { }
 
@@ -43,6 +44,9 @@ export class NextVideoComponent implements OnInit {
     }
     this.calculate_day = this.calculateDay(startDate, endDate);
     this.calculateDuration();
+    if(this.nextVideo.premium == "premium"){
+      this.toggle_premium = true;
+    }
   }
 
   toUser(){

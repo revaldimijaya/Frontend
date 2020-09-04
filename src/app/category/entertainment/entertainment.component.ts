@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { ActivatedRoute } from '@angular/router';
+import { DataService } from 'src/app/data.service';
 
 @Component({
   selector: 'app-entertainment',
@@ -13,7 +14,8 @@ export class EntertainmentComponent implements OnInit {
   videos: any;
   category: string;
   day: number[]=[];
-  constructor(private apollo: Apollo, private activatedRoute:ActivatedRoute) { }
+  user:any;
+  constructor(private apollo: Apollo, private activatedRoute:ActivatedRoute, private data:DataService) { }
 
   ngOnInit(): void {
 
@@ -21,6 +23,33 @@ export class EntertainmentComponent implements OnInit {
       this.category = params.get('category'); 
     });
 
+    if(this.data.user_id == ""){
+      return;
+    }
+    this.apollo.query<any>({
+      query: gql `
+        query getUserId($id: String!) {
+          getUserId(userid: $id) {
+            id,
+            name,
+            membership,
+            photo,
+            subscriber
+          }
+        }
+      `,
+      variables:{
+        id: this.data.user_id
+      }
+    }).subscribe(result => {
+      this.user = result.data.getUserId;
+      this.getVideo();
+    })
+
+    
+  }
+
+  getVideo(){
     this.apollo.query({
       query: gql`
         query getCategory($category: String!){
@@ -54,6 +83,14 @@ export class EntertainmentComponent implements OnInit {
       }
     }).subscribe(result =>{
       this.videos = result.data.getCategory;
+      if(this.data.user_id != "") {
+        if(this.user.membership == "no"){
+          this.videos = this.videos.filter(vid => vid.premium == "regular")
+        } 
+        if(this.data.isRestriction){
+          this.videos = this.videos.filter(vid => vid.restriction == "kids")
+        }
+      }
       this.videos.forEach((element,index) => {
           var startDate = new Date(Date.UTC(element.year, element.month, element.day, element.hour, element.minute, element.second));
           var d = new Date();
@@ -65,6 +102,7 @@ export class EntertainmentComponent implements OnInit {
       })
     })
   }
+
   monthDays:number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
   countLeapYears(month:number, year:number): number{
@@ -99,4 +137,6 @@ export class EntertainmentComponent implements OnInit {
   calculateDay(startDate: Date, endDate: Date): number{
     return this.getDifference(startDate.getDate(),startDate.getMonth(),startDate.getFullYear(),endDate.getDate(),endDate.getMonth(),endDate.getFullYear())
   }
+
+  
 }
