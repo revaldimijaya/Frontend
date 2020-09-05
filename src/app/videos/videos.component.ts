@@ -306,10 +306,7 @@ export class VideosComponent implements OnInit {
       }
     }).subscribe(result => {
       this.user = result.data.getUserId;
-      if(this.user.membership == "no" && this.videos.premium == "regular"){
-        window.location.href ="/";
-        return;
-      }
+      
       this.checkSubs(this.user);
       this.getSubs(this.user);
       if(this.data.user_id == this.user.id){
@@ -345,6 +342,10 @@ export class VideosComponent implements OnInit {
       this.user_premium = result.data.getUserId;
       if(result.data.getUserId.membership == "yes"){
         this.toggle_download = true;
+      }
+      if(this.user_premium.premium == "no" && this.videos.premium == "premium"){
+        window.location.href ="/";
+        return;
       }
       
     })

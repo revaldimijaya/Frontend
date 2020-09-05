@@ -10,6 +10,7 @@ export class DataService {
   photoUrl = new String();
   logged_in = new Boolean(false);
   isRestriction = new Boolean(false);
+  isOwnChannel = new Boolean(false);
 
   constructor() { }
 }

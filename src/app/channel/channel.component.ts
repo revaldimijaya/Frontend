@@ -2,10 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { windowTime } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import gql from 'graphql-tag';
 import { DataService } from '../data.service';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { StringValueNode } from 'graphql';
+import { AngularFireUploadTask, AngularFireStorage } from 'angularfire2/storage';
+import { AngularFirestore } from 'angularfire2/firestore';
 
 @Component({
   selector: 'app-channel',
@@ -43,6 +46,8 @@ export class ChannelComponent implements OnInit {
   name: string;
   header: string;
   photo: string;
+  description : string;
+  membership: string;
 
   subscription: any;
   total_subs: number;
@@ -53,14 +58,32 @@ export class ChannelComponent implements OnInit {
   toggle_playlists : boolean = false;
   toggle_community : boolean = false;
   toggle_about : boolean = false;
+  toggle_edit : boolean = false;
 
-  constructor(private router: Router,private apollo: Apollo, private activatedRoute: ActivatedRoute, private data: DataService) { }
+  toggle_background: boolean = false;
+  toggle_picture: boolean = false;
+
+  thumbnailPercentage: Observable<number>
+  thumbnailSnapshot: Observable<any>;
+  thumbnailTask: AngularFireUploadTask;
+  thumbnailURL: Observable<string>;
+  
+  thumbnail_path: any;
+
+  thumbnails: File[] = [];
+
+  constructor(private storage: AngularFireStorage, private router: Router,private apollo: Apollo, private activatedRoute: ActivatedRoute, private data: DataService) { }
 
   ngOnInit(): void {
     this.total_subs = 0;
     this.activatedRoute.paramMap.subscribe(params => { 
       this.id = params.get('id'); 
+      console.log(this.id, this.data.user_id);
+      if(this.id == this.data.user_id){
+        this.data.isOwnChannel = true;
+      }
     });
+   
     this.getUser();
     this.getSubsrcibers();
     this.checkSubs();
@@ -84,6 +107,22 @@ export class ChannelComponent implements OnInit {
       this.toggle_about = true;
     }
 
+  }
+
+  ngOnDestroy(){
+    this.data.isOwnChannel = false;
+  }
+
+  toggleEdit(){
+    this.toggle_edit = !this.toggle_edit;
+  }
+
+  togglePicture(){
+    this.toggle_picture = !this.toggle_picture;
+  }
+
+  toggleBackground(){
+    this.toggle_background = !this.toggle_background;
   }
 
   getUser(){
@@ -110,6 +149,8 @@ export class ChannelComponent implements OnInit {
       this.name = this.user.name;
       this.header = this.user.header;
       this.photo = this.user.photo;
+      this.description = this.user.description;
+      this.membership = this.user.membership;
       this.getNotif();
       
     },(error) => {
@@ -271,6 +312,105 @@ export class ChannelComponent implements OnInit {
     }, (error) => {
       console.log('there was an error sending the query', error);
     });
+  }
+
+  thumbnailPath(files: FileList):void{
+    console.log(files.item(0))
+    var thumbnail = files.item(0);
+    const reader = new FileReader();
+    reader.onload = test => this.thumbnail_path = reader.result as string;
+
+    reader.readAsDataURL(thumbnail)
+    
+  }
+
+  startUploadThumbnail(files : FileList){
+    const path = files.item(0).name;
+    console.log(path)
+  
+    const ref = this.storage.ref(path);
+
+    this.thumbnailTask = this.storage.upload(path, files.item(0));
+    
+    this.thumbnailPercentage = this.thumbnailTask.percentageChanges();
+    
+    this.thumbnailTask.then(async upload => await ref.getDownloadURL().subscribe(url => {this.thumbnailURL = url}));
+  }
+
+  uploadPhoto(){
+    console.log(this.thumbnailURL);
+    this.apollo.mutate({
+      mutation: gql`
+      mutation updateUser(
+          $id: String!, 
+          $name: String!, 
+          $photo: String!, 
+          $description: String!,
+          $header: String!,
+          $membership: String!
+        ){
+        updateUser(id: $id, input:{
+          name: $name,
+          photo: $photo,
+          membership: $membership,
+          description: $description,
+          header: $header,
+          subscriber:0,
+          views:0,
+          id:"",
+        }){
+          id
+        }
+      }
+      `,variables:{
+        id: this.id,
+        name: this.name,
+        photo: this.thumbnailURL,
+        description: this.description,
+        header: this.header,
+        membership: this.membership
+      }
+    }).subscribe((data)=>{
+      console.log(data);
+    })
+  }
+
+  uploadBackground(){
+    console.log(this.thumbnailURL);
+    this.apollo.mutate({
+      mutation: gql`
+      mutation updateUser(
+          $id: String!, 
+          $name: String!, 
+          $photo: String!, 
+          $description: String!,
+          $header: String!,
+          $membership: String!,
+        ){
+        updateUser(id: $id, input:{
+          name: $name,
+          photo: $photo,
+          membership: $membership,
+          description: $description,
+          header: $header,
+          subscriber:0,
+          views:0,
+          id:"",
+        }){
+          id
+        }
+      }
+      `,variables:{
+        id: this.id,
+        name: this.name,
+        photo: this.photo,
+        description: this.description,
+        header: this.thumbnailURL,
+        membership: this.membership,
+      }
+    }).subscribe((data)=>{
+      console.log(data);
+    })
   }
 
 }

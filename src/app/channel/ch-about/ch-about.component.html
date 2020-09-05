@@ -2,6 +2,11 @@
     <div class="description" style="margin-right: 40px;">
         <p>Description</p>
         <p>{{user.description}}</p>
+        <div class="edit" (click)="toggleEdit()">
+            <i class="fas fa-pen-square fa-2x"></i>
+        </div>
+        <textarea *ngIf="toggle_edit" name="description" id="description" cols="30" rows="10"></textarea>
+        <p *ngIf="toggle_edit" (click)="uploadDescription()" style="width: 80px; background-color: lightgrey; cursor: pointer; border-radius: 5px; display: flex; align-items: center; justify-content: center; height: 30px;">Upload</p>
         <div>
             <hr>
         </div>
@@ -11,11 +16,11 @@
         <div>
             <hr>
         </div>
-        <p>Joined {{date}}</p>
+        <p>Joined {{show_date}}</p>
         <div>
             <hr>
         </div>
-        <p>{{user.views}} views</p>
+        <p>{{totalWatch}} views</p>
         <div>
             <hr>
         </div>

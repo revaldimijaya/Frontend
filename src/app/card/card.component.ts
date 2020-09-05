@@ -3,6 +3,8 @@ import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 import { start } from 'repl';
 import { DataService } from '../data.service';
+import { Observable } from 'rxjs';
+import { AngularFireUploadTask, AngularFireStorage } from 'angularfire2/storage';
 
 @Component({
   selector: 'app-card',
@@ -27,14 +29,37 @@ export class CardComponent implements OnInit {
   toggle_create: boolean;
   toggle_login: boolean;
   toggle_premium: boolean = false;
+  toggle_picture: boolean = false;
+  isOwnChannel: boolean = false;
+  toggle_thumbnail: boolean = false;
 
-  constructor(private apollo: Apollo, private data: DataService) { }
+  edit_title: string;
+  edit_description: string;
+  edit_privacy: string;
+  edit_thumbnail: string;
+
+  thumbnailPercentage: Observable<number>
+  thumbnailSnapshot: Observable<any>;
+  thumbnailTask: AngularFireUploadTask;
+  thumbnailURL: Observable<string>;
+  
+  thumbnail_path: any;
+
+  thumbnails: File[] = [];
+
+  constructor(private apollo: Apollo, private data: DataService, private storage: AngularFireStorage) { }
 
   ngOnInit(): void {
     if(this.data.user_id == ""){
       this.toggle_login = false;
     } else {
       this.toggle_login = true;
+    }
+    console.log(this.data.isOwnChannel);
+    if(this.data.isOwnChannel == true){
+      this.isOwnChannel = true;
+    } else {
+      this.isOwnChannel = false;
     }
 
     if(this.videos.premium == "premium"){
@@ -88,6 +113,29 @@ export class CardComponent implements OnInit {
     window.location.href="channel/"+this.user.id;
   }
 
+  toggleEditThumbnail(){
+    this.toggle_thumbnail = !this.toggle_thumbnail;
+  }
+
+  togglePublic(){
+    this.edit_privacy = "public";
+  }
+
+  togglePrivate(){
+    this.edit_privacy = "private";
+  }
+
+  togglePicture(){
+    this.toggle_picture = !this.toggle_picture;
+    if(this.toggle_picture){
+      console.log((<HTMLInputElement>document.getElementById('edit-title')));
+      this.edit_title = this.videos.name;
+      this.edit_description = this.videos.description;
+      this.edit_thumbnail = this.videos.thumbnail;
+      this.edit_privacy = this.videos.visibility;
+    }
+  }
+
   toggleOther(){
     this.toggle_other = !this.toggle_other;
   }
@@ -98,6 +146,72 @@ export class CardComponent implements OnInit {
 
   toggleCreate(){
     this.toggle_create = !this.toggle_create;
+  }
+
+  updateVideo(){
+    this.edit_title = (<HTMLInputElement>document.getElementById('edit-title')).value;
+    this.edit_description = (<HTMLInputElement>document.getElementById('edit-description')).value;
+    if(this.toggle_thumbnail == true && this.thumbnailURL != undefined){
+      this.edit_thumbnail = this.thumbnailURL.toString();
+    }
+    console.log(this.edit_title, this.edit_description, this.toggle_thumbnail, this.edit_privacy);
+
+    this.apollo.mutate({
+      mutation: gql`
+      mutation updateVideo(
+        $id: Int!,
+        $url: String!,
+        $name: String!,
+        $description: String!,
+        $thumbnail: String!,
+        $visibility: String!
+      ){
+        updateVideo(id: $id, input:{
+          user_id:"",
+          url: $url,
+          watch:0,
+          like:0,
+          dislike:0,
+          restriction:"",
+          location:"",
+          name: $name,
+          premium:"",
+          category:"",
+          thumbnail: $thumbnail,
+          description: $description,
+          visibility: $visibility,
+          duration:0,
+        }){
+          id
+        }
+      }
+      `,
+      variables:{
+        id: this.videos.id,
+        url: this.edit_thumbnail,
+        name: this.edit_title,
+        description: this.edit_description,
+        thumbnail: this.edit_thumbnail,
+        visibility: this.edit_privacy
+      }
+    }).subscribe((data) => {
+      console.log(data);
+    })
+  }
+
+  deleteVideo(){
+    this.apollo.mutate({
+      mutation: gql`
+      mutation deleteVideo($id: Int!) {
+        deleteVideo(id: $id)
+      }
+      `,
+      variables:{
+        id: this.videos.id
+      }
+    }).subscribe((data) => {
+      console.log(data);
+    })
   }
 
   getPlaylist(){
@@ -275,5 +389,18 @@ export class CardComponent implements OnInit {
       }
       return days + " days ago"
     }
+  }
+
+  startUploadThumbnail(files : FileList){
+    const path = files.item(0).name;
+    console.log(path)
+  
+    const ref = this.storage.ref(path);
+
+    this.thumbnailTask = this.storage.upload(path, files.item(0));
+    
+    this.thumbnailPercentage = this.thumbnailTask.percentageChanges();
+    
+    this.thumbnailTask.then(async upload => await ref.getDownloadURL().subscribe(url => {this.thumbnailURL = url}));
   }
 }

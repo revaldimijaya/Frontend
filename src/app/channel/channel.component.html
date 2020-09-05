@@ -1,11 +1,17 @@
 <div class="container" [@fade]>
     <div class="header">
         <img src="{{header}}" alt="">
+        <div class="edit" *ngIf="toggle_edit" (click)="toggleBackground()">
+            <i class="fas fa-pen-square fa-3x"></i>
+        </div>
     </div>
     <div class="info">
         <div class="info-first">
             <div class="user-photo">
                 <img src="{{photo}}" alt="">
+                <div class="edit" *ngIf="toggle_edit" (click)="togglePicture()">
+                    <i class="fas fa-pen-square fa-2x"></i>
+                </div>
             </div>
             <div class="name">
                 <h3>{{name}}</h3>
@@ -22,8 +28,9 @@
                     <i class="fas fa-bell" style="color: black;"*ngIf="!toggle_notif"></i>
                 </div>
             </div>
-            <div class="customize" [style.display]="toggle_subs ? 'none':'flex'">
-                <p>Customize Channel</p>
+            <div class="customize" (click)="toggleEdit()" style="cursor: pointer;" [style.display]="toggle_subs ? 'none':'flex'">
+                <p *ngIf="!toggle_edit">Customize Channel</p>
+                <p *ngIf="toggle_edit">Editing...</p>
             </div>
         </div>
     </div>
@@ -67,4 +74,22 @@
         <router-outlet></router-outlet>
     </div>
     
+</div>
+
+<div class="modal-picture" *ngIf="toggle_picture">
+    <div class="modal-content" style="display: block;">
+        <span class="close" (click)="togglePicture()">&times;</span>
+        <p>Select photo here</p>
+        <input type="file" name="file-photo" id="file-photo" (change)="thumbnailPath($event.target.files)" (change)="startUploadThumbnail($event.target.files)">
+        <p (click)="uploadPhoto()"  style="width: 80px; background-color: lightgrey; cursor: pointer; border-radius: 5px; display: flex; align-items: center; justify-content: center; height: 30px;">Upload</p>
+    </div>  
+</div>
+
+<div class="modal-picture" *ngIf="toggle_background">
+    <div class="modal-content" style="display: block;">
+        <span class="close" (click)="toggleBackground()">&times;</span>
+        <p>Select background here</p>
+        <input type="file" name="file-photo" id="file-photo" (change)="thumbnailPath($event.target.files)" (change)="startUploadThumbnail($event.target.files)">
+        <p (click)="uploadBackground()" style="width: 80px; background-color: lightgrey; cursor: pointer; border-radius: 5px; display: flex; align-items: center; justify-content: center; height: 30px;">Upload</p>
+    </div> 
 </div>
