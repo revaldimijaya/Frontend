@@ -70,7 +70,7 @@ export class HeaderComponent implements OnInit {
       this.getNotif();
       console.log(this.data.user_id);
       this.lastPlaylist = 5;
-      this.lastSubscribe = 5;
+      this.lastSubscribe = 10;
     }
     
     this.toggle_sign = false;
@@ -287,7 +287,7 @@ export class HeaderComponent implements OnInit {
 
   hideSubscription(){
     this.toggle_subscribe = false;
-    this.lastSubscribe = 5;
+    this.lastSubscribe = 10;
   }
 
   createUser(user: any): void {
@@ -338,6 +338,7 @@ export class HeaderComponent implements OnInit {
       }
     }).subscribe(result =>{
       this.subscription = result.data.getSubscribeByUser
+      
       this.subscribeLen = this.subscription.length;
     })
   }

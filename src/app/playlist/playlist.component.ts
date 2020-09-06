@@ -435,7 +435,7 @@ export class PlaylistComponent implements OnInit {
       variables:{
         id: this.id,
         title: this.title,
-        privacy: this.privacy,
+        privacy: this.privacy.toLowerCase(),
         description: this.description
       }
     }).subscribe(({ data }) => {

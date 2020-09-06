@@ -173,7 +173,7 @@
             <app-list-subscription [subscription] = "i" *ngIf="idx < (lastSubscribe)"></app-list-subscription>
         </div>
     </div>
-    <div class="show-playlist"  *ngIf="subscribeLen > 5">
+    <div class="show-playlist"  *ngIf="subscribeLen > 10">
         <i *ngIf="toggle_subscribe" class="fas fa-angle-up" style="margin-right: 10px;"></i>
         <i *ngIf="!toggle_subscribe" class="fas fa-angle-down" style="margin-right: 10px;"></i>
         <p *ngIf="!toggle_subscribe" (click)="moreSubscription()">SHOW MORE</p>
