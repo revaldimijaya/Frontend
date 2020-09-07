@@ -107,6 +107,10 @@ export class VideosComponent implements OnInit {
     }
   }
 
+  toUser(){
+    window.location.href="channel/"+this.user.id;
+  }
+
   toggleSort(){
     this.toggle_sort = !this.toggle_sort;
   }

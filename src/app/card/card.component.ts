@@ -188,7 +188,7 @@ export class CardComponent implements OnInit {
       `,
       variables:{
         id: this.videos.id,
-        url: this.edit_thumbnail,
+        url: this.videos.url,
         name: this.edit_title,
         description: this.edit_description,
         thumbnail: this.edit_thumbnail,
