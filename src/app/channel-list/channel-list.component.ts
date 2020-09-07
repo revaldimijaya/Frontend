@@ -18,6 +18,8 @@ export class ChannelListComponent implements OnInit {
 
   video: any;
   totalVideo: number = 0;
+
+  toggle_notif: boolean = false;
   
   constructor(private apollo: Apollo, private data: DataService) { }
 
@@ -30,6 +32,84 @@ export class ChannelListComponent implements OnInit {
       this.toggle_subs = false;
     }
     this.getVideoByUser();
+    this.getNotif();
+  }
+
+  notifs: any;
+
+  getNotif(){
+    this.apollo.query<any>({
+      query: gql`
+      query getNotif($userid: String!){
+        getNotif(userid: $userid){
+          id,
+          user_id,
+          notif_to
+        }
+      }
+      `,
+      variables:{
+        userid: this.data.user_id
+      }
+    }).subscribe(result =>{
+      this.notifs = result.data.getNotif;
+      this.notifs.forEach(element => {
+        if(this.data.user_id == element.user_id && this.user.id == element.notif_to){
+          this.toggle_notif = true;
+        }
+      });
+      console.log(this.notifs, this.toggle_notif);
+    }, (error) => {
+      console.log('there was an error sending the query', error);
+    });
+  }
+
+  toggleNotif(){
+    if(this.toggle_notif == true){
+      this.deleteNotif();
+    } else {
+      this.createNotif();
+    }
+  }
+
+  createNotif(){
+    this.apollo.mutate<any>({
+      mutation: gql`
+      mutation createNotif($userid: String!, $notifto: String!){
+        createNotif(userid: $userid, notifto: $notifto){
+          id,
+          user_id,
+          notif_to
+        }
+      }
+      `,
+      variables:{
+        userid: this.data.user_id,
+        notifto: this.user.id
+      }
+    }).subscribe(({data})=>{
+      console.log(data);
+    })
+  }
+
+  deleteNotif(){
+    this.apollo.mutate<any>({
+      mutation: gql`
+      mutation deleteNotif($userid: String!, $notifto: String!){
+        deleteNotif(userid: $userid, notifto: $notifto){
+          id,
+          user_id,
+          notif_to
+        }
+      }
+      `,
+      variables:{
+        userid: this.data.user_id,
+        notifto: this.user.id
+      }
+    }).subscribe(({data})=>{
+      console.log(data);
+    })
   }
 
   checkSubs(){

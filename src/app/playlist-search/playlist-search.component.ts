@@ -22,6 +22,10 @@ export class PlaylistSearchComponent implements OnInit {
     this.getUser();
   }
 
+  href(){
+    window.location.href = "channel/"+this.user.id;
+  }
+
   getDetail(){
     this.apollo.query({
       query: gql`

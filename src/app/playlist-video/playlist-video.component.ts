@@ -21,8 +21,9 @@ export class PlaylistVideoComponent implements OnInit {
   toggle_etc:boolean;
   duration: string;
   calculate_day: string;
-  toggle_self: boolean = false;;
-
+  toggle_self: boolean = false;
+  description: string;
+  toggle_premium: boolean = false;
   constructor(private apollo: Apollo, private data: DataService) { }
 
   ngOnInit(): void {
@@ -33,7 +34,9 @@ export class PlaylistVideoComponent implements OnInit {
     console.log(this.detailVideo);
     this.toggle_etc = false;
     this.getVideo();
+    
   }
+  
 
   toggleEtc(){
     this.toggle_etc = !this.toggle_etc;
@@ -81,16 +84,23 @@ export class PlaylistVideoComponent implements OnInit {
       this.videosid = this.videos.id;
       this.thumbnail = this.videos.thumbnail;
       this.videosname = this.videos.name;
+      this.description = this.videos.description;
       var startDate = new Date(Date.UTC(this.videos.year, this.videos.month, this.videos.day, this.videos.hour, this.videos.minute, this.videos.second));
       var d = new Date();
       var endDate = new Date(Date.UTC(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
-
+      if(this.videos.premium == "premium"){
+        this.toggle_premium = true;
+      }
       this.calculate_day = this.calculateDay(startDate, endDate);
       this.calculateDuration();
       this.getUser(this.videos)
     }, (error) => {
       console.log('there was an error sending the query', error);
     });
+  }
+
+  toUser(){
+    window.location.href="channel/"+this.user.id
   }
 
   name: string;

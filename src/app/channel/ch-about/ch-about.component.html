@@ -2,7 +2,7 @@
     <div class="description" style="margin-right: 40px;">
         <p>Description</p>
         <p>{{user.description}}</p>
-        <div class="edit" (click)="toggleEdit()">
+        <div class="edit" (click)="toggleEdit()" *ngIf="own_user">
             <i class="fas fa-pen-square fa-2x"></i>
         </div>
         <textarea *ngIf="toggle_edit" name="description" id="description" cols="30" rows="10"></textarea>

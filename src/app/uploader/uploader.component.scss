@@ -175,6 +175,10 @@
                     font-size: 14px;
                     margin: 0;
                 }
+                &:hover{
+                    transition: 1s;
+                    background-color: lightgrey;
+                }
             }
             .input-new-playlist{
                 input{

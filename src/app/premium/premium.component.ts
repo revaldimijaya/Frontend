@@ -151,7 +151,7 @@ export class PremiumComponent implements OnInit {
 
       this.memberships.forEach(element => {
         var date = new Date(element.created_at);
-        this.history.push(date.getDate().toString() +"-"+date.getMonth().toString() +"-"+date.getFullYear().toString()+" "+element.type);
+        this.history.push(date.getDate().toString() +"-"+(date.getMonth()+1).toString() +"-"+date.getFullYear().toString()+" "+element.type);
       });
 
       if(this.memberships[this.memberships.length-1].type == "month"){
@@ -161,7 +161,7 @@ export class PremiumComponent implements OnInit {
       }
 
       this.date1 = new Date(this.memberships[this.memberships.length-1].end_at);
-      this.strDate = this.date1.getDate().toString() +"-"+this.date1.getMonth().toString() +"-"+this.date1.getFullYear().toString()
+      this.strDate = this.date1.getDate().toString() +"-"+(this.date1.getMonth()+1).toString() +"-"+this.date1.getFullYear().toString()
       var d = new Date();
       this.date2 = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
       console.log(this.date1, this.date2);

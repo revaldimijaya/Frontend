@@ -5,6 +5,9 @@
    
     <div class="thumbnail" [routerLink]="['/video', videosid]">
         <img src="{{thumbnail}}" alt="">
+        <div class="premium" *ngIf="toggle_premium">
+            <p>PREMIUM</p>
+        </div>
         <div class="duration">
             <p>{{duration}}</p>
         </div>
@@ -14,8 +17,11 @@
         <div class="title">
             <p>{{videosname}}</p>
         </div>
+        <div>
+            <p style="margin: 0;">{{description}}</p>
+        </div>
         <div class="name">
-            <p>{{name}}</p>
+            <p (click)="toUser()">{{name}}</p>
         </div>
     </div>
     <div class="other" *ngIf="toggle_self">

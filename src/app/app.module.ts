@@ -53,6 +53,7 @@ import { ChannelListComponent } from './channel-list/channel-list.component';
 import { PlaylistSearchComponent } from './playlist-search/playlist-search.component';
 import { NotificationListComponent } from './notification-list/notification-list.component';
 import { ModalShareComponent } from './modal-share/modal-share.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 
 @NgModule({
@@ -106,7 +107,8 @@ import { ModalShareComponent } from './modal-share/modal-share.component';
     AngularFireStorageModule,
     AngularFirestoreModule,
     BrowserAnimationsModule,
-    MatVideoModule
+    MatVideoModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     {

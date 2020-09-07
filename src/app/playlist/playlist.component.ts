@@ -498,4 +498,5 @@ export class PlaylistComponent implements OnInit {
     this.description = (<HTMLInputElement>document.getElementById("description")).value
     this.update();
   }
+
 }

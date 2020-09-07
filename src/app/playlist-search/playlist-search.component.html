@@ -13,13 +13,13 @@
     <div class="videodetail">
         <div class="videodetailarea">
             <div class="videos-name">
-                <h3 style="margin: 0 0 10px 0;">{{playlist.name}}</h3>
+                <h3  style="margin: 0 0 10px 0;">{{playlist.name}}</h3>
             </div>
             <div>
                 <p style="margin: 0 0 5px 0; font-size: 12px; opacity: 80%;">{{playlist.description}}</p>
             </div>
             <div>
-                <p style="margin: 0 0 5px 0; font-size: 12px; opacity: 80%;">{{user.name}}</p>
+                <p style="margin: 0 0 5px 0; font-size: 12px; opacity: 80%; cursor: pointer;" (click)="href()">{{user.name}}</p>
             </div>
         </div>
     </div>

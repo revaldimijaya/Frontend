@@ -57,41 +57,43 @@
 
 <div class="modal-picture" [style.display]="toggle_picture ? 'block':'none'">
     <div class="modal-content" style="display: block;">
-        <span class="close" (click)="togglePicture()">&times;</span>
-        <div>
-            <p>Edit title</p>
-            <input type="text" name="edit-title" id="edit-title" [value]="edit_title">
-        </div>
-        <div>
-            <p>Edit description</p>
-            <input type="text" name="edit-description" id="edit-description" [value]="edit_description">
-        </div>
-        <div>
-            <div (click)="toggleEditThumbnail()">
-                <p *ngIf="!toggle_thumbnail" style="background-color: lightgrey; cursor: pointer; padding: 5px; width: fit-content; border-radius: 5px;">Edit thumbnail</p>
-                <p *ngIf="toggle_thumbnail" style="background-color: coral; cursor: pointer; padding: 5px; width: fit-content; border-radius: 5px;">Cancel</p>
+        <div style="background-color: #D4F7D4; padding: 20px;">
+            <span class="close" (click)="togglePicture()">&times;</span>
+            <div>
+                <p>Edit title</p>
+                <input type="text" name="edit-title" id="edit-title" [value]="edit_title">
             </div>
-            <div *ngIf="toggle_thumbnail">
-                <input type="file" name="edit-thumbnail" id="edit-thumbnail" (change)="startUploadThumbnail($event.target.files)">
+            <div>
+                <p>Edit description</p>
+                <input type="text" name="edit-description" id="edit-description" [value]="edit_description">
             </div>
-        </div>
-        <div>
-            <p>Edit privacy</p>
-            <div style="display: flex; flex-direction: column;">
-                <div>
-                    <input (click)="togglePublic()" type="radio" name="edit-privacy" id="edit-privacy">
-                    <label for="edit-privacy">Public</label>
+            <div>
+                <div (click)="toggleEditThumbnail()">
+                    <p *ngIf="!toggle_thumbnail" style="background-color: #549D53; cursor: pointer; padding: 5px; width: fit-content; border-radius: 5px;">Edit thumbnail</p>
+                    <p *ngIf="toggle_thumbnail" style="background-color: #FD3D12; cursor: pointer; padding: 5px; width: fit-content; border-radius: 5px;">Cancel</p>
                 </div>
-                <div>
-                    <input (click)="togglePrivate()" type="radio" name="edit-privacy" id="edit-privacy">
-                    <label for="edit-privacy">Private</label>
+                <div *ngIf="toggle_thumbnail">
+                    <input type="file" name="edit-thumbnail" id="edit-thumbnail" (change)="startUploadThumbnail($event.target.files)">
                 </div>
             </div>
+            <div>
+                <p>Edit privacy</p>
+                <div style="display: flex; flex-direction: column;">
+                    <div>
+                        <input (click)="togglePublic()" type="radio" name="edit-privacy" id="edit-privacy">
+                        <label for="edit-privacy">Public</label>
+                    </div>
+                    <div>
+                        <input (click)="togglePrivate()" type="radio" name="edit-privacy" id="edit-privacy">
+                        <label for="edit-privacy">Private</label>
+                    </div>
+                </div>
+            </div>
         </div>
         <div>
-            <div style="display: flex;">
-                <p (click)="updateVideo()" style="background-color: cornflowerblue; cursor: pointer; padding: 5px; width: fit-content; border-radius: 5px; color: white;">Save changes</p>
-                <p (click)="deleteVideo()" style="background-color: coral; cursor: pointer; padding: 5px; width: fit-content; border-radius: 5px; color: white;  margin-left: 10px;">Delete video</p>
+            <div style="display: flex; background-color: #341109; width: 100%; justify-content: center;">
+                <p (click)="updateVideo()" style="background-color: #549D53; cursor: pointer; padding: 5px; width: fit-content; border-radius: 5px; ">Save changes</p>
+                <p (click)="deleteVideo()" style="background-color: #FD3D12; cursor: pointer; padding: 5px; width: fit-content; border-radius: 5px;   margin-left: 10px;">Delete video</p>
             </div>
         </div>
     </div>  

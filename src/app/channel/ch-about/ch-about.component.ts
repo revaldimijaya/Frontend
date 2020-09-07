@@ -28,6 +28,7 @@ export class ChAboutComponent implements OnInit {
   section: string;
   toggle_share: boolean= false;
   toggle_edit: boolean = false;
+  own_user: boolean = false;
   constructor(private apollo:Apollo, private data:DataService, private activatedRoute:ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -36,6 +37,9 @@ export class ChAboutComponent implements OnInit {
     });
     this.section = "channel";
     this.getUser();
+    if(this.id == this.data.user_id){
+      this.own_user = true;
+    }
   }
 
   toggleShare(){
@@ -67,6 +71,7 @@ export class ChAboutComponent implements OnInit {
       }
     }).subscribe(result =>{
       this.user = result.data.getUserId
+
       this.date = new Date(this.user.created_at);
       this.show_date = this.date.getDate()+ "/" +this.date.getMonth()+"/"+this.date.getFullYear()
       this.name = this.user.name;

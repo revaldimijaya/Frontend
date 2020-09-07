@@ -15,8 +15,9 @@
             <div class="subs" (click)="subs()" [style.background-color]="change_subs ? 'red':'grey'">
                 <p>SUBSCRIBE</p>
             </div>
-            <div class="notif" [style.display]="change_subs ? 'none':'flex'">
-                <i class="fas fa-bell"></i>
+            <div class="notif" (click)="toggleNotif()" [style.display]="change_subs ? 'none':'flex'">
+                <i class="fas fa-bell" style="color: grey;" *ngIf="toggle_notif"></i>
+                <i class="fas fa-bell" style="color: black;"*ngIf="!toggle_notif"></i>
             </div>
         </div>
     </div>
